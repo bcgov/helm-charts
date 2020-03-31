@@ -38,6 +38,7 @@ sts:
 properties:
   # use externalSecure for when inbound SSL is provided by nginx-ingress or other external mechanism
   externalSecure: false
+  sensitiveKey: "s3cr3t"
   isNode: true
   httpPort: 8080
   httpsPort: null
@@ -51,6 +52,9 @@ properties:
     remoteInputHost: ""
   authorizer: managed-authorizer
 
+# Uses information from a secret for setting the users.xml, authorizations.xml and flow.xml.gz files.
+preconfig: false
+
 ## Include additional libraries in the Nifi containers by using the postStart handler
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/
 # postStart: /opt/nifi/psql; wget -P /opt/nifi/psql https://jdbc.postgresql.org/download/postgresql-42.2.6.jar
@@ -62,6 +66,23 @@ auth:
     host: ldap://<hostname>:<port>
     searchBase: CN=Users,DC=example,DC=com
     searchFilter: CN=john
+  oidc:
+    enabled: false
+    discovery_url: ""
+    client_id: ""
+    client_secret: ""
+    identifying_user: ""
+    initial_user: ""
+
+tls:
+  keystore_path: ""
+  keystore_type: ""
+  keystore_password: ""
+  key_password: ""
+  truststore_path: ""
+  truststore_type: ""
+  truststore_password: ""
+  web_proxy_host: ""
 
 ## Expose the nifi service to be accessed from outside the cluster (LoadBalancer service).
 ## or access it from within the cluster (ClusterIP service). Set the service type and the port to serve it.
@@ -75,6 +96,7 @@ service:
     type: LoadBalancer
     httpPort: 80
     httpsPort: 443
+    nodePort: 8443
     annotations: {}
     # loadBalancerIP:
     ## Load Balancer sources
@@ -133,6 +155,10 @@ persistence:
   # Storage capacity for nifi logs
   logStorage: 
     size: 5Gi
+  # Storage location for receiving and sending files
+  landing:
+    enabled: false
+    size: 500Gi
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/

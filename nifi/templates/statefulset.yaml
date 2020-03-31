@@ -1,5 +1,5 @@
 ---
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "apache-nifi.fullname" . }}
@@ -79,6 +79,51 @@ spec:
       imagePullSecrets:
         - name: {{ .Values.image.pullSecret }}
       {{- end }}
+      {{- if .Values.preconfig }}
+      - name: init-preconfig
+        image: busybox
+        command:
+        - sh
+        - -c
+        - |
+          set -e
+          cp -f /preconfig/*.xml /acl/.
+          cp -f /preconfig/flow.xml.gz /data/.
+        volumeMounts:
+          - name: "acl"
+            mountPath: /acl
+          - name: "data"
+            mountPath: /data
+          {{- range $secret := .Values.secrets }}
+            {{- if $secret.mountPath }}
+              {{- if $secret.keys }}
+                {{- range $key := $secret.keys }}
+          - name: {{ include "apache-nifi.fullname" $ }}-{{ $secret.name }}
+            mountPath: {{ $secret.mountPath }}/{{ $key }}
+            subPath: {{ $key }}
+            readOnly: true
+                {{- end }}
+              {{- else }}
+          - name: {{ include "apache-nifi.fullname" $ }}-{{ $secret.name }}
+            mountPath: {{ $secret.mountPath }}
+            readOnly: true
+              {{- end }}
+            {{- end }}
+          {{- end }}            
+      {{- else }}
+      - name: init-acl
+        image: busybox
+        command:
+        - sh
+        - -c
+        - |
+          set -e
+          if [ ! -f /acl/users.xml ]; then echo '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><tenants><groups/><users/></tenants>' > /acl/users.xml; fi
+          if [ ! -f /acl/authorizations.xml ]; then echo '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><authorizations><policies/></authorizations>' > /acl/authorizations.xml; fi
+        volumeMounts:
+          - name: "acl"
+            mountPath: /acl
+      {{- end }}
       containers:
       - name: server
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
@@ -97,15 +142,40 @@ spec:
 
           cat "${NIFI_HOME}/conf/nifi.temp" > "${NIFI_HOME}/conf/nifi.properties"
 
-          if [[ $(grep $(hostname) conf/authorizers.temp) ]]; then
-            cat "${NIFI_HOME}/conf/authorizers.temp" > "${NIFI_HOME}/conf/authorizers.xml"
-          else
-            cat "${NIFI_HOME}/conf/authorizers.empty" > "${NIFI_HOME}/conf/authorizers.xml"
-          fi
+          cat "${NIFI_HOME}/conf/authorizers.temp" > "${NIFI_HOME}/conf/authorizers.xml"
 
           prop_replace nifi.remote.input.host ${FQDN}
           prop_replace nifi.cluster.node.address ${FQDN}
-          prop_replace nifi.web.http.host ${FQDN}
+          
+          prop_replace nifi.web.https.host ${FQDN}
+          
+          prop_replace 'nifi.security.keystore'           "${KEYSTORE_PATH}"
+          prop_replace 'nifi.security.keystoreType'       "${KEYSTORE_TYPE}"
+          prop_replace 'nifi.security.keystorePasswd'     "${KEYSTORE_PASSWORD}"
+          prop_replace 'nifi.security.keyPasswd'          "${KEY_PASSWORD:-$KEYSTORE_PASSWORD}"
+          prop_replace 'nifi.security.truststore'         "${TRUSTSTORE_PATH}"
+          prop_replace 'nifi.security.truststoreType'     "${TRUSTSTORE_TYPE}"
+          prop_replace 'nifi.security.truststorePasswd'   "${TRUSTSTORE_PASSWORD}"
+
+          # Disable HTTP and enable HTTPS
+          prop_replace 'nifi.web.http.port'   ''
+          prop_replace 'nifi.web.http.host'   ''
+          prop_replace 'nifi.web.https.port'  "${NIFI_WEB_HTTPS_PORT:-8080}"
+          prop_replace 'nifi.web.https.host'  "${NIFI_WEB_HTTPS_HOST:-$HOSTNAME}"
+          prop_replace 'nifi.remote.input.secure' 'true'
+          prop_replace 'nifi.cluster.protocol.is.secure' 'true'
+
+          # Setup nifi-toolkit
+          prop_replace 'baseUrl' "https://${NIFI_WEB_HTTPS_HOST:-$HOSTNAME}:${NIFI_WEB_HTTPS_PORT:-8080}" ${nifi_toolkit_props_file}
+
+          # Check if the user has specified a nifi.web.proxy.host setting and handle appropriately
+          if [ -z "${NIFI_WEB_PROXY_HOST}" ]; then
+              echo 'NIFI_WEB_PROXY_HOST was not set but NiFi is configured to run in a secure mode.  The NiFi UI may be inaccessible if using port mapping.'
+          else
+              prop_replace 'nifi.web.proxy.host' "${NIFI_WEB_PROXY_HOST}"
+              prop_replace 'nifi.remote.input.host' "${NIFI_REMOTE_INPUT_HOST}"
+          fi
+
           prop_replace nifi.zookeeper.connect.string ${NIFI_ZOOKEEPER_CONNECT_STRING}
 
           exec bin/nifi.sh run
@@ -131,8 +201,28 @@ spec:
         env:
         - name: NIFI_ZOOKEEPER_CONNECT_STRING
           value: {{ template "zookeeper.url" . }}
+{{- if .Values.auth.oidc.enabled }}
+        - name: AUTH
+          value: "tls"
+{{- end }}          
+        - name: KEYSTORE_PATH
+          value: "{{ .Values.tls.keystore_path }}"
+        - name: KEYSTORE_TYPE
+          value: "{{ .Values.tls.keystore_type }}"
+        - name: KEYSTORE_PASSWORD
+          value: "{{ .Values.tls.keystore_password }}"
+        - name: KEY_PASSWORD
+          value: "{{ .Values.tls.key_password }}"
+        - name: TRUSTSTORE_PATH
+          value: "{{ .Values.tls.truststore_path }}"
+        - name: TRUSTSTORE_TYPE
+          value: "{{ .Values.tls.truststore_type }}"
+        - name: TRUSTSTORE_PASSWORD
+          value: "{{ .Values.tls.truststore_password }}"
+        - name: NIFI_WEB_PROXY_HOST
+          value: "{{ .Values.tls.web_proxy_host }}"
         - name: NIFI_REMOTE_INPUT_HOST
-          value: {{ .Values.properties.siteToSite.remoteInputHost }}
+          value: "{{ .Values.properties.siteToSite.remoteInputHost }}"
         lifecycle:
           preStop:
             exec:
@@ -154,11 +244,12 @@ spec:
             - bash
             - -c
             - |
+              exit 0
 {{- if .Values.properties.httpsPort }}
               curl -kv \
                 --cert ${NIFI_BASE_DIR}/data/cert/admin/crt.pem --cert-type PEM \
                 --key ${NIFI_BASE_DIR}/data/cert/admin/key.pem --key-type PEM \
-                https://$(hostname -f):8443/nifi-api/controller/cluster > $NIFI_BASE_DIR/data/cluster.state
+                https://$(hostname -f):8080/nifi-api/controller/cluster > $NIFI_BASE_DIR/data/cluster.state
 {{- else }}
               curl -kv \
                 http://$(hostname -f):{{ .Values.properties.httpPort }}/nifi-api/controller/cluster > $NIFI_BASE_DIR/data/cluster.state
@@ -180,6 +271,12 @@ spec:
             port: {{ .Values.properties.httpPort }}
 {{- end }}
         volumeMounts:
+          - name: "acl"
+            mountPath: /opt/nifi/nifi-current/conf/users.xml
+            subPath: "users.xml"
+          - name: "acl"
+            mountPath: /opt/nifi/nifi-current/conf/authorizations.xml
+            subPath: "authorizations.xml"        
           - name: "data"
             mountPath: /opt/nifi/data
           - name: "flowfile-repository"
@@ -232,6 +329,11 @@ spec:
             readOnly: true
               {{- end }}
             {{- end }}
+          {{- end }}
+          {{- if and .Values.persistence.enabled .Values.persistence.landing.enabled }}
+          - name: {{ include "apache-nifi.fullname" $ }}-landing
+            mountPath: /landing
+            readOnly: false
           {{- end }}
       - name: app-log
         image: {{ .Values.sidecar.image }}
@@ -318,6 +420,8 @@ spec:
           secretName: {{ .name }}
       {{- end }}
 {{- if not .Values.persistence.enabled }}
+      - name: acl
+        emptyDir: {}
       - name: data
         emptyDir: {}
       - name: flowfile-repository
@@ -331,6 +435,30 @@ spec:
 {{- end }}
 {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
+    {{- if .Values.persistence.landing.enabled }}
+    - metadata:
+        name: {{ include "apache-nifi.fullname" $ }}-landing
+      spec:
+        accessModes:
+        {{- range .Values.persistence.accessModes }}
+          - {{ . | quote }}
+        {{- end }}
+        storageClassName: {{ .Values.persistence.landing.storageClass | quote }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.landing.size }}
+    {{- end }}
+    - metadata:
+        name: acl
+      spec:
+        accessModes:
+        {{- range .Values.persistence.accessModes }}
+          - {{ . | quote }}
+        {{- end }}
+        storageClassName: {{ .Values.persistence.storageClass | quote }}
+        resources:
+          requests:
+            storage: 1Gi
     - metadata:
         name: data
       spec:
@@ -385,5 +513,5 @@ spec:
         storageClassName: {{ .Values.persistence.storageClass | quote }}
         resources:
           requests:
-            storage: {{ .Values.persistence.logStorage.size }}
+            storage: {{ .Values.persistence.logStorage.size }}       
 {{- end }}
