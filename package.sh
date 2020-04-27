@@ -8,39 +8,34 @@ esac
 
 git checkout master
 
-rm -rf packages/*
+charts=("formio" "forum-api" "nifi" "storage-api" "vdi-virtual-display")
 
-cd forum-api
-helm dep up
-cd ..
-helm package forum-api
+rm -rf ./packages/*.tgz
 
-cd forum-api
-helm dep up
-cd ..
-helm package nifi
-
-cd formio
-helm dep up
-cd ..
-helm package formio
-
-cd forum-api
-helm dep up
-cd ..
-helm package storage-api
-
-cd forum-api
-helm dep up
-cd ..
-helm package vdi-virtual-display
-
+for chart in ${charts[@]}; do
+    read -p "Release $chart Api? [yN]" yn
+    case $yn in
+        [Yy]* ) cd $chart;
+                helm dep up;
+                cd ..;
+                helm package $chart;;
+        * ) echo "Skipping";;
+    esac
+done
 
 mv *.tgz packages/.
 
 cr upload --owner bcgov --git-repo helm-charts --package-path ./packages
 
-cr index --owner bcgov --git-repo helm-charts --package-path ./packages --charts-repo https://github.com/bcgov/helm-charts/releases --index-path docs/index.yaml
+rm -rf ./packages/*.tgz
+for chart in ${charts[@]}; do
+    helm package $chart;
+done
+
+mv *.tgz packages/.
+rm packages/.gitkeep
+cr index --owner bcgov --git-repo helm-charts --package-path ./packages --index-path ./docs/index.yaml --charts-repo https://github.com/bcgov/helm-charts/releases
+touch packages/.gitkeep
 
 git add docs
 git commit -m "Automated pages update"
