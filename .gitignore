@@ -1,0 +1,3 @@
+packages/*.tgz
+**/charts/**
+**.DS_Store**

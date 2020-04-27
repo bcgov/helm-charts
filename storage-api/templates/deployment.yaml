@@ -1,0 +1,143 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "ocwaStorageApi.fullname" . }}
+  labels:
+    app: {{ template "ocwaStorageApi.name" . }}
+    chart: {{ template "ocwaStorageApi.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "ocwaStorageApi.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "ocwaStorageApi.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      volumes:
+      - name: minio-storage
+        persistentVolumeClaim:
+          claimName: {{ template "ocwaStorageApi.fullname" . }}-minio-pvc
+      - name: minio-config
+        emptyDir: {}
+      {{ if .Values.tus.jwtHook }}
+      - name: tus-config
+        configMap:
+          name: {{ template "ocwaStorageApi.fullname" . }}-tusd-configmap
+          defaultMode: 511
+      {{ end }}
+      - name: caddy-config
+        configMap:
+          name: {{ template "ocwaStorageApi.fullname" . }}-caddy-configmap
+          defaultMode: 511
+
+      containers:
+        - name: {{ template "ocwaStorageApi.name" . }}-minio
+          image: "{{ .Values.minio.image }}:{{ .Values.minio.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["minio"]
+          {{ if .Values.minio.server }}
+          args: ["server", "{{ .Values.minio.serverPath }}"]
+          {{ else }}
+          args: ["gateway", "{{ .Values.minio.gatewayType }}"]
+          {{ end }}
+          volumeMounts:
+          - mountPath: /.minio
+            name: minio-config
+          - name: minio-storage
+            mountPath: /minioStore
+          env:
+            - name: MINIO_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "ocwaStorageApi.fullname" . }}-secrets
+                  key: access_key
+            - name: MINIO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "ocwaStorageApi.fullname" . }}-secrets
+                  key: access_secret
+          ports:
+            - name: minio
+              containerPort: 9000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /minio/health/live
+              port: minio
+          readinessProbe:
+            httpGet:
+              path: /minio/health/live
+              port: minio
+
+        - name: {{ template "ocwaStorageApi.name" . }}-caddy
+          image: "{{ .Values.caddy.image }}:{{ .Values.caddy.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["caddy", "-conf", "/conf/Caddyfile", "-quic"]
+          ports:
+            - name: caddy
+              containerPort: 2015
+              protocol: TCP
+          volumeMounts:
+            - name: caddy-config
+              mountPath: /conf
+
+
+        - name: {{ template "ocwaStorageApi.name" . }}-tusd
+          image: "{{ .Values.tus.image }}:{{ .Values.tus.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{ if .Values.tus.jwtHook }}
+          volumeMounts:
+            - name: tus-config
+              mountPath: /srv/tusd-hooks
+          {{ end }}
+          env:
+            - name: S3_ENDPOINT
+              value: '{{.Values.minio.proto}}://{{ template "ocwaStorageApi.fullname" . }}.{{ .Release.Namespace }}:{{ .Values.service.minioPort }}'
+            - name: S3_BUCKET
+              value: "{{ .Values.tus.bucket }}"
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "ocwaStorageApi.fullname" . }}-secrets
+                  key: jwt_secret
+            - name: JWT_AUD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "ocwaStorageApi.fullname" . }}-secrets
+                  key: jwt_aud
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "ocwaStorageApi.fullname" . }}-secrets
+                  key: access_key
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "ocwaStorageApi.fullname" . }}-secrets
+                  key: access_secret
+            - name: AWS_REGION
+              value: "{{ .Values.tus.region }}"
+          ports:
+            - name: tusd
+              containerPort: 1080
+              protocol: TCP
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
