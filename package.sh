@@ -20,6 +20,11 @@ helm dep up
 cd ..
 helm package nifi
 
+cd formio
+helm dep up
+cd ..
+helm package formio
+
 cd forum-api
 helm dep up
 cd ..
