@@ -21,12 +21,10 @@ spec:
       cpu: 4000m
       memory: 8G
   triggers:
-    - type: "imageChange"
-      imageChange:
-        from:
-          kind: "ImageStreamTag"
-          name: "{{ template "ocp-pipeline.fullname" . }}-image:latest"
-          namespace: "{{ .Release.Namespace }}"
+    - type: "generic"
+      generic:
+        secretReference:
+          name: "{{ .Release.Name }}-git-webhook-secret"
   strategy:
     type: JenkinsPipeline
     jenkinsPipelineStrategy:

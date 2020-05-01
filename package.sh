@@ -8,12 +8,12 @@ esac
 
 git checkout master
 
-charts=("formio" "forum-api" "nifi" "storage-api" "vdi-virtual-display")
+charts=("ckan-ui" "formio" "forum-api" "metadata-curator" "nifi" "ocp-pipeline" "storage-api" "vdi-virtual-display")
 
 rm -rf ./packages/*.tgz
 
 for chart in ${charts[@]}; do
-    read -p "Release $chart Api? [yN]" yn
+    read -p "Release $chart? [yN]" yn
     case $yn in
         [Yy]* ) cd $chart;
                 helm dep up;
