@@ -1,0 +1,15 @@
+# Default values for ocp-pipelines
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+chart:
+  name: metadata-curator
+  repo: https://github.com/bcgov/helm-charts
+webhookKey: "12345678"
+
+releaseName: mc
+releaseNamespace: mc
+
+#put anything you need in the config in deployValues
+deployValues:
+  example: value

@@ -1,0 +1,91 @@
+{{ $database := .Values.database | toJson | toString}}
+{{ $sessionSecret := .Values.sessionSecret }}
+{{ $frontend := .Values.frontend }}
+{{ $oidc := .Values.oidc | toJson | toString }}
+{{ $uploadUrl := .Values.uploadUrl | toString }}
+{{ $base64EncodedPGPPublicKey := .Values.base64EncodedPGPPublicKey | toString }}
+{{ $approverGroups := .Values.approverGroups | toJson | toString }}
+{{ $alwaysNotifyList := .Values.alwaysNotifyList | toJson | toString }}
+{{ $email := .Values.email | toJson | toString }}
+{{ $nodeConfig := printf "{\"database\": %s, \"sessionSecret\": \"%s\", \"frontend\": \"%s\", \"oidc\": %s, \"uploadUrl\": \"%s\", \"base64EncodedPGPPublicKey\": \"%s\", \"approverGroups\": %s, \"alwaysNotifyList\": %s, \"email\": %s }" $database $sessionSecret $frontend $oidc $uploadUrl $base64EncodedPGPPublicKey $approverGroups $alwaysNotifyList $email }}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "metadata-curator.fullname" . }}
+  labels:
+    {{- include "metadata-curator.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "metadata-curator.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "metadata-curator.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "metadata-curator.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}-api
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.beImage.repository }}:{{ .Values.beImage.tag }}"
+          imagePullPolicy: {{ .Values.beImage.pullPolicy }}
+          env:
+            - name: NODE_CONFIG
+              value: {{$nodeConfig | quote}}
+          ports:
+            - name: api
+              containerPort: 9090
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /api/v1/publicKey
+              port: api
+          readinessProbe:
+            httpGet:
+              path: /api/v1/publicKey
+              port: api
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+        - name: {{ .Chart.Name }}-ui
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.feImage.repository }}:{{ .Values.feImage.tag }}"
+          imagePullPolicy: {{ .Values.feImage.pullPolicy }}
+          env:
+            - name: HOSTNAME
+              value: "localhost"
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

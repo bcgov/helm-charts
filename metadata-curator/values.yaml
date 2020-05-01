@@ -1,0 +1,131 @@
+# Default values for metadata-curator.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+feImage:
+  repository: bcgovimages/metadata_curator_ui
+  tag: edge
+  pullPolicy: IfNotPresent
+
+beImage:
+  repository: bcgovimages/metadata_curator_api
+  tag: edge
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths: []
+  tls: []
+  #    hosts:
+  #      - chart-example.local
+
+
+tls:
+  enabled: false
+  crt: ""
+  key: ""
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+database:
+  host: "mc-formio-mongo.mc:27017"
+  username: "forumApi"
+  password: "password"
+  dbName: "oc_db"
+
+sessionSecret: "ssh this is a secret"
+
+frontend: chart-example.local
+
+oidc:
+  issuer: issuer
+  authorizationURL: authUrl
+  tokenURL: tokenUrl
+  userInfoURL: userInfoUrl
+  clientID: clientId
+  clientSecret: clientSecret
+  callbackURL: chart-example.local/api/callback
+  scope: "openid profile offline_access"
+
+uploadUrl: mc-storage-api.mc
+
+base64EncodedPGPPublicKey: b64Here
+
+approverGroups: 
+  - "metadata_approver_1"
+  - "metadata_approver_2"
+alwaysNotifyList:
+  - business_category_1:
+      - name: "Metadata Approver_1_User_1"
+        email: "john_doe@gmail.com"
+      - name: "Metadata Approver_1_User_2"
+        email": "jane_doe@gmail.com"
+  - business_category_2:
+      - name: "Metadata Approver_2_User_1"
+        email: "john_doe@outlook.com"
+      - name: "Metadata Approver_2_User_2"
+        email: "jane_doe@outlook.com"
+
+email:
+  enabled: false
+  service: "smtp.gmail.com"
+  secure: true
+  port: 465
+  user: ""
+  pass: ""
+  from: "mc@example.com"
+  subject: "Data Upload Update"
+
+
+  
+forum-api:
+  wsService:
+    type: ClusterIP
