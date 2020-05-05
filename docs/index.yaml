@@ -3,9 +3,9 @@ entries:
   ckan-ui:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-05-01T14:23:00.959455-07:00"
+    created: "2020-05-05T11:01:10.403005-07:00"
     description: A Helm chart for deployment of the bcgov ckan-ui
-    digest: 96651e02c048a2229c64cd29f6d466880921503fd8e31e4fa9580792bd48b00f
+    digest: 77135597c970e0dad9a38f9084bbe74629540bf3417bf7f31acfc6372f9a4f48
     name: ckan-ui
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/ckan-ui-0.1.0/ckan-ui-0.1.0.tgz
@@ -13,9 +13,9 @@ entries:
   formio:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-05-01T14:23:01.181544-07:00"
+    created: "2020-05-05T11:01:10.612942-07:00"
     description: A Helm chart for Formio
-    digest: 18c61d9ea2329c33c78bb75da2393f54dbb22f684e12c251840fdf4794835ecf
+    digest: e98241e3804e586ba2173552f9a57084124e58c593383436c5889faf25e2eaa1
     name: formio
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/formio-0.1.0/formio-0.1.0.tgz
@@ -23,9 +23,9 @@ entries:
   forum-api:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-05-01T14:23:01.372821-07:00"
+    created: "2020-05-05T11:01:10.800403-07:00"
     description: A Helm chart for OCWA Forum Api
-    digest: 5fb0e00c121c1d3120940c31a2fb05c7f47b563f276cf07e98404261e7c868b6
+    digest: 6202684dbec81c96691f3b56002d4ddd6536188fc18b7729069542be554fa683
     name: forum-api
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/forum-api-0.1.0/forum-api-0.1.0.tgz
@@ -33,7 +33,7 @@ entries:
   metadata-curator:
   - apiVersion: v2
     appVersion: 0.9.0
-    created: "2020-05-01T14:23:01.543754-07:00"
+    created: "2020-05-05T11:01:10.997396-07:00"
     dependencies:
     - name: forum-api
       repository: https://bcgov.github.io/helm-charts/
@@ -45,7 +45,7 @@ entries:
       repository: https://bcgov.github.io/helm-charts/
       version: 0.1.0
     description: A Helm chart for Metadata Curator
-    digest: 8e0a2640f9d97a81b5578052a0d51dc29a5d5b816806c382ee2eaca6eaab77b6
+    digest: 3d1d44262217305987e47f3f778f87615929673176961de22518ecf99a7d21be
     name: metadata-curator
     type: application
     urls:
@@ -54,7 +54,7 @@ entries:
   nifi:
   - apiVersion: v1
     appVersion: 1.9.2
-    created: "2020-05-01T14:23:01.728732-07:00"
+    created: "2020-05-05T11:01:11.185263-07:00"
     dependencies:
     - condition: zookeeper.enabled
       name: zookeeper
@@ -78,9 +78,9 @@ entries:
   ocp-pipeline:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-05-01T14:23:01.944254-07:00"
+    created: "2020-05-05T11:01:11.354966-07:00"
     description: A Helm chart for Openshift pipelines using Jenkins
-    digest: 901f2179d848d984677347e4b7e511e571fee7ce359505ef5d3dcf24e9726ce5
+    digest: fba2b86cd5a42a58572f5250fec42038de6d139d58f34e3b88adcb6cda198989
     name: ocp-pipeline
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/ocp-pipeline-0.1.0/ocp-pipeline-0.1.0.tgz
@@ -88,9 +88,9 @@ entries:
   storage-api:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-05-01T14:23:02.114833-07:00"
+    created: "2020-05-05T11:01:11.535126-07:00"
     description: A Helm chart for Minio & tusd
-    digest: febfc41f5c30dd388a01dcef66efced006dcece58e859f1bda5e65fd3197a90e
+    digest: 82a7763477e6077bbab392039c2c887be520244435df218eae930b1e84156ae1
     name: storage-api
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/storage-api-0.1.0/storage-api-0.1.0.tgz
@@ -98,7 +98,7 @@ entries:
   vdi-virtual-display:
   - apiVersion: v1
     appVersion: 1.0.1dev
-    created: "2020-05-01T14:23:02.298108-07:00"
+    created: "2020-05-05T11:01:11.73261-07:00"
     description: Multi-user Jupyter installation
     digest: 260c3932ac7780ac93f424650f6e6af5a85cca0810f5a4390cb81586132822c5
     home: https://z2jh.jupyter.org
@@ -110,4 +110,4 @@ entries:
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/vdi-virtual-display-0.0.1/vdi-virtual-display-0.0.1.tgz
     version: 0.0.1
-generated: "2020-05-01T14:23:00.561832-07:00"
+generated: "2020-05-05T11:01:09.99483-07:00"
