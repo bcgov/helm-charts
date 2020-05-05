@@ -82,6 +82,6 @@ The following tables list the configurable parameters of the Metadata-Curator ch
 | `email.pass   `                   | Password for email service             | ""                                      |
 | `email.from   `                   | Who the email should be from           | mc@example.com                          |
 | `email.subject   `                | Subject line for the email             | Data Upload Update                      |
-| `forum-api   `                    | Forum-api helm chart values            | (Forum-Api)[/forum-api/README.md]       |
-| `storage-api   `                  | Storage-api helm chart values          | (Storage-Api)[/storage-api/README.md]   |
-| `formio   `                       | Formio helm chart values               | (Formio)[/formio/README.md]             |
+| `forum-api   `                    | Forum-api helm chart values            | [Forum-Api](/forum-api/README.md)       |
+| `storage-api   `                  | Storage-api helm chart values          | [Storage-Api](/storage-api/README.md)   |
+| `formio   `                       | Formio helm chart values               | [Formio](/formio/README.md)             |
