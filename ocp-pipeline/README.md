@@ -28,4 +28,7 @@ The following tables list the configurable parameters of the ocp-pipeline chart 
 | --------------------------------- | ------------------------------------ | ----------------------------------------- |
 | `chart.name           `           | Name of the chart to deploy          | metadata-curator                          |
 | `chart.repo           `           | Repo where the chart can be found    | http://bcgov.github.io/helm-charts        |
-| `webhookKey           `           | Key to add to the webhook to trigger pipeline | "1234567       |
+| `webhookKey           `           | Key to add to the webhook to trigger pipeline | "12345678"                       |
+| `releaseName           `          | Helm release name to create/use      | mc                                        |
+| `releaseNamespace           `     | Helm namespace to release to         | mc                                        |
+| `deployValues           `         | Object containing values the helm chart needs | {example: value}                 |
