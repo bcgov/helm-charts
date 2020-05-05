@@ -4,7 +4,7 @@
 
 chart:
   name: metadata-curator
-  repo: https://github.com/bcgov/helm-charts
+  repo: http://bcgov.github.io/helm-charts
 webhookKey: "12345678"
 
 releaseName: mc
