@@ -17,7 +17,7 @@ To install the chart with the release name `my-release`:
 
 ```bash
 $ helm repo add bcgov https://bcgov.github.io/helm-charts
-$ helm install my-release bcgov/storage-api
+$ helm install my-release bcgov/vdi-virtual-display
 ```
 
 ## Configuration
@@ -87,6 +87,7 @@ For `hub.*`, `singleuser.*`, `auth.*` and `proxy.*` references, you can get furt
 | `auth.custom.config.userdata_method  `                   | Custom configuration |                                        |
 | `auth.custom.config.userdata_params  `                   | Custom configuration |                                        |
 | **Singleuser**                                                                 |
+| `singleuser.nodeSelector    `                | Node Selection criteria     |                                  |
 | `singleuser.uid    `                | User ID that the virtual display process will be run with       |    `1000`                              |
 | `singleuser.fsGid    `                | The gid the virtual display process should be using when touching any volumes mounted.    |      `1000`                            |
 | `singleuser.startTimeout    `                | How long to wait for the virtual display process to start      |    `600`                              |
