@@ -16,7 +16,7 @@
 {{ $formio := .Values.formio | toJson | toString }}
 {{ $jwtSecret := .Values.jwtSecret }}
 
-{{ $nodeConfig := printf "{\"database\": %s, \"sessionSecret\": \"%s\", \"frontend\": \"%s\", \"oidc\": %s, \"uploadUrl\": \"%s\", \"base64EncodedPGPPublicKey\": \"%s\", \"approverGroups\": %s, \"alwaysNotifyList\": %s, \"email\": %s, \"orgAttribute\": \"%s\", \"requiredRoleToCreateRequest\": \"%s\", \"alwaysNotifyListOnTopicCreate\": \"%s\", \"alwaysNotifyUninvolvedOnCommentAdd\": \"%s\", \"adminGroup\": \"%s\", \"formio\": %s, \"jwtSecret\": \"%s\", }" $database $sessionSecret $frontend $oidc $uploadUrl $base64EncodedPGPPublicKey $approverGroups $alwaysNotifyList $email $orgAttribute $requiredRoleToCreateRequest $alwaysNotifyListOnTopicCreate $alwaysNotifyUninvolvedOnCommentAdd $adminGroup $formio $jwtSecret }}
+{{ $nodeConfig := printf "{\"database\": %s, \"sessionSecret\": \"%s\", \"frontend\": \"%s\", \"oidc\": %s, \"uploadUrl\": \"%s\", \"base64EncodedPGPPublicKey\": \"%s\", \"approverGroups\": %s, \"alwaysNotifyList\": %s, \"email\": %s, \"orgAttribute\": \"%s\", \"requiredRoleToCreateRequest\": \"%s\", \"alwaysNotifyListOnTopicCreate\": \"%s\", \"alwaysNotifyUninvolvedOnCommentAdd\": \"%s\", \"adminGroup\": \"%s\", \"formio\": %s, \"jwtSecret\": \"%s\" }" $database $sessionSecret $frontend $oidc $uploadUrl $base64EncodedPGPPublicKey $approverGroups $alwaysNotifyList $email $orgAttribute $requiredRoleToCreateRequest $alwaysNotifyListOnTopicCreate $alwaysNotifyUninvolvedOnCommentAdd $adminGroup $formio $jwtSecret }}
 
 apiVersion: apps/v1
 kind: Deployment
