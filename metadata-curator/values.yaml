@@ -125,7 +125,7 @@ email:
   subject: "Data Upload Update"
 
 
-
+logLevel: "debug"
 orgAttribute: "businessCategory"
 requiredRoleToCreateRequest: "exporter"
 alwaysNotifyListOnTopicCreate: "false"
