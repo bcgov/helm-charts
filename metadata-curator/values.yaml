@@ -125,6 +125,20 @@ email:
   subject: "Data Upload Update"
 
 
+
+orgAttribute: "businessCategory"
+requiredRoleToCreateRequest: "exporter"
+alwaysNotifyListOnTopicCreate: "false"
+alwaysNotifyUninvolvedOnCommentAdd: "true"
+adminGroup: "mc-admin"
+formio:
+  url: "http://localhost:3006"
+  username: "admin@example.com"
+  password: "CHANGEME"
+jwtSecret: "jwtSecret"
+
+
+
   
 forum-api:
   wsService:
