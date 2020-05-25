@@ -3,17 +3,17 @@ entries:
   ckan-ui:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-05-14T11:02:21.747787-07:00"
+    created: "2020-05-25T15:05:52.489981-07:00"
     description: A Helm chart for deployment of the bcgov ckan-ui
-    digest: 77135597c970e0dad9a38f9084bbe74629540bf3417bf7f31acfc6372f9a4f48
+    digest: e72a1bb1be1edaeddd2b95b258fc69a3aa3e51b16457f7cf26b0316b462aaae2
     name: ckan-ui
     urls:
-    - https://github.com/bcgov/helm-charts/releases/download/ckan-ui-0.1.0/ckan-ui-0.1.0.tgz
-    version: 0.1.0
+    - https://github.com/bcgov/helm-charts/releases/download/ckan-ui-0.1.1/ckan-ui-0.1.1.tgz
+    version: 0.1.1
   formio:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-05-14T11:02:22.102866-07:00"
+    created: "2020-05-25T15:05:52.665889-07:00"
     description: A Helm chart for Formio
     digest: e98241e3804e586ba2173552f9a57084124e58c593383436c5889faf25e2eaa1
     name: formio
@@ -23,7 +23,7 @@ entries:
   forum-api:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-05-14T11:02:22.27279-07:00"
+    created: "2020-05-25T15:05:52.860487-07:00"
     description: A Helm chart for OCWA Forum Api
     digest: 6202684dbec81c96691f3b56002d4ddd6536188fc18b7729069542be554fa683
     name: forum-api
@@ -33,7 +33,7 @@ entries:
   metadata-curator:
   - apiVersion: v2
     appVersion: 0.9.0
-    created: "2020-05-14T11:02:22.451826-07:00"
+    created: "2020-05-25T15:05:53.036949-07:00"
     dependencies:
     - name: forum-api
       repository: https://bcgov.github.io/helm-charts/
@@ -54,7 +54,7 @@ entries:
   nifi:
   - apiVersion: v1
     appVersion: 1.9.2
-    created: "2020-05-14T11:02:22.649662-07:00"
+    created: "2020-05-25T15:05:53.280084-07:00"
     dependencies:
     - condition: zookeeper.enabled
       name: zookeeper
@@ -78,7 +78,7 @@ entries:
   ocp-pipeline:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-05-14T11:02:22.857014-07:00"
+    created: "2020-05-25T15:05:53.453437-07:00"
     description: A Helm chart for Openshift pipelines using Jenkins
     digest: 451f1fa162a4070fa0baa27fc60d93cbb87d2d13c2b4e4c9fd6e9d5f5015a7f9
     name: ocp-pipeline
@@ -88,7 +88,7 @@ entries:
   storage-api:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-05-14T11:02:23.056614-07:00"
+    created: "2020-05-25T15:05:53.655275-07:00"
     description: A Helm chart for Minio & tusd
     digest: 82a7763477e6077bbab392039c2c887be520244435df218eae930b1e84156ae1
     name: storage-api
@@ -98,7 +98,7 @@ entries:
   vdi-virtual-display:
   - apiVersion: v1
     appVersion: 1.0.1dev
-    created: "2020-05-14T11:02:23.23826-07:00"
+    created: "2020-05-25T15:05:53.817813-07:00"
     description: Multi-user Jupyter installation
     digest: cf174ffb49919c61a226ba042a1bbd13440bb60394054e31f2c909ffb79452c8
     home: https://z2jh.jupyter.org
@@ -110,4 +110,4 @@ entries:
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/vdi-virtual-display-0.0.1/vdi-virtual-display-0.0.1.tgz
     version: 0.0.1
-generated: "2020-05-14T11:02:21.391471-07:00"
+generated: "2020-05-25T15:05:52.113845-07:00"
