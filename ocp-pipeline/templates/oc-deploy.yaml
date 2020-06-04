@@ -47,7 +47,7 @@ spec:
                 npm install -g json2yaml
 
                 export CONF=`oc get secret {{ .Release.Name }}-config -o json | ./jq-linux32 .data.config`
-                export CONF=`echo "\${CONF//\""} | base64 -D - | json2yaml`
+                export CONF=`echo "\${CONF//\"}" | base64 -D - | json2yaml`
 
                 printf "\$CONF" > ./config.yaml
                 oc project ${releaseNamespace}
