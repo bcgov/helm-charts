@@ -42,15 +42,15 @@ spec:
                 tar -zxvf ${helmName}
                 cd linux-amd64
 
-                oc project ${releaseNamespace}
-
                 curl -L -O https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux32
+                chmod ugo+x ./jq-linux32
                 npm install -g json2yaml
 
                 export CONF=`oc get secret {{ .Release.Name }}-config -o json | ./jq-linux32 .data.config`
                 export CONF=`echo "\${CONF//\""} | base64 -D - | json2yaml`
 
                 printf "\$CONF" > ./config.yaml
+                oc project ${releaseNamespace}
                 ./helm repo add chart ${chartRepo}
                 ./helm repo update
                 ./helm upgrade ${releaseName} chart/${chartName} -f ./config.yaml --install
