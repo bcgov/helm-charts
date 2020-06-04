@@ -137,6 +137,9 @@ formioConf:
   password: "CHANGEME"
 jwtSecret: "jwtSecret"
 
+forumApiConf:
+  baseUrl: "mc-forum-api.svc"
+
 
 
   
