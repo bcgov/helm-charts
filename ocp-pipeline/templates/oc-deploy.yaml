@@ -46,8 +46,11 @@ spec:
                 chmod ugo+x ./jq-linux32
                 npm install -g json2yaml
 
-                export CONF=`oc get secret {{ .Release.Name }}-config -o json | ./jq-linux32 .data.config`
-                export CONF=`echo "\${CONF//\"}" | base64 -d - | json2yaml`
+                export CONF1=`oc get secret {{ .Release.Name }}-config -o json | ./jq-linux32 .data.config`
+                export CONF2=`echo "\${CONF1//\"}"`
+                export CONF3=`echo $CONF2 | base64 -d -`
+                export CONF=`echo $CONF3 | json2yaml`
+
 
                 printf "\$CONF" > ./config.yaml
                 oc project ${releaseNamespace}
