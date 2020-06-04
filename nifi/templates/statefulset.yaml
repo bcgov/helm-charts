@@ -419,6 +419,12 @@ spec:
         secret:
           secretName: {{ .name }}
       {{- end }}
+      {{- if .Values.persistence.landing.enabled }}
+      - name: {{ include "apache-nifi.fullname" $ }}-landing
+        hostPath:
+          path: /landing
+          type: Directory
+      {{- end }}
 {{- if not .Values.persistence.enabled }}
       - name: acl
         emptyDir: {}
@@ -435,19 +441,6 @@ spec:
 {{- end }}
 {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
-    {{- if .Values.persistence.landing.enabled }}
-    - metadata:
-        name: {{ include "apache-nifi.fullname" $ }}-landing
-      spec:
-        accessModes:
-        {{- range .Values.persistence.accessModes }}
-          - {{ . | quote }}
-        {{- end }}
-        storageClassName: {{ .Values.persistence.landing.storageClass | quote }}
-        resources:
-          requests:
-            storage: {{ .Values.persistence.landing.size }}
-    {{- end }}
     - metadata:
         name: acl
       spec:
