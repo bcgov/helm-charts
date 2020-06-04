@@ -48,8 +48,8 @@ spec:
 
                 export CONF1=`oc get secret {{ .Release.Name }}-config -o json | ./jq-linux32 .data.config`
                 export CONF2=`echo "\${CONF1//\"}"`
-                export CONF3=`echo $CONF2 | base64 -d -`
-                export CONF=`echo $CONF3 | json2yaml`
+                export CONF3=`echo "$CONF2" | base64 -d -`
+                export CONF=`echo "$CONF3" | json2yaml`
 
 
                 printf "\$CONF" > ./config.yaml
