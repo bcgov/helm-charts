@@ -8,7 +8,7 @@ esac
 
 git checkout master
 
-charts=("ckan-ui" "formio" "forum-api" "metadata-curator" "nifi" "ocp-pipeline" "storage-api" "vdi-virtual-display")
+charts=("ckan-ui" "formio" "forum-api" "metadata-curator" "nifi" "ocp-pipeline" "storage-api" "userguide-bridge-api" "vdi-virtual-display")
 
 rm -rf ./packages/*.tgz
 
