@@ -37,6 +37,8 @@ spec:
                   key: HELP_API_TOKEN
           - name: HELP_APPS
             value: "{{ .Values.userguide.helpApps }}"
+          - name: HELP_DOCUMENT_TYPES
+            value: "{{ .Values.userguide.helpDocumentTypes }}"
           - name: CORS_WHITELIST
             value: "{{ .Values.userguide.corsWhitelist }}"
           ports:

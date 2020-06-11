@@ -16,7 +16,8 @@ userguide:
   apiToken: "s3cr3t"
   helpApiHost: ""
   helpApiToken: "s3cr3t"
-  helpApps: \"bbsae\"
+  helpApps: \"bbsae\",\"ocwa\"
+  helpDocumentTypes: \"documentation\",\"onboarding\"
   corsWhitelist: \"*\"
 
 service:
