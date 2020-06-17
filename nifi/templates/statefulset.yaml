@@ -144,7 +144,7 @@ spec:
         volumeMounts:
           - name: gnupg
             mountPath: /root/.gnupg
-            readonly: false
+            readOnly: false
           - name: gpg
             mountPath: /gpg
       {{- end }}
