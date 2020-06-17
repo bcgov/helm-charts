@@ -139,8 +139,10 @@ spec:
           set -e
           apk -q add gnupg
           gpg --no-tty --batch --import /gpg/gpgPrivateKey
+          cp /gpg/gpgPrivateKey /root/.gnupg/key.asc
           chown -R 1000 /root/.gnupg
-          ls -la /root/.gnupg
+          chmod -R u-wx,g-rwx,o-rwx /root/.gnupg
+          chmod u+wx /root/.gnupg
         volumeMounts:
           - name: gnupg
             mountPath: /root/.gnupg
