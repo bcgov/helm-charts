@@ -96,6 +96,9 @@ ofi:
     public_url: "publicOfiUrl"
     secure_url: "secureOfiUrl"
 
+hostname: "localhost"
+ckanUrl: "127.0.0.1:5000"
+
 googleAnalytics:
   enabled: "false"
   id: "UA-XXX-X"

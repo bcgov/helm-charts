@@ -90,3 +90,5 @@ The following tables list the configurable parameters of the Ckan-ui chart and t
 | `snowplow.appId                `  | Snowplow Tracking AppId              | ckan                                      |
 | `authGroupSeperator            `  | What delimits groups in jwts ie org/admin | /                                    |
 | `sysAdminGroup                 `  | sysadmin group name (ckan)           | admin                                     |
+| `hostname                      `  | hostname of where to reach the backend | localhost                               |
+| `ckanUrl                       `  | where to reach the ckan api          | 127.0.0.1:5000                            |
