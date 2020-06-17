@@ -7,7 +7,7 @@ replicaCount: 1
 ##
 image:
   repository: apache/nifi
-  tag: "1.9.2"
+  tag: "1.11.2"
   pullPolicy: IfNotPresent
 
   ## Optionally specify an imagePullSecret.
@@ -83,6 +83,10 @@ tls:
   truststore_type: ""
   truststore_password: ""
   web_proxy_host: ""
+
+gpg:
+  private_key: ""
+  passphrase : ""
 
 ## Expose the nifi service to be accessed from outside the cluster (LoadBalancer service).
 ## or access it from within the cluster (ClusterIP service). Set the service type and the port to serve it.

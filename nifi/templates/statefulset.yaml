@@ -20,6 +20,9 @@ spec:
     metadata:
       annotations:
         security.alpha.kubernetes.io/sysctls: net.ipv4.ip_local_port_range=10000 65000
+{{- with .Values.annotations }}
+{{ toYaml . | indent 8 }}
+{{- end }}        
       labels:
         app: {{ include "apache-nifi.name" . | quote }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -124,6 +127,28 @@ spec:
           - name: "acl"
             mountPath: /acl
       {{- end }}
+      {{- if .Values.gpg.private_key }}
+      - name: init-gpg
+        image: alpine:3.12.0
+        securityContext:
+          runAsUser: 0
+        command:
+        - sh
+        - -c
+        - |
+          set -e
+          apk -q add gnupg
+          gpg --no-tty --batch --import /gpg/gpgPrivateKey
+          chown -R 1000 /root/.gnupg
+          ls -la /root/.gnupg
+        volumeMounts:
+          - name: gnupg
+            mountPath: /root/.gnupg
+            readonly: false
+          - name: gpg
+            mountPath: /gpg
+      {{- end }}
+
       containers:
       - name: server
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
@@ -223,6 +248,13 @@ spec:
           value: "{{ .Values.tls.web_proxy_host }}"
         - name: NIFI_REMOTE_INPUT_HOST
           value: "{{ .Values.properties.siteToSite.remoteInputHost }}"
+        {{- if .Values.gpg.private_key }}
+        - name: GPG_PASS_PHRASE
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "apache-nifi.fullname" $ }}-gpg
+              key: gpgPassphrase     
+        {{ end }}
         lifecycle:
           preStop:
             exec:
@@ -271,6 +303,8 @@ spec:
             port: {{ .Values.properties.httpPort }}
 {{- end }}
         volumeMounts:
+          - name: "gnupg"
+            mountPath: /home/nifi/.gnupg
           - name: "acl"
             mountPath: /opt/nifi/nifi-current/conf/users.xml
             subPath: "users.xml"
@@ -425,6 +459,13 @@ spec:
           path: /landing
           type: DirectoryOrCreate
       {{- end }}
+      {{- if .Values.gpg.private_key }}
+      - name: gpg
+        secret:
+          secretName: {{ include "apache-nifi.fullname" $ }}-gpg
+      {{ end }}
+      - name: gnupg
+        emptyDir: {}
 {{- if not .Values.persistence.enabled }}
       - name: acl
         emptyDir: {}
