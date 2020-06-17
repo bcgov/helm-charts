@@ -15,11 +15,11 @@ fullnameOverride: ""
 userguide:
   logLevel: "INFO"
   apiToken: "s3cr3t"
-  helpApiHost: ""
+  helpApiHost: "https://documize.pathfinder.gov.bc.ca/api"
   helpApiToken: "s3cr3t"
   helpApps: \"bbsae\",\"ocwa\"
   helpDocumentTypes: \"documentation\",\"onboarding\"
-  corsWhitelist: \"*\"
+  corsWhitelist: ""
 
 service:
   type: ClusterIP
