@@ -1,0 +1,145 @@
+# Default values for vdi-project-api.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: quay.io/ikethecoder/vdi-project-api
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "v1.3.8"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+storage:
+  className: ""
+  size: 1Gi
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths: []
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+
+projectapi:
+  logLevel: info
+  apiToken: s3cret
+  sessionToken: s3ss10nT0k3n
+  selfSignedTLS: false
+
+  # Vault token that has the ability to create new roles
+  vault:
+    addr: "http://vault.default.svc.cluster.local:8200"
+    token: "root"
+
+  # Minio credentials for managing buckets and policies
+  minio:
+    addr: ""
+    accessKey: ""
+    secretKey: ""
+
+  # Keycloak credentials for enabling projects and user membership
+  # The username/password should have the ability to manage users for the realm
+  keycloak:
+    url: ""
+    realm: ""
+    username: "realm-user-manager-principal"
+    password: ""
+
+  # Used for 'self-service' UI
+  selfserve:
+    clientId: ""
+    clientSecret: ""
+
+  adminGroup: "/bbsae-admin"
+
+  # Groups that should not be included when enabling a user in the bbsae
+  groupExclusions: "\"bbsae-admin\""
+
+  # Any activity is forwarded to this url passing token in the header as "X-Api-Token"
+  webhook:
+    enabled: "false"
+    url: ""
+    token: ""
+
+  smtp:
+    server: ""
+    from: "Support Team <noreply@nowhere.dev>"
+
+  applications:
+    approvalEmail: "Approvers <noreply@nowhere.dev>"
+
+  # Keycloak access to the 'sae' realm for automatic onboarding of users within the bbsae
+  # User must have ability to administer users for the realm
+  keycloakInternal:
+    url: ""
+    realm: ""
+    username: ""
+    password: ""
+
+  hubRedirectUrl: "http://hub.demo"
+
+  # Forwarding events to a location for reporting
+  recorderUrl: ""
