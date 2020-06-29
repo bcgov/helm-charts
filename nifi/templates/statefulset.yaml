@@ -459,7 +459,7 @@ spec:
       - name: {{ include "apache-nifi.fullname" $ }}-landing
         hostPath:
           path: /landing
-          type: DirectoryOrCreate
+          type: Directory
       {{- end }}
       {{- if .Values.gpg.private_key }}
       - name: gpg
