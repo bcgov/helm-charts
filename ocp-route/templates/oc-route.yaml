@@ -1,0 +1,34 @@
+{{- $fullName := include "ocp-route.fullname" . -}}
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ $fullName }}
+  labels:
+    app: {{ template "ocp-route.name" . }}
+    chart: {{ template "ocp-route.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  {{- with .Values.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+{{- range .Values.routes }}
+  host: {{ .host }}
+  port:
+    targetPort: {{ .targetPort }}
+{{- with .tls }}
+  tls:
+  {{- toYaml . | nindent 4 }}
+{{- end }}
+  to:
+    kind: Service
+    name: {{ .service }}
+    weight: 100
+  wildcardPolicy: {{ .wildcardPolicy }}
+status:
+  ingress:
+  - host: {{ .host }}
+    routerName: router
+    wildcardPolicy: {{ .wildcardPolicy }}
+{{ end }}
