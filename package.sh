@@ -1,3 +1,5 @@
+#!/bin/bash
+
 echo "helm chart releaser must be installed prior to running this (https://github.com/helm/chart-releaser)"
 echo "You MUST be on the master branch before proceeding"
 read -p "You must set CR_TOKEN in env before running this, proceed? [yN]" yn
@@ -8,7 +10,7 @@ esac
 
 git checkout master
 
-charts=("ckan-ui" "formio" "forum-api" "metadata-curator" "nifi" "ocp-pipeline" "storage-api" "userguide-bridge-api" "vdi-virtual-display")
+charts=("ckan-ui" "formio" "forum-api" "metadata-curator" "nifi" "ocp-pipeline" "storage-api" "userguide-bridge-api" "vdi-project-api" "vdi-virtual-display" "konga")
 
 rm -rf ./packages/*.tgz
 
