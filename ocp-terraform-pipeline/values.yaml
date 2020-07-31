@@ -1,0 +1,15 @@
+# Default values for ocp-terraform-pipelines
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+chart:
+  name: metadata-curator
+  repo: http://bcgov.github.io/helm-charts
+webhookKey: "12345678"
+
+releaseName: mc
+releaseNamespace: mc
+
+#put anything you need in the config in deployValues
+deployValues:
+  example: value
