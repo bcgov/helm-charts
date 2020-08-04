@@ -1,0 +1,133 @@
+{{- $fullName := include "api-serv-ui.fullname" . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "api-serv-ui.fullname" . }}
+  labels:
+    {{- include "api-serv-ui.labels" . | nindent 4 }}
+spec:
+{{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+{{- end }}
+  selector:
+    matchLabels:
+      {{- include "api-serv-ui.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+    {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        {{- include "api-serv-ui.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "api-serv-ui.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+
+      initContainers:
+      - name: ui-dist
+        image: "{{ .Values.uiImage.repository }}:{{ .Values.uiImage.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.uiImage.pullPolicy }}
+        command:
+          - "cp"
+          - "-r"
+          - "/var/www/argg-ui/"
+          - "/dist/int"
+        volumeMounts:
+        - mountPath: /dist
+          name: app-volume
+      containers:
+        - name: www
+          env:
+          {{ range .Values.secureEnv }}
+            - name: {{ .name }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $fullName }}-secrets
+                  key: {{ .name | kebabcase }}
+          {{ end }}
+          {{ range .Values.configEnv }}
+            - name: {{ .name }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $fullName }}-config
+                  key: {{ .name | kebabcase }}
+          {{ end }}
+          image: abiosoft/caddy:latest
+          command: ["caddy", "-quic", "-conf"]
+          args: ["/conf/Caddyfile"]
+          volumeMounts:
+          - mountPath: /conf
+            name: www-conf
+          - mountPath: /srv
+            name: app-volume
+          ports:
+            - name: http-proxy
+              containerPort: 2015
+              protocol: TCP
+        - name: api
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.apiImage.repository }}:{{ .Values.apiImage.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.apiImage.pullPolicy }}
+          command: ["/usr/local/bin/gunicorn", "-k", "gevent", "-b", ":8000", "argg_api.main:app"]
+          volumeMounts:
+          - mountPath: /conf
+            name: www-conf
+          - mountPath: /srv
+            name: app-volume
+          env:
+          {{ range .Values.secureEnv }}
+            - name: {{ .name }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $fullName }}-secrets
+                  key: {{ .name | kebabcase }}
+          {{ end }}
+          {{ range .Values.configEnv }}
+            - name: {{ .name }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $fullName }}-config
+                  key: {{ .name | kebabcase }}
+          {{ end }}
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+      - name: app-volume
+        emptyDir: {}
+      - name: www-conf
+        configMap:
+          name: {{ $fullName }}-config
+          items:
+          - key: argg.caddyfile
+            path: Caddyfile
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
