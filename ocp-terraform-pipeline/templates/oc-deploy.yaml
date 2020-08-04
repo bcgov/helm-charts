@@ -29,30 +29,71 @@ spec:
     type: JenkinsPipeline
     jenkinsPipelineStrategy:
       jenkinsfile: |-
-        def helmName = "helm-v3.1.0-linux-amd64.tar.gz"
-        def chartName = "{{ .Values.chart.name }}"
-        def chartRepo = "{{ .Values.chart.repo }}"
-        def releaseName  = "{{ .Values.releaseName }}"
-        def releaseNamespace = "{{ .Values.releaseNamespace }}"
-        
+        def terraformVersion = "0.12.29"
+
+        def releaseNamespace = "{{ .Values.tfvars.namespace }}"
+
+        def packageRef = "{{ .Values.packageRef }}"
+        def packageTag = "{{ .Values.packageTag }}"
+
+        def terraformFolder = "{{ .Values.terraformFolder }}"
+        def terraformBackendPostgresql = "{{ .Values.terraformBackendPostgresql }}"
+
         node("nodejs") {
-            stage("deploy (it's already built)") {
+            stage("Prepare Tools") {
               sh """
-                curl -L -O https://get.helm.sh/${helmName}
-                tar -zxvf ${helmName}
-                cd linux-amd64
+                export PATH=$PATH:`pwd`
+
+                curl -L -O https://releases.hashicorp.com/terraform/${terraformVersion}/terraform_${terraformVersion}_linux_amd64.zip
+                unzip terraform_${terraformVersion}_linux_amd64.zip
 
                 curl -L -O https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux32
                 chmod ugo+x ./jq-linux32
+                mv jq-linux32 jq
                 npm install -g json2yaml
 
-                export CONF1=`oc get secret {{ .Release.Name }}-config -o json | ./jq-linux32 .data.config`
-                export CONF2=`sed -e 's/^"//' -e 's/"\$//' <<<"\$CONF1"`
-                export CONF3=`echo \$CONF2 | base64 -d -`
-                export CONF=`echo \$CONF3 | json2yaml`
-
-                echo "\$CONF" > ./config.yaml
                 oc project ${releaseNamespace}
+              """
+            }
+
+            stage("Pull Infra-As-Code") {
+              sh """
+                set +x
+                export GITHUB_TOKEN=`oc get secret {{ .Release.Name }}-config -o json | ./jq .data.githubAccessToken | sed -e 's/^"//' -e 's/"\$//' | base64 -d`
+
+                echo "//npm.pkg.github.com/:_authToken=\$GITHUB_TOKEN" > ~/.npmrc
+                echo "registry=https://npm.pkg.github.com" >> ~/.npmrc
+
+                npm install ${packageRef}@${packageTag}
+              """
+            }
+
+            stage("Terraform Init") {
+              sh """
+                set +x
+                export PATH=$PATH:`pwd`
+
+                cd node_modules/${packageRef}/${terraformFolder}
+
+                oc get secret {{ .Release.Name }}-config -o json | jq .data.tfvars | sed -e 's/^"//' -e 's/"\$//' | base64 -d > terraform.secret.auto.tfvars
+
+                terraform version
+
+                # Funny logic below due to: https://github.com/hashicorp/terraform/issues/23121
+                terraform init -backend-config="${terraformBackendPostgresql}"  || echo "Done !"
+                terraform workspace new default || if [ \$? -eq 0 ]; then echo "Done !"; else echo "Workspace \"default\" was not created"; fi
+                terraform init
+              """
+            }
+
+            stage("Terraform Apply") {
+              sh """
+                set +x
+                export PATH=$PATH:`pwd`
+
+                cd node_modules/${packageRef}/${terraformFolder}
+
+                terraform apply -no-color -auto-approve
               """
             }
         }

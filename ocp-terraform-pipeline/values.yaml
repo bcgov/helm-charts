@@ -2,14 +2,26 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-chart:
-  name: metadata-curator
-  repo: http://bcgov.github.io/helm-charts
-webhookKey: "12345678"
+webhookKey: ""
 
-releaseName: mc
-releaseNamespace: mc
+# Github package containing the terraform configuration to pull
+packageRef: "@bcgov-dss/api-serv-infra"
+packageTag: "dev"
 
-#put anything you need in the config in deployValues
-deployValues:
-  example: value
+# Access token with "read:packages" scope in Github
+githubAccessToken: ""
+
+# Terraform Postgresql backend for managing state
+terraformFolder: terraform/workspaces/dev
+terraformBackendPostgresql: "conn_str=postgres://[USER]:[PSWD]@[HOST]/[DATABASE]?sslmode=disable"
+
+# The following tfvars gets converted to a file 'terraform.secret.auto.tfvars', used during terraform apply
+tfvars:
+  namespace: "ocp-project"
+  workspace: "dev2"
+  oidc:
+    client_id: ""
+    client_secret: ""
+    scopes: "email profile"
+    discovery_url: "https://[HOST]/auth/realms/[REALM]/.well-known/openid-configuration"
+
