@@ -1,0 +1,59 @@
+{{- $fullName := include "batch-job.fullname" . -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "batch-job.fullname" . }}
+spec:
+  template:
+    spec:
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 8 }}
+{{- end }}
+      containers:
+      - name: job
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if .Values.securityContext.enabled }}
+        securityContext:
+          runAsUser: {{ .Values.securityContext.runAsUser }}
+          fsGroup: {{ .Values.securityContext.fsGroup }}
+        {{- end }}
+        env:
+        {{ range .Values.secureEnv }}
+          - name: {{ .name }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $fullName }}-secrets
+                key: {{ .name | kebabcase }}
+        {{ end }}
+        {{ range .Values.configEnv }}
+          - name: {{ .name }}
+            valueFrom:
+              configMapKeyRef:
+                name: {{ $fullName }}-config
+                key: {{ .name | kebabcase }}
+        {{ end }}
+        volumeMounts:
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | nindent 8 }}
+{{- end }}
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+      restartPolicy: {{ .Values.restartPolicy }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
