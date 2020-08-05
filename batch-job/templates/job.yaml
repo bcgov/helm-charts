@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "batch-job.fullname" . }}
+  name: {{ template "batch-job.fullname" . }}-{{ randAlphaNum 5 | lower }}
 spec:
   manualSelector: true
   selector:
