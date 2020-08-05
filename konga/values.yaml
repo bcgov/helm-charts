@@ -16,6 +16,7 @@ service:
   type: ClusterIP
   port: 80
 
+prepareDatabase: false
 
 # Konga default configuration
 config: {}
