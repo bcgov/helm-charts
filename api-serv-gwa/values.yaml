@@ -1,0 +1,21 @@
+
+# Reference stable/tomcat for parameters
+tomcat:
+  enabled: true
+
+kong:
+  url: https://kong.gw
+  username: test
+  password: t3st
+
+termsUrl: http://www2.gov.bc.ca/gov/content?id=D1EE0A405E584363B205CD4353E02C88
+
+github:
+  organization: ""
+  clientId: ""
+  clientSecret: ""
+
+  # Github access token with "admin:org" scope
+  accessToken: ""
+
+apiKeyExpiryDays: "90"
