@@ -4,7 +4,18 @@ kind: Job
 metadata:
   name: {{ template "batch-job.fullname" . }}
 spec:
+  manualSelector: true
+  selector:
+    matchLabels:
+      {{- include "batch-job.selectorLabels" . | nindent 6 }}
   template:
+    metadata:
+    {{- with .Values.annotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        {{- include "batch-job.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -24,12 +35,14 @@ spec:
           fsGroup: {{ .Values.securityContext.fsGroup }}
         {{- end }}
         env:
+        {{- if .Values.secureEnv }}
         {{ range .Values.secureEnv }}
           - name: {{ .name }}
             valueFrom:
               secretKeyRef:
                 name: {{ $fullName }}-secrets
                 key: {{ .name | kebabcase }}
+        {{ end }}
         {{ end }}
         {{ range .Values.configEnv }}
           - name: {{ .name }}
