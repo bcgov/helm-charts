@@ -10,7 +10,7 @@ esac
 
 git checkout master
 
-charts=("api-serv-ui", "ckan-ui" "formio" "forum-api" "metadata-curator" "nifi" "ocp-pipeline" "ocp-route" "ocp-terraform-pipeline" "storage-api" "userguide-bridge-api" "vdi-project-api" "vdi-virtual-display" "konga")
+charts=("api-serv-ui" "api-serv-gwa" "ckan-ui" "formio" "forum-api" "metadata-curator" "nifi" "ocp-pipeline" "ocp-route" "ocp-terraform-pipeline" "storage-api" "userguide-bridge-api" "vdi-project-api" "vdi-virtual-display" "konga")
 
 rm -rf ./packages/*.tgz
 

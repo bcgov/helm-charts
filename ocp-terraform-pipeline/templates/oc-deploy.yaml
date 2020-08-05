@@ -52,7 +52,6 @@ spec:
                 mv jq-linux32 jq
                 npm install -g json2yaml
 
-                oc project ${releaseNamespace}
               """
             }
 
@@ -82,7 +81,7 @@ spec:
                 # Funny logic below due to: https://github.com/hashicorp/terraform/issues/23121
                 terraform init -backend-config="${terraformBackendPostgresql}"  || echo "Done !"
                 terraform workspace new default || if [ \$? -eq 0 ]; then echo "Done !"; else echo "Workspace \"default\" was not created"; fi
-                terraform init
+                terraform init -no-color
               """
             }
 
@@ -92,6 +91,9 @@ spec:
                 export PATH=$PATH:`pwd`
 
                 cd node_modules/${packageRef}/${terraformFolder}
+
+                # Move to the OCP project that we are going to release into
+                oc project ${releaseNamespace}
 
                 terraform apply -no-color -auto-approve
               """
