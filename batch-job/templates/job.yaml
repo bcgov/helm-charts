@@ -4,6 +4,7 @@ kind: Job
 metadata:
   name: {{ template "batch-job.fullname" . }}-{{ randAlphaNum 5 | lower }}
 spec:
+  backoffLimit: {{ .Values.backoffLimit }}
   manualSelector: true
   selector:
     matchLabels:

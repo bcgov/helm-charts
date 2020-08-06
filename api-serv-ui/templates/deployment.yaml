@@ -36,7 +36,7 @@ spec:
         command:
           - "cp"
           - "-r"
-          - "/var/www/argg-ui/"
+          - "{{ .Values.uiPath }}"
           - "/dist/int"
         volumeMounts:
         - mountPath: /dist
@@ -75,7 +75,7 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.apiImage.repository }}:{{ .Values.apiImage.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.apiImage.pullPolicy }}
-          command: ["/usr/local/bin/gunicorn", "-k", "gevent", "-b", ":8000", "argg_api.main:app"]
+          command: ["/usr/local/bin/gunicorn", "-k", "gevent", "-b", ":8000", "{{ .Values.apiStartCommand }}"]
           volumeMounts:
           - mountPath: /conf
             name: www-conf

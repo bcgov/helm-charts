@@ -16,6 +16,9 @@ apiImage:
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
+uiPath: /var/www/argg-ui/
+apiStartCommand: argg_api.main:app
+
 containerPort: 80
 
 configEnv:
@@ -92,3 +95,14 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+redis_kq:
+  enabled: false
+  usePassword: false
+  nameOverride: redis-kq
+
+redis_captcha:
+  enabled: false
+  usePassword: false
+  nameOverride: redis-captcha
+
