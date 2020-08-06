@@ -3,9 +3,9 @@ entries:
   api-serv-gwa:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2020-08-05T14:27:26.947368-07:00"
+    created: "2020-08-05T21:18:28.456328-07:00"
     description: A Helm chart for API Services GWA application
-    digest: f853fe4643ea0bc27387a9d8525e65552cfa34c0e59eb449af14657a953248f4
+    digest: 8e11f06299b4b3ccef117f18099952e91b70683f2b549f0122f10d30e2f6231e
     name: api-serv-gwa
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/api-serv-gwa-0.1.1/api-serv-gwa-0.1.1.tgz
@@ -13,9 +13,9 @@ entries:
   api-serv-ui:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2020-08-05T14:27:27.135104-07:00"
+    created: "2020-08-05T21:18:28.597226-07:00"
     description: A Helm chart for Kubernetes
-    digest: 0bc28369001cf34380a9764f2750884141f799c304545d27b8417c8eb8221fe2
+    digest: bb78d7eb4e2318b209455d757b90846058afe41ff9b1fc3f32ace953e5b1217c
     name: api-serv-ui
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/api-serv-ui-0.1.0/api-serv-ui-0.1.0.tgz
@@ -23,9 +23,9 @@ entries:
   batch-job:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2020-08-05T14:27:27.287404-07:00"
+    created: "2020-08-05T21:18:28.73058-07:00"
     description: A Helm chart for Kubernetes
-    digest: b4def679d6b32c1a82c541fdd238067c39c61ccc97076d300e227fa125532f8f
+    digest: cbac1819d364c0988284d59267e6b214c604ab7739b97cb2b3ee750b6041c9b3
     name: batch-job
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/batch-job-0.1.2/batch-job-0.1.2.tgz
@@ -33,9 +33,9 @@ entries:
   ckan-ui:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-08-05T14:27:27.437707-07:00"
+    created: "2020-08-05T21:18:28.870473-07:00"
     description: A Helm chart for deployment of the bcgov ckan-ui
-    digest: d31908d9b5f5a3b9dc55010c349061666c22fa11461c7e6424dff5059e44c3bc
+    digest: 54379d84ce346db8f03f120aa4ea0317bbd35f5a962ef297ae47ced1799d8996
     name: ckan-ui
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/ckan-ui-0.1.2/ckan-ui-0.1.2.tgz
@@ -43,9 +43,9 @@ entries:
   formio:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-08-05T14:27:27.597697-07:00"
+    created: "2020-08-05T21:18:29.011995-07:00"
     description: A Helm chart for Formio
-    digest: b5788e333445f8a0325cab7bba58ae024a0948aee03af37d859510d134a47457
+    digest: 22a2127f3a6f9f5c34bc92471d79b1c4df634297bac1261f3401b457ac2cc99e
     name: formio
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/formio-0.1.0/formio-0.1.0.tgz
@@ -53,9 +53,9 @@ entries:
   forum-api:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-08-05T14:27:27.745136-07:00"
+    created: "2020-08-05T21:18:29.169611-07:00"
     description: A Helm chart for OCWA Forum Api
-    digest: 65a93b3c05c88938febf90aab6d8df360ae8cdc45c34af3ff43b984c58ec3c4b
+    digest: b02f2272f410e903e50bc5c46061571bfa681fa6d757b83894fa4a7213453cf4
     name: forum-api
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/forum-api-0.1.0/forum-api-0.1.0.tgz
@@ -63,9 +63,9 @@ entries:
   konga:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-08-05T14:27:27.902144-07:00"
+    created: "2020-08-05T21:18:29.343816-07:00"
     description: A Helm chart for Kubernetes
-    digest: 81b48cde93867e656792bb00ffff8c8fd7d11d648caa2ea79b7dd7aaf2ed197e
+    digest: bc7938396c6b8d11f461a392fe1fa1485b3a31e3d042c5002367cdaa8fc79089
     name: konga
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/konga-1.0.5/konga-1.0.5.tgz
@@ -73,9 +73,9 @@ entries:
   metadata-curator:
   - apiVersion: v2
     appVersion: 0.9.0
-    created: "2020-08-05T14:27:28.073855-07:00"
+    created: "2020-08-05T21:18:29.491699-07:00"
     description: A Helm chart for Metadata Curator
-    digest: ced5108e92cf33614ef29ab77756cb37ebf84d02bb5d30366cd2404081e53ed9
+    digest: 5eca565eedad31ac227b34dd6358887b58769a6ed9bd9c6db26a0fda6eed1345
     name: metadata-curator
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/metadata-curator-0.1.2/metadata-curator-0.1.2.tgz
@@ -83,10 +83,10 @@ entries:
   nifi:
   - apiVersion: v1
     appVersion: 1.11.2
-    created: "2020-08-05T14:27:28.232309-07:00"
+    created: "2020-08-05T21:18:29.724596-07:00"
     description: Apache NiFi is a software project from the Apache Software Foundation
       designed to automate the flow of data between software systems.
-    digest: a0b373369c9a5b4cd760a1d1889bb170fa333250ec6f7908fca28528f72f516d
+    digest: 66c38eabaa3905b0ab33edc6eede6dc61a7798412bc6fa560e509856978b7546
     home: https://nifi.apache.org/
     icon: https://svn.apache.org/repos/asf/nifi/site/trunk/images/niFi-logo-horizontal-scaled.png
     keywords:
@@ -102,9 +102,9 @@ entries:
   ocp-pipeline:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-08-05T14:27:28.377793-07:00"
+    created: "2020-08-05T21:18:29.873012-07:00"
     description: A Helm chart for Openshift pipelines using Jenkins
-    digest: 89908e91cce6288c2540638c0804bde5edd201c5cd0f883a2e8e0b1e1620574e
+    digest: f5189d94c9215c4dab2c2d180d21e4f6deef26443014b6ebfd4784510566170b
     name: ocp-pipeline
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/ocp-pipeline-0.1.3/ocp-pipeline-0.1.3.tgz
@@ -112,10 +112,10 @@ entries:
   ocp-route:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-08-05T14:27:28.542269-07:00"
+    created: "2020-08-05T21:18:30.013372-07:00"
     description: A Helm chart for Openshift Routes for cases where the standard Ingress
       is not sufficient
-    digest: c2cf3e3ad13da0c04bf30cc181a0af671b6ce625b4e933216337a8a52608cf5b
+    digest: 3be6a94fc836ef7a44cbd39cada33b98572fd325165b2e3d8c86d86f0473030e
     name: ocp-route
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/ocp-route-0.1.2/ocp-route-0.1.2.tgz
@@ -123,9 +123,9 @@ entries:
   ocp-terraform-pipeline:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-08-05T14:27:28.715584-07:00"
+    created: "2020-08-05T21:18:30.161215-07:00"
     description: A Helm chart for Openshift terraform pipelines using Jenkins
-    digest: dacb80244c6800fcb02c1049dac136bef89d246bc7c15a86a73744b345196fc9
+    digest: 404b4009e626f12f1f0237022c7a3f86b0845a1cfc8a474c390169076db3c0b9
     name: ocp-terraform-pipeline
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/ocp-terraform-pipeline-0.1.2/ocp-terraform-pipeline-0.1.2.tgz
@@ -133,9 +133,9 @@ entries:
   storage-api:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-08-05T14:27:28.871382-07:00"
+    created: "2020-08-05T21:18:30.300841-07:00"
     description: A Helm chart for Minio & tusd
-    digest: b294d6e6acfd1a2984d997b76de36c0beedfb362acd039d7d10153e9fae91be9
+    digest: bc9aa3150a909d726016339756a861e2ff5679494a3868ac98967c6538803692
     name: storage-api
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/storage-api-0.1.0/storage-api-0.1.0.tgz
@@ -143,9 +143,9 @@ entries:
   userguide-bridge-api:
   - apiVersion: v2
     appVersion: v1.3.5
-    created: "2020-08-05T14:27:29.022749-07:00"
+    created: "2020-08-05T21:18:30.432821-07:00"
     description: A Helm chart for Kubernetes
-    digest: b7a34439a17c66bfd7ffc232b34c440f09960e5ffc86d7fc9b2ec8a5da7e5bd3
+    digest: 5d168b2b3e9149496482c1771dfa1860d9b5b9f93bdd042c369a26e693f35c1b
     name: userguide-bridge-api
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/userguide-bridge-api-0.1.1/userguide-bridge-api-0.1.1.tgz
@@ -153,9 +153,9 @@ entries:
   vdi-project-api:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2020-08-05T14:27:29.217305-07:00"
+    created: "2020-08-05T21:18:30.564577-07:00"
     description: A Helm chart for Kubernetes
-    digest: 273d2a88dfaea86a74c9c0c9a7098414412c70e53d9c652a8aee11d90eda1715
+    digest: 90d7cd7f2508352b56414b35e01dd501d02804c70ab2f9cda148649b02ab4f25
     name: vdi-project-api
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/vdi-project-api-0.1.0/vdi-project-api-0.1.0.tgz
@@ -163,9 +163,9 @@ entries:
   vdi-virtual-display:
   - apiVersion: v1
     appVersion: 1.0.1dev
-    created: "2020-08-05T14:27:29.380747-07:00"
+    created: "2020-08-05T21:18:30.707119-07:00"
     description: Multi-user Jupyter installation
-    digest: 4967487a1774a8a2e95fe2442c988a7eb0c9e27384c908e0bccd6a3095e6d569
+    digest: 11c9a5ec270bcbe22ba009cebb3234370e4977e5ea958b21118524adec3a1258
     home: https://z2jh.jupyter.org
     icon: https://jupyter.org/assets/hublogo.svg
     kubeVersion: '>=1.11.0-0'
@@ -175,4 +175,4 @@ entries:
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/vdi-virtual-display-0.0.1/vdi-virtual-display-0.0.1.tgz
     version: 0.0.1
-generated: "2020-08-05T14:27:26.561783-07:00"
+generated: "2020-08-05T21:18:28.103937-07:00"
