@@ -58,11 +58,11 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /api/v1/publicKey
+              path: /api/v1/token
               port: api
           readinessProbe:
             httpGet:
-              path: /api/v1/publicKey
+              path: /api/v1/token
               port: api
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
