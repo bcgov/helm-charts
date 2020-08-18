@@ -3,6 +3,7 @@
 {{ $frontend := .Values.frontend }}
 {{ $oidc := .Values.oidc | toJson | toString }}
 {{ $uploadUrl := .Values.uploadUrl | toString }}
+{{ $jwtAud := .Values.jwtAud | toString }}
 {{ $base64EncodedPGPPublicKey := .Values.base64EncodedPGPPublicKey | toString }}
 {{ $approverGroups := .Values.approverGroups | toJson | toString }}
 {{ $alwaysNotifyList := .Values.alwaysNotifyList | toJson | toString }}
@@ -18,7 +19,7 @@
 {{ $jwtSecret := .Values.jwtSecret }}
 {{ $forumApi := .Values.forumApiConf | toJson | toString }}
 
-{{ $nodeConfig := printf "{\"database\": %s, \"logLevel\": \"%s\", \"sessionSecret\": \"%s\", \"frontend\": \"%s\", \"oidc\": %s, \"uploadUrl\": \"%s\", \"base64EncodedPGPPublicKey\": \"%s\", \"approverGroups\": %s, \"alwaysNotifyList\": %s, \"email\": %s, \"orgAttribute\": \"%s\", \"requiredRoleToCreateRequest\": \"%s\", \"alwaysNotifyListOnTopicCreate\": \"%s\", \"alwaysNotifyUninvolvedOnCommentAdd\": \"%s\", \"adminGroup\": \"%s\", \"formio\": %s, \"jwtSecret\": \"%s\", \"forumApi\": %s }" $database $logLevel $sessionSecret $frontend $oidc $uploadUrl $base64EncodedPGPPublicKey $approverGroups $alwaysNotifyList $email $orgAttribute $requiredRoleToCreateRequest $alwaysNotifyListOnTopicCreate $alwaysNotifyUninvolvedOnCommentAdd $adminGroup $formio $jwtSecret $forumApi }}
+{{ $nodeConfig := printf "{\"database\": %s, \"logLevel\": \"%s\", \"sessionSecret\": \"%s\", \"frontend\": \"%s\", \"oidc\": %s, \"uploadUrl\": \"%s\", \"jwtAud\": \"%s\", \"base64EncodedPGPPublicKey\": \"%s\", \"approverGroups\": %s, \"alwaysNotifyList\": %s, \"email\": %s, \"orgAttribute\": \"%s\", \"requiredRoleToCreateRequest\": \"%s\", \"alwaysNotifyListOnTopicCreate\": \"%s\", \"alwaysNotifyUninvolvedOnCommentAdd\": \"%s\", \"adminGroup\": \"%s\", \"formio\": %s, \"jwtSecret\": \"%s\", \"forumApi\": %s }" $database $logLevel $sessionSecret $frontend $oidc $uploadUrl $jwtAud $base64EncodedPGPPublicKey $approverGroups $alwaysNotifyList $email $orgAttribute $requiredRoleToCreateRequest $alwaysNotifyListOnTopicCreate $alwaysNotifyUninvolvedOnCommentAdd $adminGroup $formio $jwtSecret $forumApi }}
 
 apiVersion: apps/v1
 kind: Deployment
