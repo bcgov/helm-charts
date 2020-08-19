@@ -19,3 +19,10 @@ github:
   accessToken: ""
 
 apiKeyExpiryDays: "90"
+
+oidc:
+  baseUri: ""
+  realm: ""
+  clientId: ""
+  clientSecret: ""
+  callbackUrl: ""
