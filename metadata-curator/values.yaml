@@ -96,6 +96,7 @@ oidc:
   scope: "openid profile offline_access"
 
 uploadUrl: mc-storage-api.mc
+jwtAud: "outputchecker"
 
 base64EncodedPGPPublicKey: b64Here
 
