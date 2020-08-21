@@ -34,10 +34,10 @@ spec:
         image: "{{ .Values.uiImage.repository }}:{{ .Values.uiImage.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.uiImage.pullPolicy }}
         command:
-          - "cp"
-          - "-r"
-          - "{{ .Values.uiPath }}"
-          - "/dist/int"
+          - sh
+          - -c
+          - |
+            cp -r {{ .Values.uiPath }} /dist{{ .Values.destRelativePath }}
         volumeMounts:
         - mountPath: /dist
           name: app-volume

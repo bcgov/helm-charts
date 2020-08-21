@@ -18,6 +18,7 @@ apiImage:
 
 uiPath: /var/www/argg-ui/
 apiStartCommand: argg_api.main:app
+destRelativePath: /int
 
 containerPort: 80
 
