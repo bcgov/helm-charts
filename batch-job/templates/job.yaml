@@ -18,6 +18,9 @@ spec:
       labels:
         {{- include "batch-job.selectorLabels" . | nindent 8 }}
     spec:
+      {{- with .Values.serviceAccount.name }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      {[- end ]}
       {{- with .Values.image.pullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
