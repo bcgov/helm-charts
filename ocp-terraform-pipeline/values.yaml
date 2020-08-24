@@ -30,12 +30,4 @@ terraformFolder: terraform/workspaces/dev
 terraformBackendPostgresql: "conn_str=postgres://[USER]:[PSWD]@[HOST]/[DATABASE]?sslmode=disable"
 
 # The following tfvars gets converted to a file 'terraform.secret.auto.tfvars', used during terraform apply
-tfvars:
-  namespace: "ocp-project"
-  workspace: "dev2"
-  oidc:
-    client_id: ""
-    client_secret: ""
-    scopes: "email profile"
-    discovery_url: "https://[HOST]/auth/realms/[REALM]/.well-known/openid-configuration"
-
+tfvars: {}

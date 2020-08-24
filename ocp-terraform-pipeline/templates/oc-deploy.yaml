@@ -31,7 +31,7 @@ spec:
       jenkinsfile: |-
         def terraformVersion = "0.12.29"
 
-        def releaseNamespace = "{{ .Values.tfvars.namespace }}"
+        def releaseNamespace = "{{ .Values.releaseNamespace }}"
 
         def packageRef = "{{ .Values.packageRef }}"
         def packageTag = "{{ .Values.packageTag }}"
@@ -74,7 +74,8 @@ spec:
 
                 cd node_modules/${packageRef}/${terraformFolder}
 
-                oc get secret {{ .Release.Name }}-config -o json | jq .data.tfvars | sed -e 's/^"//' -e 's/"\$//' | base64 -d > terraform.secret.auto.tfvars
+                oc get secret {{ .Release.Name }}-tfvars -o json > secret.json
+                node ../../scripts/split-tfvars.js secret.json terraform.secret.auto.tfvars
 
                 terraform version
 
