@@ -16,6 +16,8 @@ rbac:
 
 webhookKey: ""
 
+releaseNamespace: mc
+
 # Github package containing the terraform configuration to pull
 packageRef: "@bcgov-dss/api-serv-infra"
 packageTag: "dev"
