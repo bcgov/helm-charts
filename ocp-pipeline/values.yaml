@@ -12,7 +12,6 @@ releaseNamespace: mc
 
 rbac:
   create: false
-  rules:
   rules: []
   # RBAC rules
   #  - apiGroups:
