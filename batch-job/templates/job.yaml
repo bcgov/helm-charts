@@ -19,7 +19,7 @@ spec:
         {{- include "batch-job.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.serviceAccount.name }}
-      serviceAccountName: {{ .Values.serviceAccount.name }}
+      serviceAccountName: {{ . }}
       {{- end }}
       {{- with .Values.image.pullSecrets }}
       imagePullSecrets:
