@@ -10,6 +10,19 @@ webhookKey: "12345678"
 releaseName: mc
 releaseNamespace: mc
 
+rbac:
+  create: false
+  rules:
+  rules: []
+  # RBAC rules
+  #  - apiGroups:
+  #      - ""
+  #    resources:
+  #      - pods
+  #    verbs:
+  #      - get
+  #      - list
+
 #put anything you need in the config in deployValues
 deployValues:
   example: value
