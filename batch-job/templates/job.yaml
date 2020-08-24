@@ -20,7 +20,7 @@ spec:
     spec:
       {{- with .Values.serviceAccount.name }}
       serviceAccountName: {{ .Values.serviceAccount.name }}
-      {[- end ]}
+      {{- end }}
       {{- with .Values.image.pullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
