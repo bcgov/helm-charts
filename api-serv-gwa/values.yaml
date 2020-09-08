@@ -18,6 +18,14 @@ github:
   # Github access token with "admin:org" scope
   accessToken: ""
 
+apiKey: ""
+
+keycloak:
+  url: ""
+  realm: ""
+  username: ""
+  password: ""
+
 apiKeyExpiryDays: "90"
 
 oidc:
