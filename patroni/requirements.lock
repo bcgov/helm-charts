@@ -1,0 +1,12 @@
+dependencies:
+- name: etcd
+  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+  version: 0.6.2
+- name: zookeeper
+  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+  version: 1.0.0
+- name: consul
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 3.6.1
+digest: sha256:c154a2de6ab359fbb18175c43f7c767fd87703858cb29c356b4ce4094a8cca2a
+generated: "2020-09-17T11:09:17.71208-07:00"
