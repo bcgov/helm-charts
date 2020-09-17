@@ -5,10 +5,9 @@
 replicaCount: 1
 
 image:
-  repository: docker-registry.default.svc:5000/qwzrwc-dev/backup-patroni
+  repository: backup-patroni
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  tag: latest
 
 imagePullSecrets: []
 nameOverride: ""
@@ -27,6 +26,8 @@ persistence:
   - name: backup-verification
     size: 2Gi
     mountPath: /var/lib/pgsql/data
+
+storageClassName: netapp-block-standard
 
 env:
   BACKUP_STRATEGY:
@@ -80,8 +81,6 @@ env:
     value: ""
   ENVIRONMENT_FRIENDLY_NAME:
     value: "Yeah backups"
-
-storageClass: netapp-block-standard
 
 serviceAccount:
   # Specifies whether a service account should be created
