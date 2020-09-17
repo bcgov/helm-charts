@@ -1,0 +1,82 @@
+{{- $fullName := include "backup-storage.fullname" . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "backup-storage.fullname" . }}
+  labels:
+    {{- include "backup-storage.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "backup-storage.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+    {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        {{- include "backup-storage.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "backup-storage.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+      {{- range .Values.persistence }}
+        - name: {{ .name }}-vol
+          persistentVolumeClaim:
+            claimName: {{ template "backup-storage.fullname" $ }}-{{ .name }}-pvc
+      {{- end }}
+        - name: config-vol
+          configMap:
+            name: {{ template "backup-storage.fullname" . }}-config
+            defaultMode: 511
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          {{- range $index, $val := .Values.env }}
+            {{- if .secure }}
+            - name: {{ $index }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $fullName }}-secrets
+                  key: {{ $index | kebabcase }}
+            {{- else }}
+            - name: {{ $index }}
+              value: {{ .value | quote }}
+            {{- end }}
+          {{- end }}
+          volumeMounts:
+          {{- range .Values.persistence }}
+            - name: {{ .name }}-vol
+              mountPath: {{ .mountPath }}
+          {{- end }}
+            - name: config-vol
+              mountPath: /conf
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

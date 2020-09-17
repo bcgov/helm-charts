@@ -1,0 +1,123 @@
+# Default values for backup-storage.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: docker-registry.default.svc:5000/qwzrwc-dev/backup-patroni
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+backupConfig: |
+  postgres=patroni-postgresql-gw:5432/gw
+
+  0 1 * * * default ./backup.sh -s
+  0 4 * * * default ./backup.sh -s -v all
+
+persistence:
+  - name: backup
+    size: 5Gi
+    mountPath: /backups/
+  - name: backup-verification
+    size: 2Gi
+    mountPath: /var/lib/pgsql/data
+
+env:
+  BACKUP_STRATEGY:
+    value: "rolling"
+    secure: false
+  BACKUP_DIR:
+    value: "/backups/"
+    secure: false
+  BACKUP_CONF:
+    value: "/conf/backup.conf"
+  NUM_BACKUPS:
+    value: ""
+  DAILY_BACKUPS:
+    value: ""
+  WEEKLY_BACKUPS:
+    value: ""
+  MONTHLY_BACKUPS:
+    value: ""
+  BACKUP_PERIOD:
+    value: ""
+  DATABASE_SERVICE_NAME:
+    value: ""
+  DATABASE_NAME:
+    value: ""
+  MONGODB_AUTHENTICATION_DATABASE:
+    value: ""
+  TABLE_SCHEMA:
+    value: ""
+  DATABASE_USER:
+    value: ""
+    secure: true
+  DATABASE_PASSWORD:
+    value: ""
+    secure: true
+  FTP_URL:
+    value: ""
+    secure: true
+  FTP_USER:
+    value: ""
+    secure: true
+  FTP_PASSWORD:
+    value: ""
+    secure: true
+  WEBHOOK_URL:
+    value: ""
+    secure: true
+  ENVIRONMENT_FRIENDLY_NAME:
+    value: ""
+    secure: true
+  ENVIRONMENT_NAME:
+    value: ""
+    secure: true
+
+storageClass: netapp-block-standard
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

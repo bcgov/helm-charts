@@ -1,0 +1,23 @@
+{{- range .Values.persistence }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "backup-storage.fullname" $ }}-{{ .name }}-pvc
+  {{- with $.Values.storageAnnotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{ end }}
+  labels:
+      app: {{ template "backup-storage.name" $ }}
+      chart: {{ template "backup-storage.chart" $ }}
+      release: {{ $.Release.Name }}
+      heritage: {{ $.Release.Service }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{$.Values.storageClassName}}
+  resources:
+    requests:
+      storage: {{.size}}
+---
+{{ end }}
