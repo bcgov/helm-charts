@@ -53,14 +53,17 @@ env:
     value: ""
   MONGODB_AUTHENTICATION_DATABASE:
     value: ""
+  DATABASE_DEPLOYMENT_NAME:
+    value: ""
+  DATABASE_USER_KEY_NAME:
+    value: ""
+  DATABASE_PASSWORD_KEY_NAME:
+    value: ""
+  MSSQL_SA_PASSWORD:
+    value: ""
+    secure: true
   TABLE_SCHEMA:
     value: ""
-  DATABASE_USER:
-    value: ""
-    secure: true
-  DATABASE_PASSWORD:
-    value: ""
-    secure: true
   FTP_URL:
     value: ""
     secure: true
@@ -73,12 +76,10 @@ env:
   WEBHOOK_URL:
     value: ""
     secure: true
-  ENVIRONMENT_FRIENDLY_NAME:
-    value: ""
-    secure: true
   ENVIRONMENT_NAME:
     value: ""
-    secure: true
+  ENVIRONMENT_FRIENDLY_NAME:
+    value: "Yeah backups"
 
 storageClass: netapp-block-standard
 
