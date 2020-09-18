@@ -80,7 +80,7 @@ spec:
                 terraform version
 
                 # Funny logic below due to: https://github.com/hashicorp/terraform/issues/23121
-                terraform init -backend-config="${terraformBackendPostgresql}"  || echo "Done !"
+                terraform init -no-color -backend-config="${terraformBackendPostgresql}"  || echo "Done !"
                 terraform workspace new default || if [ \$? -eq 0 ]; then echo "Done !"; else echo "Workspace \"default\" was not created"; fi
                 terraform init -no-color
               """
