@@ -2,11 +2,13 @@
 
 Helm chart to deploy the `bcgov/backup-container` solution.
 
+See: https://github.com/BCDevOps/backup-container for the code.
+
 ## Chart Details
 
 This chart will do the following:
 
-* Deploy a backup solution for Postgres/Patroni databases
+* Deploy a backup solution for databases (PostgresSQL/Patroni, MongoDB, MSSQL)
 
 ## Installing the Chart
 
@@ -25,12 +27,12 @@ The following tables list the configurable parameters of the `backup-storage` ch
 
 | Parameter                         | Description                          | Default                                   |
 | --------------------------------- | ------------------------------------ | ----------------------------------------- |
-| `backupConfig           `           | Backup config details          |                         |
-| `persistence.backup.mountPath          `           | Where the `backup` is mounted   |   /backups/   |
+| `backupConfig           `           | Backup config details          |     See below               |
+| `persistence.backup.mountPath          `           | Where the volume for storing backups is mounted   |   /backups/   |
 | `persistence.backup.claimName           `           | If the PVC is created outside the chart, specify the name here   |      |
 | `persistence.backup.size           `           | To create the PVC, omit the `claimName` and specify the size  |      |
 | `persistence.backup.storageClassName           `           | To create the PVC, omit the `claimName` and specify the storageClassName   |  netapp-block-standard    |
-| `persistence.verification.mountPath          `           | Where the `verification` is mounted   |   /var/lib/pgsql/data   |
+| `persistence.verification.mountPath          `           | Where the volume for the verification database is mounted   |   /var/lib/pgsql/data   |
 | `persistence.verification.claimName           `           | If the PVC is created outside the chart, specify the name here   |      |
 | `persistence.verification.size           `           | To create the PVC, omit the `claimName` and specify the size  |      |
 | `persistence.verification.storageClassName           `           | To create the PVC, omit the `claimName` and specify the storageClassName   |     netapp-block-standard |
@@ -64,7 +66,17 @@ The `env.*` format follows:
     secure: false
 ```
 
-If the `secure` variable is by default `false`; if it is `true` then the value will be put into a secret and referenced in the deployment.
+The `secure` parameter is by default `false`; if it set to `true` then the value will be put into a secret and referenced in the deployment.
+
+**backup.conf Default**: 
+
+```
+backupConfig: |
+  postgres=patroni:5432/db
+
+  0 1 * * * default ./backup.sh -s
+  0 4 * * * default ./backup.sh -s -v all
+```
 
 **Volume Claims:** Please note, when using the recommended nfs-backup storage class the name of the pvc MUST be taken from the manually provisioned claim; nfs-backup storage MUST be provisioned manually.
 
@@ -156,11 +168,9 @@ env:
     value: patroni
   ENVIRONMENT_FRIENDLY_NAME:
     value: "Patroni DB Backups"
-' > values.yaml
+' > config.yaml
 
 helm repo add bcgov http://bcgov.github.io/helm-charts
-helm upgrade --install patroni-backup-storage bcgov/backup-storage
-
-helm upgrade --install bgtmp --dry-run backup-storage
-
+helm repo update
+helm upgrade --install patroni-backup-storage -f config.yaml bcgov/backup-storage
 ```
