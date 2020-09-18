@@ -30,17 +30,20 @@ persistence:
 storageClassName: netapp-block-standard
 
 db:
-  secretName: ""
-  usernameKey: ""
-  passwordKey: ""
+  secretName: "patroni"
+  usernameKey: "username-superuser"
+  passwordKey: "password-superuser"
 
 env:
+  ALLOW_NOSSL:
+    value: "true"
+  KUBERNETES_USE_CONFIGMAPS:
+    value: "false"
   BACKUP_STRATEGY:
     value: "rolling"
     secure: false
   BACKUP_DIR:
     value: "/backups/"
-    secure: false
   BACKUP_CONF:
     value: "/conf/backup.conf"
   NUM_BACKUPS:
