@@ -87,7 +87,7 @@ backupConfig: |
 ```
     - name: Get Dockerfile for DB Backups Image
       run: |
-        git clone https://github.com/ikethecoder/backup-container.git
+        git clone https://github.com/BCDevOps/backup-container.git
 
     - name: Docker Image for DB Backups
       uses: docker/build-push-action@v1
