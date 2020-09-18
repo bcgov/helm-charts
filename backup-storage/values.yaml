@@ -35,10 +35,6 @@ db:
   passwordKey: "password-superuser"
 
 env:
-  ALLOW_NOSSL:
-    value: "true"
-  KUBERNETES_USE_CONFIGMAPS:
-    value: "false"
   BACKUP_STRATEGY:
     value: "rolling"
     secure: false
