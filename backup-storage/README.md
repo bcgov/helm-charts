@@ -52,9 +52,9 @@ The following tables list the configurable parameters of the `backup-storage` ch
 | `env.BACKUP_DIR           `         | The name of the root backup directory.  The backup volume will be mounted to this directory. | /backups/              |
 | `env.BACKUP_CONF          `         | Location of the backup configuration file | /conf/backup.conf              |
 | `env.NUM_BACKUPS           `         | Used for backward compatibility only.  Ignored when using the recommended `rolling` backup strategy.  The number of backup files to be retained.  Used for the `daily` backup strategy. |               |
-| `env.DAILY_BACKUPS           `         | The number of daily backup files to be retained.  Used for the `rolling` backup strategy. |               |
-| `env.WEEKLY_BACKUPS           `         | The number of weekly backup files to be retained.  Used for the `rolling` backup strategy. |               |
-| `env.MONTHLY_BACKUPS           `         | The number of monthly backup files to be retained.  Used for the `rolling` backup strategy. |               |
+| `env.DAILY_BACKUPS           `         | The number of daily backup files to be retained.  Used for the `rolling` backup strategy. |  12             |
+| `env.WEEKLY_BACKUPS           `         | The number of weekly backup files to be retained.  Used for the `rolling` backup strategy. | 8              |
+| `env.MONTHLY_BACKUPS           `         | The number of monthly backup files to be retained.  Used for the `rolling` backup strategy. | 2              |
 
 The `env.*` format follows:
 
@@ -70,33 +70,33 @@ If the `secure` variable is by default `false`; if it is `true` then the value w
 
 ## Example
 
-### Build container image using Github Actions
+### Build the container image using Github Actions
 
 ```
-- name: Get Dockerfile for DB Backups
-    run: |
-      git clone https://github.com/ikethecoder/backup-container.git
+    - name: Get Dockerfile for DB Backups Image
+      run: |
+        git clone https://github.com/ikethecoder/backup-container.git
 
-- name: Docker Image for DB Backups
-    uses: docker/build-push-action@v1
-    env:
-      DOCKER_BUILDKIT: 1
-    with:
-      registry: docker.pkg.github.com
-      username: $GITHUB_ACTOR
-      password: ${{ secrets.GITHUB_TOKEN }}
-      repository: [owner]/[cicd_repo]/backup-db-job
-      context: backup-container/docker
-      dockerfile: backup-container/docker/Dockerfile_PG12
-      tag_with_ref: true
-      tag_with_sha: false
-      add_git_labels: true
-      push: true
+    - name: Docker Image for DB Backups
+      uses: docker/build-push-action@v1
+      env:
+        DOCKER_BUILDKIT: 1
+      with:
+        path: backup-container/docker
+        dockerfile: backup-container/docker/Dockerfile_PG12
+        registry: docker.pkg.github.com
+        username: $GITHUB_ACTOR
+        password: ${{ secrets.GITHUB_TOKEN }}
+        repository: [owner]/[repo]/backup-db-job
+        tag_with_ref: true
+        tag_with_sha: false
+        add_git_labels: true
+        push: true
 ```
 
 ### Add a pull image secret to your Kubernetes environment
 
-Example using `Terraform`
+You can create this in many different ways, but an example using `Terraform`:
 
 ```
 data "template_file" "docker-registry" {

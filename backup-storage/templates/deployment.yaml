@@ -41,7 +41,7 @@ spec:
         - name: config-vol
           configMap:
             name: {{ template "backup-storage.fullname" . }}-config
-            defaultMode: 644
+            defaultMode: 0644
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -79,7 +79,8 @@ spec:
               mountPath: {{ .mountPath }}
           {{- end }}
             - name: config-vol
-              mountPath: /conf
+              mountPath: {{ .Values.env.BACKUP_CONF.value }}
+              subPath: backup-file
               readOnly: true
           ports:
             - name: http

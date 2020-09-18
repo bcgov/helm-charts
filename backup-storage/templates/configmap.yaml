@@ -8,5 +8,5 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-  backup.conf: |-
+  backup-file: |-
 {{ .Values.backupConfig | indent 4 }}

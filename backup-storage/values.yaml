@@ -47,11 +47,11 @@ env:
   NUM_BACKUPS:
     value: ""
   DAILY_BACKUPS:
-    value: ""
+    value: "12"
   WEEKLY_BACKUPS:
-    value: ""
+    value: "8"
   MONTHLY_BACKUPS:
-    value: ""
+    value: "2"
   BACKUP_PERIOD:
     value: ""
   MONGODB_AUTHENTICATION_DATABASE:
