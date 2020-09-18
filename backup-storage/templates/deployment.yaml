@@ -44,12 +44,12 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
           {{- with .Values.db }}
-            - name: DB_USER
+            - name: DATABASE_USER
               valueFrom:
                 secretKeyRef:
                   name: {{ .secretName }}
                   key: {{ .usernameKey }}
-            - name: DB_PASSWORD
+            - name: DATABASE_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .secretName }}
