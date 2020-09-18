@@ -1,8 +1,9 @@
-{{- range .Values.persistence }}
+{{- range $name, $val := .Values.persistence }}
+{{- if not .claimName }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ template "backup-storage.fullname" $ }}-{{ .name }}-pvc
+  name: {{ template "backup-storage.fullname" $ }}-{{ $name }}-pvc
   {{- with $.Values.storageAnnotations }}
   annotations:
 {{ toYaml . | indent 4 }}
@@ -15,9 +16,10 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: {{$.Values.storageClassName}}
+  storageClassName: {{.storageClassName}}
   resources:
     requests:
       storage: {{.size}}
 ---
-{{ end }}
+{{- end }}
+{{- end }}

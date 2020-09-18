@@ -27,15 +27,21 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       volumes:
-      {{- range .Values.persistence }}
-        - name: {{ .name }}-vol
+      {{- range $name, $val := .Values.persistence }}
+        {{- if .claimName }}
+        - name: {{ $name }}-vol
           persistentVolumeClaim:
-            claimName: {{ template "backup-storage.fullname" $ }}-{{ .name }}-pvc
+            claimName: {{ .claimName }}
+        {{- else }}
+        - name: {{ $name }}-vol
+          persistentVolumeClaim:
+            claimName: {{ template "backup-storage.fullname" $ }}-{{ $name }}-pvc
+        {{- end }}
       {{- end }}
         - name: config-vol
           configMap:
             name: {{ template "backup-storage.fullname" . }}-config
-            defaultMode: 511
+            defaultMode: 644
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -68,13 +74,13 @@ spec:
             {{- end }}
           {{- end }}
           volumeMounts:
-          {{- range .Values.persistence }}
-            - name: {{ .name }}-vol
+          {{- range $name, $val := .Values.persistence }}
+            - name: {{ $name }}-vol
               mountPath: {{ .mountPath }}
           {{- end }}
             - name: config-vol
               mountPath: /conf
-              mode: 644
+              readOnly: true
           ports:
             - name: http
               containerPort: 80

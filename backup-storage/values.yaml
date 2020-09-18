@@ -20,14 +20,16 @@ backupConfig: |
   0 4 * * * default ./backup.sh -s -v all
 
 persistence:
-  - name: backup
+  backup:
     size: 5Gi
     mountPath: /backups/
-  - name: backup-verification
+    storageClassName: netapp-block-standard
+    #claimName: nfs-backup-storage-32sad
+  verification:
     size: 2Gi
     mountPath: /var/lib/pgsql/data
-
-storageClassName: netapp-block-standard
+    storageClassName: netapp-block-standard
+    #claimName: nfs-backup-storage-66sad
 
 db:
   secretName: "patroni"
@@ -51,10 +53,6 @@ env:
   MONTHLY_BACKUPS:
     value: ""
   BACKUP_PERIOD:
-    value: ""
-  DATABASE_SERVICE_NAME:
-    value: ""
-  DATABASE_NAME:
     value: ""
   MONGODB_AUTHENTICATION_DATABASE:
     value: ""
