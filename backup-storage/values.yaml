@@ -29,6 +29,11 @@ persistence:
 
 storageClassName: netapp-block-standard
 
+db:
+  secretName: ""
+  usernameKey: ""
+  passwordKey: ""
+
 env:
   BACKUP_STRATEGY:
     value: "rolling"
@@ -53,12 +58,6 @@ env:
   DATABASE_NAME:
     value: ""
   MONGODB_AUTHENTICATION_DATABASE:
-    value: ""
-  DATABASE_DEPLOYMENT_NAME:
-    value: ""
-  DATABASE_USER_KEY_NAME:
-    value: ""
-  DATABASE_PASSWORD_KEY_NAME:
     value: ""
   MSSQL_SA_PASSWORD:
     value: ""
