@@ -6,7 +6,9 @@ metadata:
   labels:
     {{- include "backup-storage.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       {{- include "backup-storage.selectorLabels" . | nindent 6 }}
