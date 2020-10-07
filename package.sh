@@ -36,7 +36,7 @@ done
 
 mv *.tgz packages/.
 rm packages/.gitkeep
-cr index --owner bcgov --git-repo helm-charts --package-path ./packages --index-path ./docs/index.yaml --charts-repo https://github.com/bcgov/helm-charts/releases
+cr index --owner bcgov --git-repo helm-charts --package-path ./packages --index-path ./docs/index.yaml --charts-repo https://bcgov.github.io/helm-charts
 touch packages/.gitkeep
 
 git add docs
