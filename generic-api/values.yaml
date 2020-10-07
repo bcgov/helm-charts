@@ -25,6 +25,12 @@ securityContext:
   # readOnlyRootFilesystem: true
   # runAsNonRoot: true
 
+persistence:
+  temp:
+    size: 1Gi
+    mountPath: /tmp
+    storageClassName: netapp-file-standard
+
 config:
   - filename: index.html
     mountPath: /usr/share/nginx/html/index.html
