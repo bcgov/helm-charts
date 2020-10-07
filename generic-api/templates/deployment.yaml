@@ -37,7 +37,7 @@ spec:
         {{- else }}
         - name: {{ $name }}-vol
           persistentVolumeClaim:
-            claimName: {{ template "backup-storage.fullname" $ }}-{{ $name }}-pvc
+            claimName: {{ template "generic-api.fullname" $ }}-{{ $name }}-pvc
         {{- end }}
       {{- end }}
 
