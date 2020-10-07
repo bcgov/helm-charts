@@ -27,9 +27,7 @@ securityContext:
 
 persistence: {}
 #  temp:
-#    size: 1Gi
 #    mountPath: /tmp
-#    storageClassName: netapp-file-standard
 
 config: []
   # - filename: index.html
