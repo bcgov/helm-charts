@@ -25,49 +25,47 @@ securityContext:
   # readOnlyRootFilesystem: true
   # runAsNonRoot: true
 
-persistence:
-  temp:
-    size: 1Gi
-    mountPath: /tmp
-    storageClassName: netapp-file-standard
+persistence: {}
+#  temp:
+#    mountPath: /tmp
 
-config:
-  - filename: index.html
-    mountPath: /usr/share/nginx/html/index.html
-    contents: |
-      <html><body>My web service</body></html>
-  - filename: nginx.conf
-    mountPath: /etc/nginx/nginx.conf
-    contents: |
-      worker_processes  1;
-      error_log  /tmp/error.log;
-      pid        /tmp/nginx.pid;
-      worker_rlimit_nofile 8192;
+config: []
+  # - filename: index.html
+  #   mountPath: /usr/share/nginx/html/index.html
+  #   contents: |
+  #     <html><body>My web service</body></html>
+  # - filename: nginx.conf
+  #   mountPath: /etc/nginx/nginx.conf
+  #   contents: |
+  #     worker_processes  1;
+  #     error_log  /tmp/error.log;
+  #     pid        /tmp/nginx.pid;
+  #     worker_rlimit_nofile 8192;
 
-      events {
-        worker_connections  1024;
-      }
+  #     events {
+  #       worker_connections  1024;
+  #     }
 
-      http {
-          client_body_temp_path /tmp/client_temp;
-          proxy_temp_path       /tmp/proxy_temp_path;
-          fastcgi_temp_path     /tmp/fastcgi_temp;
-          uwsgi_temp_path       /tmp/uwsgi_temp;
-          scgi_temp_path        /tmp/scgi_temp;
+  #     http {
+  #         client_body_temp_path /tmp/client_temp;
+  #         proxy_temp_path       /tmp/proxy_temp_path;
+  #         fastcgi_temp_path     /tmp/fastcgi_temp;
+  #         uwsgi_temp_path       /tmp/uwsgi_temp;
+  #         scgi_temp_path        /tmp/scgi_temp;
 
-          server {
-            listen       8000;
-            root         /usr/share/nginx/html;
-          }      
-      }
+  #         server {
+  #           listen       8000;
+  #           root         /usr/share/nginx/html;
+  #         }      
+  #     }
 
-env:
-  SOME_ENV_VAR:
-    value: "var2"
-    secure: false
-  SOME_SEC_ENV_VAR:
-    value: "var"
-    secure: true
+env: {}
+  # SOME_ENV_VAR:
+  #   value: "var2"
+  #   secure: false
+  # SOME_SEC_ENV_VAR:
+  #   value: "var"
+  #   secure: true
 
 containerPort: 8000
 
