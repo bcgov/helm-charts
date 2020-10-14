@@ -29,9 +29,9 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       volumes:
-        {{- if .Values.extraVolumes }}
-          {{ toYaml .Values.extraVolumes | indent 8 }}
-        {{- end }}
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 8 }}
+{{- end }}
         {{- range $name, $val := .Values.persistence }}
         - name: {{ $name }}-vol
           emptyDir: {}
@@ -60,9 +60,9 @@ spec:
             {{- end }}
           {{- end }}
           volumeMounts:
-          {{- if .Values.extraVolumeMounts }}
-            {{ toYaml .Values.extraVolumeMounts | nindent 8 }}
-          {{- end }}
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | nindent 12 }}
+{{- end }}
           {{- range $name, $val := .Values.persistence }}
             - name: {{ $name }}-vol
               mountPath: {{ .mountPath }}
