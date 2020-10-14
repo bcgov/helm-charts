@@ -28,6 +28,9 @@ keycloak:
 
 apiKeyExpiryDays: "90"
 
+gwaApiUrl: ""
+grafanaUrl: ""
+
 oidc:
   baseUri: ""
   realm: ""
