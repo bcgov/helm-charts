@@ -3,6 +3,15 @@ entries:
   api-serv-gwa:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2020-10-13T22:43:13.255957-07:00"
+    description: A Helm chart for API Services GWA application
+    digest: 12502454b62a776de767607cdbb1c6e4c7ec9c651e05261760c82029a5a41b82
+    name: api-serv-gwa
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/api-serv-gwa-0.1.5/api-serv-gwa-0.1.5.tgz
+    version: 0.1.5
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2020-09-21T23:37:34.265757-07:00"
     description: A Helm chart for API Services GWA application
     digest: 52df9af15db0576b89e9c9cd3baa4a89037d8b7a8b2fd3140735bf1b621442e5
