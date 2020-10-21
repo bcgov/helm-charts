@@ -95,7 +95,7 @@ backupConfig: |
         DOCKER_BUILDKIT: 1
       with:
         path: backup-container/docker
-        dockerfile: backup-container/docker/Dockerfile_PG12
+        dockerfile: backup-container/docker/Dockerfile
         registry: docker.pkg.github.com
         username: $GITHUB_ACTOR
         password: ${{ secrets.GITHUB_TOKEN }}
