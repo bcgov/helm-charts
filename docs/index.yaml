@@ -158,6 +158,26 @@ entries:
   metadata-curator:
   - apiVersion: v2
     appVersion: 0.9.0
+    created: "2020-11-04T13:41:48.14767-08:00"
+    dependencies:
+    - name: forum-api
+      repository: https://bcgov.github.io/helm-charts/
+      version: 0.1.0
+    - name: formio
+      repository: https://bcgov.github.io/helm-charts/
+      version: 0.1.0
+    - name: storage-api
+      repository: https://bcgov.github.io/helm-charts/
+      version: 0.1.0
+    description: A Helm chart for Metadata Curator
+    digest: a7b893b93552ee1505053eb36c3763815cd6d18b2c40df5fa24a84772a65b11a
+    name: metadata-curator
+    type: application
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/metadata-curator-0.1.5/metadata-curator-0.1.5.tgz
+    version: 0.1.5
+  - apiVersion: v2
+    appVersion: 0.9.0
     created: "2020-09-21T23:37:35.988102-07:00"
     description: A Helm chart for Metadata Curator
     digest: 0f6c75da8986c13cf9ae8310e0b02c906209d4b37baf0b8d8c5248ff06d811d9
@@ -185,6 +205,15 @@ entries:
     - https://github.com/bcgov/helm-charts/releases/download/nifi-0.2.4/nifi-0.2.4.tgz
     version: 0.2.4
   ocp-pipeline:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: "2020-11-04T13:41:48.540184-08:00"
+    description: A Helm chart for Openshift pipelines using Jenkins
+    digest: 8352cb2d686a2e1134b7d6f11d50e8053a37ba0f70aecb05a63d85179f82940a
+    name: ocp-pipeline
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/ocp-pipeline-0.1.7/ocp-pipeline-0.1.7.tgz
+    version: 0.1.7
   - apiVersion: v1
     appVersion: "1.0"
     created: "2020-09-21T23:37:36.305036-07:00"
