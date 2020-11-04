@@ -57,7 +57,7 @@ spec:
                 ./helm repo add chart ${chartRepo}
                 ./helm repo update
                 if [ "${forceRecreate}" = "true" ]; then
-                  ./helm upgrade ${releaseName} chart/${chartName} -f ./config.yaml --install --set nameOverride="${releaseName}\$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)"
+                  ./helm upgrade ${releaseName} chart/${chartName} -f ./config.yaml --install --set nameOverride="${releaseName}\$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 32 | head -n 1)"
                 else
                   ./helm upgrade ${releaseName} chart/${chartName} -f ./config.yaml --install
                 fi
