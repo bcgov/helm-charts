@@ -10,6 +10,9 @@ webhookKey: "12345678"
 releaseName: mc
 releaseNamespace: mc
 
+#useful for dev / pull always use string true to force
+forceRecreate: "false"
+
 rbac:
   create: false
   rules: []

@@ -34,6 +34,7 @@ spec:
         def chartRepo = "{{ .Values.chart.repo }}"
         def releaseName  = "{{ .Values.releaseName }}"
         def releaseNamespace = "{{ .Values.releaseNamespace }}"
+        def forceRecreate = "{{ lower .Values.forceRecreate }}"
         
           node("nodejs") {
             stage("deploy (it's already built)") {
@@ -55,7 +56,11 @@ spec:
                 oc project ${releaseNamespace}
                 ./helm repo add chart ${chartRepo}
                 ./helm repo update
-                ./helm upgrade ${releaseName} chart/${chartName} -f ./config.yaml --install
+                if [ ${forceRecreate} -eq "true" ]; then
+                  ./helm upgrade ${releaseName} chart/${chartName} -f ./config.yaml --install --set nameOverride="${releaseName}\$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)"
+                else
+                  ./helm upgrade ${releaseName} chart/${chartName} -f ./config.yaml --install
+                fi
               """
           }
         }

@@ -93,6 +93,7 @@ oidc:
   clientID: clientId
   clientSecret: clientSecret
   callbackURL: chart-example.local/api/callback
+  logoutUrl: logoutUrl
   scope: "openid profile offline_access"
 
 uploadUrl: mc-storage-api.mc
@@ -137,6 +138,9 @@ formioConf:
   username: "admin@example.com"
   password: "CHANGEME"
 jwtSecret: "jwtSecret"
+
+nsp:
+  enabled: true
 
 forumApiConf:
   baseUrl: "mc-forum-api.svc"

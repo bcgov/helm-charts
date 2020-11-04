@@ -1,0 +1,27 @@
+{{- if .Values.nsp.enabled -}}
+
+kind: NetworkSecurityPolicy
+apiVersion: security.devops.gov.bc.ca/v1alpha1
+metadata:
+ name: {{ include "metadata-curator.fullname" . }}-internet-nsp
+spec:
+ description: Allow the namespace to talk to the internet
+ source:
+ - - $namespace={{ .Release.Namespace }}
+ destination:
+ - - ext:network=any
+
+---
+
+kind: NetworkSecurityPolicy
+apiVersion: security.devops.gov.bc.ca/v1alpha1
+metadata:
+ name: {{ include "metadata-curator.fullname" . }}-namespace-nsp
+spec:
+ description: Allow the namespace to talk to the internet
+ source:
+ - - $namespace={{ .Release.Namespace }}
+ destination:
+ - - $namespace={{ .Release.Namespace }}
+
+{{- end }}
