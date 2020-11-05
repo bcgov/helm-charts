@@ -41,7 +41,6 @@ helm.sh/chart: {{ include "metadata-curator.chart" . }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
-app.kubernetes.io/updateHash: {{ .Values.hashLabel }}
 {{- end -}}
 
 {{/*
@@ -50,6 +49,7 @@ Selector labels
 {{- define "metadata-curator.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "metadata-curator.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/updateHash: {{ .Values.hashLabel }}
 {{- end -}}
 
 {{/*
