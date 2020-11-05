@@ -142,6 +142,9 @@ jwtSecret: "jwtSecret"
 nsp:
   enabled: true
 
+#This is not meant to be used it's here for compatability with the ocp pipeline force update flag
+hashLabel: 1
+
 forumApiConf:
   baseUrl: "mc-forum-api.svc"
 
