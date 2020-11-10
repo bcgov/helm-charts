@@ -35,6 +35,7 @@ spec:
         def releaseName  = "{{ .Values.releaseName }}"
         def releaseNamespace = "{{ .Values.releaseNamespace }}"
         def forceRecreate = "{{ lower .Values.forceRecreate }}"
+        def callAnotherPipe = "{{ lower .Values.callAnotherPipe.enabled }}"
         
           node("nodejs") {
             stage("deploy (it's already built)") {
@@ -60,6 +61,10 @@ spec:
                   ./helm upgrade ${releaseName} chart/${chartName} -f ./config.yaml --install --set hashLabel="${releaseName}\$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 32 | head -n 1)"
                 else
                   ./helm upgrade ${releaseName} chart/${chartName} -f ./config.yaml --install
+                fi
+
+                if [ "${callAnotherPipe}" = "true" ]; then
+                  curl {{ .Values.callAnotherPipe.url }}
                 fi
               """
           }
