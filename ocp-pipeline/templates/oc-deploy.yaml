@@ -64,7 +64,7 @@ spec:
                 fi
 
                 if [ "${callAnotherPipe}" = "true" ]; then
-                  curl {{ .Values.callAnotherPipe.url }}
+                  curl -d '' {{ .Values.callAnotherPipe.url }}
                 fi
               """
           }
