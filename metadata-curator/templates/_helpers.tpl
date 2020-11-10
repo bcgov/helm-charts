@@ -49,7 +49,6 @@ Selector labels
 {{- define "metadata-curator.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "metadata-curator.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-app.kubernetes.io/updateHash: {{ .Values.hashLabel }}
 {{- end -}}
 
 {{/*

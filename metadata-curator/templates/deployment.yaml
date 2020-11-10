@@ -35,7 +35,9 @@ spec:
   template:
     metadata:
       labels:
+        app.kubernetes.io/updateHash: {{ .Values.hashLabel }}
         {{- include "metadata-curator.selectorLabels" . | nindent 8 }}
+        
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
