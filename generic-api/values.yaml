@@ -80,6 +80,18 @@ serviceAccount:
 
 podAnnotations: {}
 
+rbac:
+  create: false
+  rules: []
+  # RBAC rules for KUBE_PING
+  #  - apiGroups:
+  #      - ""
+  #    resources:
+  #      - pods
+  #    verbs:
+  #      - get
+  #      - list
+  
 service:
   type: ClusterIP
   port: 80
