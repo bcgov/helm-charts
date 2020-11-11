@@ -29,5 +29,7 @@ githubAccessToken: ""
 terraformFolder: terraform/workspaces/dev
 terraformBackendPostgresql: "conn_str=postgres://[USER]:[PSWD]@[HOST]/[DATABASE]?sslmode=disable"
 
+terraformVersion: "0.12.29"
+
 # The following tfvars gets converted to a file 'terraform.secret.auto.tfvars', used during terraform apply
 tfvars: {}

@@ -29,7 +29,7 @@ spec:
     type: JenkinsPipeline
     jenkinsPipelineStrategy:
       jenkinsfile: |-
-        def terraformVersion = "0.12.29"
+        def terraformVersion = "{{ .Values.terraformVersion }}"
 
         def releaseNamespace = "{{ .Values.releaseNamespace }}"
 
