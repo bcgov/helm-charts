@@ -5,6 +5,7 @@ metadata:
   name: {{ template "batch-job.fullname" . }}-{{ randAlphaNum 5 | lower }}
   annotations:
     "helm.sh/hook": post-install
+    # "helm.sh/hook-delete-policy": hook-failed
 spec:
   backoffLimit: {{ .Values.backoffLimit }}
   manualSelector: true
@@ -31,6 +32,10 @@ spec:
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 8 }}
 {{- end }}
+        - name: config-vol
+          configMap:
+            name: {{ template "generic-api.fullname" . }}-config
+            defaultMode: 0644
       containers:
       - name: job
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -62,6 +67,12 @@ spec:
 {{- if .Values.extraVolumeMounts }}
 {{ toYaml .Values.extraVolumeMounts | nindent 8 }}
 {{- end }}
+        {{- range .Values.config }}
+        - name: config-vol
+          mountPath: {{ .mountPath }}
+          subPath: {{ .filename }}
+          readOnly: true
+        {{- end }}
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
       restartPolicy: {{ .Values.restartPolicy }}
