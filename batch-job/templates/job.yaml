@@ -34,7 +34,7 @@ spec:
 {{- end }}
         - name: config-vol
           configMap:
-            name: {{ template "generic-api.fullname" . }}-config
+            name: {{ template "batch-job.fullname" . }}-config
             defaultMode: 0644
       containers:
       - name: job
