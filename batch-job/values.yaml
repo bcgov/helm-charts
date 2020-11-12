@@ -16,12 +16,24 @@ backoffLimit: 1
 
 restartPolicy: Never
 
-secureEnv:
-- name: "ENV_VAR"
-  value: "123"
-configEnv:
-- name: "ENV_VAR"
-  value: "123"
+shell: sh
+script: |
+  echo "All good"
+
+
+config: []
+  # - filename: index.html
+  #   mountPath: /usr/share/nginx/html/index.html
+  #   contents: |
+  #     <html><body>Hello</body></html>
+
+env: {}
+  # SOME_ENV_VAR:
+  #   value: "var2"
+  #   secure: false
+  # SOME_SEC_ENV_VAR:
+  #   value: "var"
+  #   secure: true
 
 serviceAccount:
   # Specifies whether a service account should be created

@@ -8,6 +8,8 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-{{ range .Values.configEnv }}
-  {{ .name | kebabcase }}: {{ .value | quote }}
-{{ end }}
+{{- range .Values.config }}
+  {{ .filename }}: |-
+{{ .contents | indent 4 }}
+{{- end }}
+

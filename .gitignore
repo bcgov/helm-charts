@@ -3,3 +3,5 @@ packages/*.tgz
 **.DS_Store**
 
 **config.yaml**
+*.tmp.yaml
+LOCAL.md

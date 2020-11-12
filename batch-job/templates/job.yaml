@@ -3,6 +3,8 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ template "batch-job.fullname" . }}-{{ randAlphaNum 5 | lower }}
+  annotations:
+    "helm.sh/hook": post-install
 spec:
   backoffLimit: {{ .Values.backoffLimit }}
   manualSelector: true
@@ -38,23 +40,24 @@ spec:
           runAsUser: {{ .Values.securityContext.runAsUser }}
           fsGroup: {{ .Values.securityContext.fsGroup }}
         {{- end }}
+        command:
+        - {{ .Values.shell }}
+        - -c
+        - |
+          {{- .Values.script | nindent 10 }}
         env:
-        {{- if .Values.secureEnv }}
-        {{ range .Values.secureEnv }}
-          - name: {{ .name }}
+        {{- range $index, $val := .Values.env }}
+          {{- if .secure }}
+          - name: {{ $index }}
             valueFrom:
               secretKeyRef:
                 name: {{ $fullName }}-secrets
-                key: {{ .name | kebabcase }}
-        {{ end }}
-        {{ end }}
-        {{ range .Values.configEnv }}
-          - name: {{ .name }}
-            valueFrom:
-              configMapKeyRef:
-                name: {{ $fullName }}-config
-                key: {{ .name | kebabcase }}
-        {{ end }}
+                key: {{ $index | kebabcase }}
+          {{- else }}
+          - name: {{ $index }}
+            value: {{ .value | quote }}
+          {{- end }}
+        {{- end }}
         volumeMounts:
 {{- if .Values.extraVolumeMounts }}
 {{ toYaml .Values.extraVolumeMounts | nindent 8 }}
