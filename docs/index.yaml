@@ -42,6 +42,15 @@ entries:
   batch-job:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2020-11-12T11:45:33.890385-08:00"
+    description: A Helm chart for Kubernetes
+    digest: 40888e9afa078dcb5613ace442ff3527a4ea02aa1ec590e2afd506aa9e997bf5
+    name: batch-job
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/batch-job-1.0.2/batch-job-1.0.2.tgz
+    version: 1.0.2
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2020-11-12T11:43:04.616263-08:00"
     description: A Helm chart for Kubernetes
     digest: b7fff1310800dcf0231a9ff0d104ed960f122c41aec7d082a0ed94ceb6ff0958
