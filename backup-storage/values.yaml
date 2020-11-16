@@ -22,12 +22,12 @@ persistence:
     size: 5Gi
     mountPath: /backups/
     storageClassName: netapp-block-standard
-    #claimName: nfs-backup-storage-32sad
+    storageAccessMode: ReadWriteOnce
   verification:
     size: 2Gi
     mountPath: /var/lib/pgsql/data
     storageClassName: netapp-block-standard
-    #claimName: nfs-backup-storage-66sad
+    storageAccessMode: ReadWriteOnce
 
 db:
   secretName: "patroni"
