@@ -15,7 +15,7 @@ metadata:
       heritage: {{ $.Release.Service }}
 spec:
   accessModes:
-    - ReadWriteOnce
+    - {{.storageAccessMode}}
   storageClassName: {{.storageClassName}}
   resources:
     requests:
