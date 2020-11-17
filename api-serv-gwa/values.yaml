@@ -30,6 +30,7 @@ apiKeyExpiryDays: "90"
 
 gwaApiUrl: ""
 grafanaUrl: ""
+openapiConsoleUrl: ""
 
 oidc:
   baseUri: ""
