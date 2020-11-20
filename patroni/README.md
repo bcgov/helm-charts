@@ -18,7 +18,7 @@ This directory contains a Kubernetes chart to deploy a 3 nodes [Patroni](https:/
 ## Chart Details
 This chart will do the following:
 
-* Implement a HA scalable PostgreSQL 10 cluster using a Kubernetes StatefulSet.
+* Implement a HA scalable PostgreSQL 12 with PostGIS 3 cluster using a Kubernetes StatefulSet.
 
 ## Build patroni for OpenShift,
 
