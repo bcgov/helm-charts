@@ -1,10 +1,11 @@
 {{- if .Values.rbac.create }}
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: {{ template "patroni.fullname" . }}
   labels:
-    app: {{ template "patroni.fullname" . }}
+    sts: {{ template "patroni.fullname" . }}
+    cluster-name: {{ .Values.clusterName | quote }}
     chart: {{ template "patroni.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -24,6 +25,13 @@ rules:
   resources: ["services"]
   verbs:
   - create
+  - get
+  - list
+  - patch
+  - update
+  - watch
+  # delete is required only for 'patronictl remove'
+  - delete
 - apiGroups: [""]
   resources: ["endpoints"]
   verbs:
@@ -36,7 +44,6 @@ rules:
   - watch
   # delete is required only for for 'patronictl remove'
   - delete
-  - deletecollection
 - apiGroups: [""]
   resources: ["pods"]
   verbs:
