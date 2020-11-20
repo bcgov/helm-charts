@@ -32,10 +32,12 @@ The following tables list the configurable parameters of the `backup-storage` ch
 | `persistence.backup.claimName           `           | If the PVC is created outside the chart, specify the name here   |      |
 | `persistence.backup.size           `           | To create the PVC, omit the `claimName` and specify the size  |      |
 | `persistence.backup.storageClassName           `           | To create the PVC, omit the `claimName` and specify the storageClassName   |  netapp-block-standard    |
+| `persistence.backup.storageAccessMode           `           | PVC [access mode](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes)   |  ReadWriteOnce    |
 | `persistence.verification.mountPath          `           | Where the volume for the verification database is mounted   |   /var/lib/pgsql/data   |
 | `persistence.verification.claimName           `           | If the PVC is created outside the chart, specify the name here   |      |
 | `persistence.verification.size           `           | To create the PVC, omit the `claimName` and specify the size  |      |
 | `persistence.verification.storageClassName           `           | To create the PVC, omit the `claimName` and specify the storageClassName   |     netapp-block-standard |
+| `persistence.verification.storageAccessMode           `           | PVC [access mode](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes)    |     ReadWriteOnce |
 | `db.secretName           `          | The secret that has the database credentials      |                                       |
 | `db.usernameKey           `     | The key in the secret that has the db username        |                                         |
 | `db.passwordKey           `         | The key in the secret that has the db password |             |
