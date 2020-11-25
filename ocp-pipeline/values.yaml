@@ -17,6 +17,13 @@ callAnotherPipe:
   enabled: "false"
   url: http://otherwebhookUrl
 
+buildImage: false
+repo:
+  tag: latest
+  ref: master
+  url: https://github.com/bcgov/helm-charts
+
+
 rbac:
   create: false
   rules: []
