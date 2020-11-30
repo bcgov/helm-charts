@@ -20,7 +20,13 @@ releaseNamespace: mc
 
 # Github package containing the terraform configuration to pull
 packageRef: "@bcgov-dss/api-serv-infra"
-packageTag: "dev"
+#packageTag: "dev"
+# 'dev' or blank
+
+# Set the releaseBranch to the branch in api-serv-infra that holds the 'version' file
+# The 
+deployRepo: https://github.com/bcgov-dss/api-serv-infra.git
+deployBranch: deploy/dev
 
 # Access token with "read:packages" scope in Github
 githubAccessToken: ""

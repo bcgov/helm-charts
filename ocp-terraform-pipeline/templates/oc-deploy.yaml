@@ -34,7 +34,9 @@ spec:
         def releaseNamespace = "{{ .Values.releaseNamespace }}"
 
         def packageRef = "{{ .Values.packageRef }}"
-        def packageTag = "{{ .Values.packageTag }}"
+
+        def deployRepo = "{{ .Values.deployRepo }}"
+        def deployBranch = "{{ .Values.deployBranch }}"
 
         def terraformFolder = "{{ .Values.terraformFolder }}"
         def terraformBackendPostgresql = "{{ .Values.terraformBackendPostgresql }}"
@@ -55,15 +57,31 @@ spec:
               """
             }
 
+            stage("Lookup the Deployment Version") {
+              sh """
+                set +x
+
+                export GITHUB_TOKEN=`oc get secret {{ .Release.Name }}-config -o json | ./jq .data.githubAccessToken | sed -e 's/^"//' -e 's/"\$//' | base64 -d`
+
+                git config --global credential.helper store
+                export DEPLOY_REPO=${deployRepo}
+                export REPO="https://oauth2:\$GITHUB_TOKEN@\${DEPLOY_REPO#"https://"}"
+                git clone -b ${deployBranch} \$REPO deployment
+              """
+            }
+
             stage("Pull Infra-As-Code") {
               sh """
+                export PACKAGE_TAG=`cat deployment/package-tag`
+                echo "Using \$PACKAGE_TAG"
+
                 set +x
                 export GITHUB_TOKEN=`oc get secret {{ .Release.Name }}-config -o json | ./jq .data.githubAccessToken | sed -e 's/^"//' -e 's/"\$//' | base64 -d`
 
                 echo "//npm.pkg.github.com/:_authToken=\$GITHUB_TOKEN" > ~/.npmrc
                 echo "registry=https://npm.pkg.github.com" >> ~/.npmrc
 
-                npm install ${packageRef}@${packageTag}
+                npm install ${packageRef}@\${PACKAGE_TAG}
               """
             }
 
