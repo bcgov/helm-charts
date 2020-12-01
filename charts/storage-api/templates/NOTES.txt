@@ -1,1 +1,0 @@
-Minio and Tusd succesfully installed!
