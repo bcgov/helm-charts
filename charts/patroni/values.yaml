@@ -1,74 +1,52 @@
-replicaCount: 5
-
+replicaCount: 3
 image:
   # Image was built from
-  # https://github.com/zalando/spilo/tree/master/postgres-appliance
-  repository: registry.opensource.zalan.do/acid/spilo-10
-  tag: 1.5-p5
-  pullPolicy: IfNotPresent
-  pullSecrets: []
-  #- name: abc
+  # https://github.com/BCDevOps/platform-services/tree/master/apps/pgsql/patroni
+  repository: image-registry.openshift-image-registry.svc:5000/bcgov/patroni
+  tag: latest
+  pullPolicy: Always
 
 # Credentials used by Patroni
 # https://github.com/zalando/patroni/blob/master/docs/SETTINGS.rst#postgresql
 # https://github.com/zalando/spilo/blob/master/ENVIRONMENT.rst
 credentials:
-  random: false
-  # set to true to generate random creds on install
-  superuser: tea
-  admin: cola
-  standby: pinacolada
+  superuser: postgres
+  admin: app
+  replication: replication
+# default db name created after bootstrap  
+  dbname: app
 
+# Cluster Name https://patroni.readthedocs.io/en/latest/ENVIRONMENT.html#global-universal
+clusterName: pgc
 # Distribution Configuration stores
 # Please note that only one of the following stores should be enabled.
 kubernetes:
-  dcs:
-    enable: true
-  configmaps:
+  enable: true
+# use endpoint instead of configmap, use configmap on OpenShift if cannot run scc mode otherwise you will get 403 error on startup  
+  ep: 
     enable: false
-etcd:
-  enable: false
-  deployChart: false
-  # If not deploying etcd chart, fill-in value for etcd service
-  # <service>.<namespace>.svc.cluster.local
-  host:
-  # Leave blank to use vendored etcd chart
-  discovery:
-zookeeper:
-  enable: false
-  deployChart: false
-  # If not deploying etcd chart, fill-in list of ZooKeeper members in format:
-  # 'host1:port1','host2:port2','etc...'
-  hosts:
-consul:
-  enable: false
-  deployChart: false
-  # Leave blank to use vendored consul chart
-  hosts:
-
 # Extra custom environment variables.
 env: {}
 
-walE:
-  # Specifies whether Wal-E should be enabled
-  enable: false
-  # Cron schedule for doing base backups
-  scheduleCronJob: 00 01 * * *
-  # Amount of base backups to retain
-  retainBackups: 2
-  # Path to the S3 or GCS bucket used for WAL-E base backups
-  s3Bucket:
-  gcsBucket:
-  # The GCS bucket folder where the logs will be updated
-  gcsBucketBackupLocation: wal
-  # Name of the secret that holds the credentials to the bucket
-  kubernetesSecret:
-  # Maximum size of the WAL segments accumulated after the base backup to
-  # consider WAL-E restore instead of pg_basebackup
-  backupThresholdMegabytes: 1024
-  # Maximum ratio (in percents) of the accumulated WAL files to the base backup
-  # to consider WAL-E restore instead of pg_basebackup
-  backupThresholdPercentage: 30
+# ToDO
+# walE:
+#   # Specifies whether Wal-E should be enabled
+#   enable: false
+#   # Cron schedule for doing base backups
+#   scheduleCronJob: 00 01 * * *
+#   # Amount of base backups to retain
+#   retainBackups: 2
+#   # Path to the S3 or GCS bucket used for WAL-E base backups
+#   s3Bucket:
+#   gcsBucket:
+#   # Name of the secret that holds the credentials to the bucket
+#   kubernetesSecret:
+#   # Maximum size of the WAL segments accumulated after the base backup to
+#   # consider WAL-E restore instead of pg_basebackup
+#   backupThresholdMegabytes: 1024
+#   # Maximum ratio (in percents) of the accumulated WAL files to the base backup
+#   # to consider WAL-E restore instead of pg_basebackup
+#   backupThresholdPercentage: 30
 
 persistentVolume:
   enabled: true
@@ -81,21 +59,21 @@ persistentVolume:
   ##   GKE, AWS & OpenStack)
   ##
   # storageClass: "-"
-  subPath: ""
+  subPath: "pgroot"
   mountPath: "/home/postgres/pgdata"
   annotations: {}
   accessModes:
     - ReadWriteOnce
 
-resources: {}
+resources:
   # If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+  limits:
+    cpu: 300m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
 
 # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 nodeSelector: {}
@@ -112,14 +90,9 @@ affinityTemplate: |
         topologyKey: "kubernetes.io/hostname"
         labelSelector:
           matchLabels:
-            app:  {{ template "patroni.name" . }}
+            sts:  {{ template "patroni.name" . }}
             release: {{ .Release.Name | quote }}
 affinity: {}
-
-## Use an alternate scheduler, e.g. "stork".
-## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
-##
-# schedulerName:
 
 rbac:
   # Specifies whether RBAC resources should be created
