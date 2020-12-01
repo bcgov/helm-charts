@@ -1,5 +1,5 @@
 packages/*.tgz
-**/charts/**
+**/charts/*.tgz
 **.DS_Store**
 
 **config.yaml**
