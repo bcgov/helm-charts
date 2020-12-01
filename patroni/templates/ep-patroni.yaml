@@ -1,0 +1,13 @@
+{{- if .Values.kubernetes.ep.enable }}
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: {{ template "patroni.fullname" . }}
+  labels:
+    sts: {{ template "patroni.fullname" . }}
+    cluster-name: {{ .Values.clusterName | quote }}   
+    release: {{ .Release.Name }}
+    chart: {{ template "patroni.chart" . }}    
+    heritage: {{ .Release.Service }}
+subsets: []
+{{ end }}
