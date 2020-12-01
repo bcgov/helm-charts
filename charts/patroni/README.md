@@ -30,7 +30,7 @@ oc new-build https://github.com/ll911/patroni.git --context-dir=kubernetes --str
 
 ```console
 $ helm repo add bcgov https://bcgov.github.io/helm-charts
-$ helm dependency update
+$ helm repo update
 $ helm install --generate-name bcgov/patroni
 ```
 
@@ -38,7 +38,7 @@ To install the chart with the release name `my-release`:
 
 ```console
 $ helm repo add bcgov https://bcgov.github.io/helm-charts
-$ helm dependency update
+$ helm repo update
 $ helm install my-release bcgov/patroni
 ```
 
