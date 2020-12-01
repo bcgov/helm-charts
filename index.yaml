@@ -136,16 +136,6 @@ entries:
   generic-api:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2020-12-01T01:59:31.100423373Z"
-    description: A Helm chart for Kubernetes
-    digest: e56d0199416f7a2d2d59f39197a0acdf0da7d95f3d895e85adf5fc32be22f7c0
-    name: generic-api
-    type: application
-    urls:
-    - https://github.com/bcgov/helm-charts/releases/download/generic-api-0.1.9/generic-api-0.1.9.tgz
-    version: 0.1.9
-  - apiVersion: v2
-    appVersion: 1.16.0
     created: "2020-11-11T10:45:43.629392-08:00"
     description: A Helm chart for Kubernetes
     digest: 8875c1803e5815c28c1278d15b638e2c725781fc2a6eb4e2137b535eafadb41f
@@ -403,6 +393,35 @@ entries:
     - https://github.com/bcgov/helm-charts/releases/download/ocp-terraform-pipeline-0.2.1/ocp-terraform-pipeline-0.2.1.tgz
     version: 0.2.1
   patroni:
+  - apiVersion: v1
+    appVersion: 1.6-p3
+    created: "2020-12-01T05:38:26.452384867Z"
+    dependencies:
+    - condition: etcd.deployChart
+      name: etcd
+      repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+      version: 0.6.2
+    - condition: zookeeper.deployChart
+      name: zookeeper
+      repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+      version: 1.0.0
+    - condition: consul.deployChart
+      name: consul
+      repository: https://charts.helm.sh/stable
+      version: 3.6.1
+    description: 'Highly available elephant herd: HA PostgreSQL cluster.'
+    digest: 9a63b1f964f96415ad48ad451d51fbac06cf70ad41e7b8ed04a3f150236aaa2f
+    home: https://github.com/ll911/patroni
+    maintainers:
+    - email: leo.lou@gov.bc.ca
+      name: ll911
+    name: patroni
+    sources:
+    - https://github.com/helm/charts/tree/master/incubator/patroni
+    - https://github.com/BCDevOps/platform-services/blob/master/apps/pgsql/patroni
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/patroni-1.0.0/patroni-1.0.0.tgz
+    version: 1.0.0
   - apiVersion: v1
     appVersion: 1.6-p3
     created: "2020-09-21T23:37:36.755995-07:00"
