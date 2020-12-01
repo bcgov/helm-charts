@@ -15,10 +15,6 @@ charts=("api-serv-ui" "api-serv-gwa" "backup-storage" "batch-job" "ckan-ui" "for
 rm -rf ./packages/*.tgz
 
 for chart in ${charts[@]}; do
-    git diff $chart/Chart.yaml
-done
-exit
-for chart in ${charts[@]}; do
     read -p "Release $chart? [yN]" yn
     case $yn in
         [Yy]* ) cd $chart;

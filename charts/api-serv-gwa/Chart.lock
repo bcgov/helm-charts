@@ -1,6 +1,6 @@
 dependencies:
 - name: tomcat
-  repository: https://kubernetes-charts.storage.googleapis.com
+  repository: https://charts.helm.sh/stable
   version: 0.4.1
 digest: sha256:dfd86b7c59f2c7fcf10267b84d95bcc75775ecd240afacf32ce74bfe25b1cfa7
 generated: "2020-08-04T21:30:32.56944-07:00"
