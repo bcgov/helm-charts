@@ -395,6 +395,22 @@ entries:
   patroni:
   - apiVersion: v1
     appVersion: 1.6-p3
+    created: "2020-12-01T07:35:40.858056939Z"
+    description: 'Highly available elephant herd: HA PostgreSQL cluster.'
+    digest: 1553a38b34742fa74d4a4a50276406572663b947cfe06f5df84ba4b7eec0b64e
+    home: https://github.com/ll911/patroni
+    maintainers:
+    - email: leo.lou@gov.bc.ca
+      name: ll911
+    name: patroni
+    sources:
+    - https://github.com/helm/charts/tree/master/incubator/patroni
+    - https://github.com/BCDevOps/platform-services/blob/master/apps/pgsql/patroni
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/patroni-1.0.1/patroni-1.0.1.tgz
+    version: 1.0.1
+  - apiVersion: v1
+    appVersion: 1.6-p3
     created: "2020-12-01T05:38:26.452384867Z"
     dependencies:
     - condition: etcd.deployChart
@@ -438,6 +454,23 @@ entries:
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/patroni-0.21.2/patroni-0.21.2.tgz
     version: 0.21.2
+  patroni-spilo:
+  - apiVersion: v1
+    appVersion: 1.6-p3
+    created: "2020-12-01T07:35:40.962735397Z"
+    description: 'Highly available elephant herd: HA PostgreSQL cluster.'
+    digest: a5d4a5f08eb87ca3a430b4ac76a9e16a94df50f92eb0bdf8801f9d6c96d437f6
+    home: https://github.com/zalando/patroni
+    maintainers:
+    - email: matthieu@button.is
+      name: Matthieu Foucault
+    name: patroni-spilo
+    sources:
+    - https://github.com/zalando/patroni
+    - https://github.com/zalando/spilo
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/patroni-spilo-0.21.3/patroni-spilo-0.21.3.tgz
+    version: 0.21.3
   storage-api:
   - apiVersion: v1
     appVersion: "1.0"
