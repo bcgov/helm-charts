@@ -21,3 +21,6 @@ data:
   password-admin: {{ .Values.credentials.admin | b64enc }}
   password-standby: {{ .Values.credentials.standby | b64enc }}
   {{- end }}
+  username-superuser: {{ "postgres" | b64enc }}
+  username-admin: {{ "admin" | b64enc }}
+  username-standby: {{ "standby" | b64enc }}
