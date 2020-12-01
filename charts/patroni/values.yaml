@@ -5,7 +5,7 @@ image:
   repository: image-registry.openshift-image-registry.svc:5000/bcgov/patroni
   tag: latest
   pullPolicy: Always
-  pullSecrets: {}
+  pullSecrets: []
   # - name: my-pull-secret
 
 # Credentials used by Patroni
