@@ -19,6 +19,14 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
+          echo "
+          owner: bcgov
+          git-repo: helm-charts
+          package-path: ./packages
+          index-path: ./docs/index.yaml
+          charts-repo: https://bcgov.github.io/helm-charts
+          " > config.yaml
+
       - name: Install Helm
         uses: azure/setup-helm@v1
         with:
@@ -27,6 +35,7 @@ jobs:
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.1.0
         with:
+          config: config.yaml
           charts_repo_url: https://bcgov.github.io/helm-charts
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
