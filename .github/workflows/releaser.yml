@@ -22,7 +22,7 @@ jobs:
           echo "
           owner: bcgov
           git-repo: helm-charts
-          package-path: ./packages
+          package-path: .cr-release-packages
           index-path: ./docs/index.yaml
           charts-repo: https://bcgov.github.io/helm-charts
           " > config.yaml
