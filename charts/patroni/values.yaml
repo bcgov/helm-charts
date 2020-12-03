@@ -95,21 +95,10 @@ affinityTemplate: |
   podAntiAffinity:
     requiredDuringSchedulingIgnoredDuringExecution:
       - labelSelector:
-          matchExpressions:
-            - key: statefulset
-              operator: In
-              values:
-                - {{ template "patroni.name" . }}
+          matchLabels:
+            statefulset:  {{ template "patroni.name" . }}
+            release: {{ .Release.Name | quote }}
         topologyKey: "kubernetes.io/hostname"
-  # podAntiAffinity:
-  #   preferredDuringSchedulingIgnoredDuringExecution:
-  #   - weight: 100
-  #     podAffinityTerm:
-  #       topologyKey: "kubernetes.io/hostname"
-  #       labelSelector:
-  #         matchLabels:
-  #           sts:  {{ template "patroni.name" . }}
-  #           release: {{ .Release.Name | quote }}
 affinity: {}
 
 rbac:
