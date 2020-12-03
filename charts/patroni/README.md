@@ -70,10 +70,13 @@ The following table lists the configurable parameters of the patroni chart and t
 | `image.repository`                | The image to pull                           | `image-registry.openshift-image-registry.svc:5000/bcgov/patroni`        |
 | `image.tag`                       | The version of the image to pull            | `latest`                                            |
 | `image.pullPolicy`                | The pull policy                             | `IfNotPresent`                                      |
-| `credentials.superuser`           | Username of the superuser                   | `postgres`                                          |
-| `credentials.admin`               | Username of the app admin                   | `app`                                               |
-| `credentials.dbname`              | defaul created app dbname                   | `app`                                       |
-| `credentials.replication`         | Password of the replication user            | `replication`                                       |
+| `credentials.superuser.name`           | Username of the superuser user                   | `postgres`                                          |
+| `credentials.superuser.password`         | Password of the superuser user            | ``                                       |
+| `credentials.admin.name`               | Username of the app admin                   | `app`                                               |
+| `credentials.admin.password`         | Password of the app admin            | ``                                       |
+| `credentials.replication.name`         | Username of the replication user            | `replication`                                       |
+| `credentials.replication.password`         | Password of the replication user            | ``                                       |
+| `defaultDatabaseName`              | defaul created app dbname                   | `app`                                       |
 | `clusterName`                     | value for [PATRONI_SCOPE](https://patroni.readthedocs.io/en/latest/ENVIRONMENT.html#global-universal)              | `pgc`                                       |
 | `kubernetes.enable`               | Using Kubernetes as DCS                     | `true`                                              |
 | `kubernetes.ep.enable`            | Using Kubernetes endpoints                  | `false`                                             |
