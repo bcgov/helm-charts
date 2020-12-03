@@ -1,7 +1,7 @@
 replicaCount: 3
 image:
   # Image was built from
-  # https://github.com/BCDevOps/platform-services/tree/master/apps/pgsql/patroni
+  # https://github.com/bcgov/patroni-postgres-container.git
   repository: image-registry.openshift-image-registry.svc:5000/bcgov/patroni-postgres
   tag: 12.4-latest
   pullPolicy: Always
