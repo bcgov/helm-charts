@@ -181,8 +181,6 @@ spec:
       - name: {{ .Values.clusterName }}-storage-volume
         emptyDir: {}
       {{- end }}
-      terminationGracePeriodSeconds: 60          
-
   {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
     - metadata:

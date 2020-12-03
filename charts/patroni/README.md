@@ -114,6 +114,3 @@ $ release=<release-name>
 $ helm delete $release
 $ kubectl delete pvc,configmap,ep -l release=$release
 ```
-
-
-nVmapXA3de
