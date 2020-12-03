@@ -79,6 +79,7 @@ The following table lists the configurable parameters of the patroni chart and t
 | `kubernetes.ep.enable`            | Using Kubernetes endpoints                  | `false`                                             |
 | `resources`                       | Any resources you wish to assign to the pod | `{}`                                                |
 | `nodeSelector`                    | Node label to use for scheduling            | `{}`                                                |
+| `networkSecurityPolicies.create`  | Create the appropriate Aporeto Policies    | `true`                                                |
 | `tolerations`                     | List of node taints to tolerate             | `[]`                                                |
 | `affinity`                        | Affinity settings                           | Preferred on hostname                               |
 | `persistentVolume.accessModes`    | Persistent Volume access modes              | `[ReadWriteOnce]`                                   |
@@ -111,7 +112,8 @@ to also remove them execute the commands below.
 ```console
 $ release=<release-name>
 $ helm delete $release
-$ kubectl delete pvc -l release=$release
-$ kubectl delete configmap -l release=$release
-$ kubectl delete ep -l release=$release
+$ kubectl delete pvc,configmap,ep -l release=$release
 ```
+
+
+nVmapXA3de

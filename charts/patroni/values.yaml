@@ -2,21 +2,26 @@ replicaCount: 3
 image:
   # Image was built from
   # https://github.com/BCDevOps/platform-services/tree/master/apps/pgsql/patroni
-  repository: image-registry.openshift-image-registry.svc:5000/bcgov/patroni
-  tag: latest
+  repository: image-registry.openshift-image-registry.svc:5000/bcgov/patroni-postgres
+  tag: 12.4-latest
   pullPolicy: Always
   pullSecrets: []
-  # - name: my-pull-secret
 
 # Credentials used by Patroni
 # https://github.com/zalando/patroni/blob/master/docs/SETTINGS.rst#postgresql
 # https://github.com/zalando/spilo/blob/master/ENVIRONMENT.rst
 credentials:
-  superuser: postgres
-  admin: app
-  replication: replication
-# default db name created after bootstrap  
-  dbname: app
+  superuser:
+    name: postgres
+    #password: "s3cr3t"
+  replication:
+    name: replication
+    #password: "s3cr3t"
+  admin:
+    name: appuser
+    #password: "s3cr3t"
+
+defaultDatabaseName: app
 
 # Cluster Name https://patroni.readthedocs.io/en/latest/ENVIRONMENT.html#global-universal
 clusterName: pgc
@@ -63,7 +68,7 @@ persistentVolume:
   ##   GKE, AWS & OpenStack)
   ##
   # storageClass: "-"
-  subPath: "pgroot"
+  subPath: ""
   mountPath: "/home/postgres/pgdata"
   annotations: {}
   accessModes:
@@ -88,14 +93,23 @@ tolerations: []
 # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinityTemplate: |
   podAntiAffinity:
-    preferredDuringSchedulingIgnoredDuringExecution:
-    - weight: 100
-      podAffinityTerm:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+            - key: statefulset
+              operator: In
+              values:
+                - {{ template "patroni.name" . }}
         topologyKey: "kubernetes.io/hostname"
-        labelSelector:
-          matchLabels:
-            sts:  {{ template "patroni.name" . }}
-            release: {{ .Release.Name | quote }}
+  # podAntiAffinity:
+  #   preferredDuringSchedulingIgnoredDuringExecution:
+  #   - weight: 100
+  #     podAffinityTerm:
+  #       topologyKey: "kubernetes.io/hostname"
+  #       labelSelector:
+  #         matchLabels:
+  #           sts:  {{ template "patroni.name" . }}
+  #           release: {{ .Release.Name | quote }}
 affinity: {}
 
 rbac:
@@ -108,3 +122,6 @@ serviceAccount:
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
+
+networkSecurityPolicies:
+  create: true

@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ template "patroni.fullname" . }}
   labels:
-    sts: {{ template "patroni.fullname" . }}
+    statefulset: {{ template "patroni.fullname" . }}
     cluster-name: {{ .Values.clusterName | quote }}
     chart: {{ template "patroni.chart" . }}
     release: {{ .Release.Name }}
@@ -12,7 +12,7 @@ spec:
   selector:
     cluster-name: {{ .Values.clusterName | quote }}
     role: master
-    sts: {{ template "patroni.fullname" . }}
+    statefulset: {{ template "patroni.fullname" . }}
   type: ClusterIP
   ports:
   - name: postgresql
