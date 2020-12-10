@@ -20,6 +20,10 @@ shell: sh
 script: |
   echo "All good"
 
+annotations:
+  "helm.sh/hook": post-install
+
+podAnnotations: {}
 
 config: []
   # - filename: index.html
