@@ -284,6 +284,15 @@ entries:
   ocp-pipeline:
   - apiVersion: v1
     appVersion: "1.0"
+    created: "2020-12-10T23:50:19.341715502Z"
+    description: A Helm chart for Openshift pipelines using Jenkins
+    digest: c09ecfb01524a995dde52475a5090f19420ef9cd80fd07651d3e290d3aba8f47
+    name: ocp-pipeline
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/ocp-pipeline-0.1.16/ocp-pipeline-0.1.16.tgz
+    version: 0.1.16
+  - apiVersion: v1
+    appVersion: "1.0"
     created: "2020-12-10T22:49:30.514518188Z"
     description: A Helm chart for Openshift pipelines using Jenkins
     digest: 455f280e2b477f5caeabdb216f137a14ab8ac7e158131d0485e4ef3b54b19fda
