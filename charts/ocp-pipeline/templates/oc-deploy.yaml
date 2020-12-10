@@ -37,9 +37,9 @@ spec:
         def releaseNamespace = "{{ .Values.releaseNamespace }}"
         def forceRecreate = "{{ lower .Values.forceRecreate }}"
         def callAnotherPipe = "{{ lower .Values.callAnotherPipe.enabled }}"
-        def useEnv = {{ lower .Values.recreate.useEnv }}
-        def fromEnv = {{ lower .Values.recreate.fromEnv }}
-        def setFlag = {{ lower .Values.recreate.setFlag }}
+        def useEnv = "{{ lower .Values.recreate.useEnv }}"
+        def fromEnv = "{{ lower .Values.recreate.fromEnv }}"
+        def setFlag = "{{ lower .Values.recreate.setFlag }}"
         
           node("nodejs") {
             stage("deploy (it's already built)") {
