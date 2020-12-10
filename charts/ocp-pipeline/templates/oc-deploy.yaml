@@ -23,6 +23,7 @@ spec:
   triggers:
     - type: "generic"
       generic:
+        allowEnv: true
         secretReference:
           name: "{{ .Release.Name }}-git-webhook-secret"
   strategy:
@@ -36,6 +37,9 @@ spec:
         def releaseNamespace = "{{ .Values.releaseNamespace }}"
         def forceRecreate = "{{ lower .Values.forceRecreate }}"
         def callAnotherPipe = "{{ lower .Values.callAnotherPipe.enabled }}"
+        def useEnv = {{ lower .Values.recreate.useEnv }}
+        def fromEnv = {{ lower .Values.recreate.fromEnv }}
+        def setFlag = {{ lower .Values.recreate.setFlag }}
         
           node("nodejs") {
             stage("deploy (it's already built)") {
@@ -59,6 +63,8 @@ spec:
                 ./helm repo update
                 if [ "${forceRecreate}" = "true" ]; then
                   ./helm upgrade ${releaseName} chart/${chartName} -f ./config.yaml --install --set hashLabel="${releaseName}\$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 32 | head -n 1)"
+                elif[ "${useEnv}" = "true" ]; then
+                  ./helm upgrade ${releaseName} chart/${chartName} -f ./config.yaml --install --set ${setFlag}=${!fromEnv}
                 else
                   ./helm upgrade ${releaseName} chart/${chartName} -f ./config.yaml --install
                 fi
