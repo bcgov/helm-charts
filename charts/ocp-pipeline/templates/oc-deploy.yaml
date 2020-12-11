@@ -63,7 +63,7 @@ spec:
                 ./helm repo update
                 if [ "${forceRecreate}" = "true" ]; then
                   ./helm upgrade ${releaseName} chart/${chartName} -f ./config.yaml --install --set hashLabel="${releaseName}\$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 32 | head -n 1)"
-                elif[ "${useEnv}" = "true" ]; then
+                elif [ "${useEnv}" = "true" ]; then
                   ./helm upgrade ${releaseName} chart/${chartName} -f ./config.yaml --install --set ${setFlag}=${!fromEnv}
                 else
                   ./helm upgrade ${releaseName} chart/${chartName} -f ./config.yaml --install
