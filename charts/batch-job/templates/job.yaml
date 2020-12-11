@@ -3,9 +3,10 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ template "batch-job.fullname" . }}-{{ randAlphaNum 5 | lower }}
+  {{- with .Values.annotations }}
   annotations:
-    "helm.sh/hook": post-install
-    # "helm.sh/hook-delete-policy": hook-failed
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   backoffLimit: {{ .Values.backoffLimit }}
   manualSelector: true
@@ -14,7 +15,7 @@ spec:
       {{- include "batch-job.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-    {{- with .Values.annotations }}
+    {{- with .Values.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
