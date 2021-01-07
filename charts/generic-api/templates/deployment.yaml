@@ -46,6 +46,25 @@ spec:
             name: {{ template "generic-api.fullname" . }}-config
             defaultMode: 0644
       containers:
+        {{ if .Values.oauthProxy.enabled }}
+        - name: oauth-proxy
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.oauthProxy.image.repository }}:{{ .Values.oauthProxy.image.tag }}"
+          imagePullPolicy: {{ .Values.oauthProxy.image.pullPolicy }}
+          args:
+          - --login-url={{ index .Values.oauthProxy.config "oidc-issuer-url" }}/protocol/openid-connect/auth
+          - --redeem-url={{ index .Values.oauthProxy.config "oidc-issuer-url" }}/protocol/openid-connect/token
+          - --validate-url={{ index .Values.oauthProxy.config "oidc-issuer-url" }}/protocol/openid-connect/userinfo
+          {{- range $index, $val := .Values.oauthProxy.config }}
+          - --{{ $index }}={{ $val }}
+          {{- end }}
+          ports:
+            - name: proxy
+              containerPort: 7999
+              protocol: TCP
+        {{- end }}
+
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
