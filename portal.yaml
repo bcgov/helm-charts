@@ -1,0 +1,28 @@
+#  helm upgrade -n 264e6f-dev --install xxx-portal -f portal.yaml ./charts/generic-api
+
+replicaCount: 1
+
+image:
+  repository: docker.pkg.github.com/bcgov/aps-portal/portal-backend
+  tag: feature-oauth-proxy
+  pullPolicy: IfNotPresent
+
+imagePullSecrets:
+  - name: dev-github-read-packages-creds
+
+containerPort: 8080
+
+podSecurityContext:
+  fsGroup: 1002770000
+
+securityContext:
+  runAsUser: 1002770000
+
+oauthProxy:
+  enabled: false
+  config:
+    client-id: "a"
+    client-secret: "b"
+    oidc-issuer-url: "https://authz-apps-gov-bc-ca.dev.apsgw.xyz/auth/realms/aps"
+    upstream: "http://blah:3000"
+    redirect-url: "https://aps-portal-api-oauth-proxy.apps.silver.devops.gov.bc.ca/oauth2/callback"
