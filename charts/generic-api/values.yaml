@@ -176,7 +176,7 @@ oauthProxy:
     set-authorization-header: true
     pass-authorization-header: true
     skip-auth-regex: /public
-    upstream: "http://${hostip}:3000"
+    upstream: "http://127.0.0.1:8000"
     redirect-url: "<external url>/oauth2/callback"
 
 

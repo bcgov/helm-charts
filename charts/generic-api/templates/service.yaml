@@ -10,7 +10,7 @@ spec:
     - port: {{ .Values.service.port }}
       {{- if .Values.oauthProxy.enabled }}
       targetPort: proxy
-      {{- else -}}
+      {{- else }}
       targetPort: http
       {{- end }}
       protocol: TCP
