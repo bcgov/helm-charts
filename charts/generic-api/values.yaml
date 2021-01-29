@@ -28,6 +28,8 @@ securityContext:
   # readOnlyRootFilesystem: true
   # runAsNonRoot: true
 
+extraLabels: []
+
 persistence: {}
 #  temp:
 #    mountPath: /tmp
@@ -69,6 +71,15 @@ env: {}
   # SOME_SEC_ENV_VAR:
   #   value: "var"
   #   secure: true
+
+tls:
+  enabled: false
+  mountPath: "/etc/tls"
+  secretName: ""
+  secret:
+    server.crt: ""
+    server.key: ""
+    ca.crt: ""
 
 containerPort: 8000
 

@@ -5,3 +5,4 @@ packages/*.tgz
 **config.yaml**
 *.tmp.yaml
 LOCAL.md
+_tmp

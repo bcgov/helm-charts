@@ -25,6 +25,10 @@ spec:
     {{- end }}
       labels:
         {{- include "generic-api.selectorLabels" . | nindent 8 }}
+        {{- range $index, $val := .Values.extraLabels }}
+        {{ $index }}: {{ $val }}
+        {{- end }}
+
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -40,6 +44,11 @@ spec:
         {{- range $name, $val := .Values.persistence }}
         - name: {{ $name }}-vol
           emptyDir: {}
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: tls-vol
+          secret:
+            secretName: {{ template "generic-api.fullname" . }}-tls
         {{- end }}
         - name: config-vol
           configMap:
@@ -58,6 +67,12 @@ spec:
           - --validate-url={{ index .Values.oauthProxy.config "oidc-issuer-url" }}/protocol/openid-connect/userinfo
           {{- range $index, $val := .Values.oauthProxy.config }}
           - --{{ $index }}={{ $val }}
+          {{- end }}
+          volumeMounts:
+          {{- if .Values.tls.enabled }}
+            - name: tls-vol
+              mountPath: {{ .Values.tls.mountPath }}
+              readOnly: true
           {{- end }}
           ports:
             - name: proxy
@@ -99,6 +114,11 @@ spec:
             - name: config-vol
               mountPath: {{ .mountPath }}
               subPath: {{ .filename }}
+              readOnly: true
+          {{- end }}
+          {{- if .Values.tls.enabled }}
+            - name: tls-vol
+              mountPath: {{ .Values.tls.mountPath }}
               readOnly: true
           {{- end }}
           ports:
