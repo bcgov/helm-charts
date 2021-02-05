@@ -60,7 +60,7 @@ spec:
                 printf '${cnfig}' > ./config.yaml
                 ./helm repo add bcgov http://bcgov.github.io/helm-charts
                 ./helm repo update
-                ./helm upgrade {{ .Release.Name }} bcgov/ckan-ui -f ./config.yaml --set image.tag=\$GITREV --install
+                ./helm upgrade {{ .Release.Name }} bcgov/ckan-ui -f ./config.yaml --set image.tag=\$GITREV --set githash=\$GITREV --install
               """
           }
         }

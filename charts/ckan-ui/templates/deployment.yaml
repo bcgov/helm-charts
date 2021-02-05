@@ -54,6 +54,9 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository.backend }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: GITHASH
+              value: {{ .Values.githash | quote }}
           volumeMounts:
             - name: secrets
               mountPath: /app/config/default.json
