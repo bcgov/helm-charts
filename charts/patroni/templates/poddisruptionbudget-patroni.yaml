@@ -6,5 +6,5 @@ spec:
   minAvailable: {{ sub .Values.replicaCount 1 }}
   selector:
     matchLabels:
-      app: {{ template "patroni.fullname" . }}
+      statefulset: {{ template "patroni.fullname" . }}
       release: {{ .Release.Name }}

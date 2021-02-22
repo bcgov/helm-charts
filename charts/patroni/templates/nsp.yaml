@@ -1,0 +1,30 @@
+{{- if .Values.networkSecurityPolicies.create }}
+apiVersion: security.devops.gov.bc.ca/v1alpha1
+kind: NetworkSecurityPolicy
+metadata:
+  name: "{{ template "patroni.fullname" . }}-k8s-api-comms"
+spec:
+  description: |
+    Allow patroni cluster to talk to the internal k8s api
+  source:
+    - - "$namespace={{ .Release.Namespace }}"
+      - "@app:k8s:serviceaccountname={{ template "patroni.fullname" . }}"
+  destination:
+    - - int:network=internal-cluster-api-endpoint
+---
+kind: NetworkSecurityPolicy
+apiVersion: security.devops.gov.bc.ca/v1alpha1
+metadata:
+  name: "{{ template "patroni.fullname" . }}-cluster-comms"
+spec:
+  description: |
+    Allow patroni pods to open connections to other cluster pods
+  source:
+    - - "$namespace={{ .Release.Namespace }}"
+      - "cluster-name={{ .Values.clusterName }}"
+      - "statefulset={{ template "patroni.fullname" . }}"
+  destination:
+    - - "$namespace={{ .Release.Namespace }}"
+      - "cluster-name={{ .Values.clusterName }}"
+      - "statefulset={{ template "patroni.fullname" . }}"
+{{- end}}

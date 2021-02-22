@@ -4,7 +4,7 @@ kind: Endpoints
 metadata:
   name: {{ template "patroni.fullname" . }}
   labels:
-    sts: {{ template "patroni.fullname" . }}
+    statefulset: {{ template "patroni.fullname" . }}
     cluster-name: {{ .Values.clusterName | quote }}   
     release: {{ .Release.Name }}
     chart: {{ template "patroni.chart" . }}    

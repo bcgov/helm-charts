@@ -70,15 +70,19 @@ The following table lists the configurable parameters of the patroni chart and t
 | `image.repository`                | The image to pull                           | `image-registry.openshift-image-registry.svc:5000/bcgov/patroni`        |
 | `image.tag`                       | The version of the image to pull            | `latest`                                            |
 | `image.pullPolicy`                | The pull policy                             | `IfNotPresent`                                      |
-| `credentials.superuser`           | Username of the superuser                   | `postgres`                                          |
-| `credentials.admin`               | Username of the app admin                   | `app`                                               |
-| `credentials.dbname`              | defaul created app dbname                   | `app`                                       |
-| `credentials.replication`         | Password of the replication user            | `replication`                                       |
+| `credentials.superuser.name`           | Username of the superuser user                   | `postgres`                                          |
+| `credentials.superuser.password`         | Password of the superuser user            | ``                                       |
+| `credentials.admin.name`               | Username of the app admin                   | `app`                                               |
+| `credentials.admin.password`         | Password of the app admin            | ``                                       |
+| `credentials.replication.name`         | Username of the replication user            | `replication`                                       |
+| `credentials.replication.password`         | Password of the replication user            | ``                                       |
+| `defaultDatabaseName`              | defaul created app dbname                   | `app`                                       |
 | `clusterName`                     | value for [PATRONI_SCOPE](https://patroni.readthedocs.io/en/latest/ENVIRONMENT.html#global-universal)              | `pgc`                                       |
 | `kubernetes.enable`               | Using Kubernetes as DCS                     | `true`                                              |
 | `kubernetes.ep.enable`            | Using Kubernetes endpoints                  | `false`                                             |
 | `resources`                       | Any resources you wish to assign to the pod | `{}`                                                |
 | `nodeSelector`                    | Node label to use for scheduling            | `{}`                                                |
+| `networkSecurityPolicies.create`  | Create the appropriate Aporeto Policies    | `true`                                                |
 | `tolerations`                     | List of node taints to tolerate             | `[]`                                                |
 | `affinity`                        | Affinity settings                           | Preferred on hostname                               |
 | `persistentVolume.accessModes`    | Persistent Volume access modes              | `[ReadWriteOnce]`                                   |
@@ -86,7 +90,7 @@ The following table lists the configurable parameters of the patroni chart and t
 | `persistentVolume.mountPath`      | Persistent Volume mount root path           | `/home/postgres/pgdata`                             |
 | `persistentVolume.size`           | Persistent Volume size                      | `2Gi`                                               |
 | `persistentVolume.storageClass`   | Persistent Volume Storage Class             | `volume.alpha.kubernetes.io/storage-class: default` |
-| `persistentVolume.subPath`        | Subdirectory of Persistent Volume to mount  | `pgroot`                                                |
+| `persistentVolume.subPath`        | Subdirectory of Persistent Volume to mount  | ``                                                |
 | `rbac.create`                     | Create required role and rolebindings       | `true`                                              |
 | `serviceAccount.create`           | If true, create a new service account	      | `true`                                              |
 | `serviceAccount.name`             | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template | `nil` |
@@ -111,7 +115,5 @@ to also remove them execute the commands below.
 ```console
 $ release=<release-name>
 $ helm delete $release
-$ kubectl delete pvc -l release=$release
-$ kubectl delete configmap -l release=$release
-$ kubectl delete ep -l release=$release
+$ kubectl delete pvc,configmap,ep -l release=$release
 ```

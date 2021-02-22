@@ -3,17 +3,20 @@ kind: Secret
 metadata:
   name: {{ template "patroni.fullname" . }}
   labels:
-    sts: {{ template "patroni.fullname" . }}
+    statefulset: {{ template "patroni.fullname" . }}
     cluster-name: {{ .Values.clusterName | quote }}
     chart: {{ template "patroni.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  annotations:
+    "helm.sh/hook": "pre-install"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
 type: Opaque
 data:
-  username-superuser: {{ .Values.credentials.superuser | b64enc }}
-  password-superuser: {{ default (randAlphaNum 10) .Values.somePassword | b64enc | quote }}
-  username-replication: {{ .Values.credentials.replication | b64enc }}
-  password-replication: {{ default (randAlphaNum 10) .Values.somePassword | b64enc | quote }}
-  username-admin: {{ .Values.credentials.admin | b64enc }}
-  password-admin: {{ default (randAlphaNum 10) .Values.somePassword | b64enc | quote }}
-  default-dbname: {{ .Values.credentials.dbname | b64enc }}
+  username-superuser: {{ .Values.credentials.superuser.name | b64enc }}
+  password-superuser: {{ default (randAlphaNum 10) .Values.credentials.superuser.password | b64enc | quote }}
+  username-replication: {{ .Values.credentials.replication.name | b64enc }}
+  password-replication: {{ default (randAlphaNum 10) .Values.credentials.replication.password | b64enc | quote }}
+  username-admin: {{ .Values.credentials.admin.name | b64enc }}
+  password-admin: {{ default (randAlphaNum 10) .Values.credentials.admin.password | b64enc | quote }}
+  default-dbname: {{ .Values.defaultDatabaseName | b64enc }}
