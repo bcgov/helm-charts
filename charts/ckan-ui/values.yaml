@@ -114,3 +114,4 @@ snowplow:
 
 authGroupSeperator: "/"
 sysAdminGroup: "admin"
+adminApiKey: "adminApiKey"
