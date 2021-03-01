@@ -115,3 +115,5 @@ snowplow:
 authGroupSeperator: "/"
 sysAdminGroup: "admin"
 adminApiKey: "adminApiKey"
+
+landingTerms: '"Crown", "Waste", "Fire", "Lightning"'

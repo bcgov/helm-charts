@@ -62,5 +62,6 @@ data:
 
       "authGroupSeperator": {{ .Values.authGroupSeperator | quote }},
       "sysAdminGroup": {{ .Values.sysAdminGroup | quote}},
-      "adminApiKey": {{ .Values.adminApiKey | quote}}
+      "adminApiKey": {{ .Values.adminApiKey | quote}},
+      "landingTerms": [{{ .Values.landingTerms }}],
     }
