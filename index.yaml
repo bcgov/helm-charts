@@ -116,6 +116,15 @@ entries:
   ckan-ui:
   - apiVersion: v1
     appVersion: "1.0"
+    created: "2021-03-02T19:59:25.004577839Z"
+    description: A Helm chart for deployment of the bcgov ckan-ui
+    digest: 1286e40a56ff337675768355cddd7ae75fd4ba019a18d7db0ce8415228620459
+    name: ckan-ui
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/ckan-ui-0.2.3/ckan-ui-0.2.3.tgz
+    version: 0.2.3
+  - apiVersion: v1
+    appVersion: "1.0"
     created: "2021-03-01T22:45:31.026806377Z"
     description: A Helm chart for deployment of the bcgov ckan-ui
     digest: aae0e5d43b5892d1784db79fd475d645015feb5dd8e21b3959137a89591de422
