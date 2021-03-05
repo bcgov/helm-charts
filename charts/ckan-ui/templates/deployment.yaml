@@ -57,6 +57,8 @@ spec:
           env:
             - name: GITHASH
               value: {{ .Values.githash | quote }}
+            - name: DEPLOYMENT_ENV
+              value: {{ .Values.deploymentEnv }}
           volumeMounts:
             - name: secrets
               mountPath: /app/config/default.json
