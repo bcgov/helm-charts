@@ -1,27 +1,31 @@
 {{- if .Values.nsp.enabled -}}
 
-kind: NetworkSecurityPolicy
-apiVersion: security.devops.gov.bc.ca/v1alpha1
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
 metadata:
- name: {{ include "metadata-curator.fullname" . }}-internet-nsp
+  name: allow-same-namespace
 spec:
- description: Allow the namespace to talk to the internet
- source:
- - - $namespace={{ .Release.Namespace }}
- destination:
- - - ext:network=any
+  podSelector: {}
+  ingress:
+    - from:
+        - podSelector: {}
+  policyTypes:
+    - Ingress
 
 ---
 
-kind: NetworkSecurityPolicy
-apiVersion: security.devops.gov.bc.ca/v1alpha1
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
 metadata:
- name: {{ include "metadata-curator.fullname" . }}-namespace-nsp
+  name: allow-from-openshift-ingress
 spec:
- description: Allow the namespace to talk to the internet
- source:
- - - $namespace={{ .Release.Namespace }}
- destination:
- - - $namespace={{ .Release.Namespace }}
+  podSelector: {}
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              network.openshift.io/policy-group: ingress
+  policyTypes:
+    - Ingress
 
 {{- end }}
