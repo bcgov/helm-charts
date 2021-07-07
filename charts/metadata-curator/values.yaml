@@ -138,6 +138,7 @@ formioConf:
   username: "admin@example.com"
   password: "CHANGEME"
 jwtSecret: "jwtSecret"
+userIdField: "email"
 
 nsp:
   enabled: true
