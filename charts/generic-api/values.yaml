@@ -169,7 +169,7 @@ affinity: {}
 
 oauthProxy:
   enabled: false
-  localUpstream: false
+  localUpstream: true
   image:
     repository: quay.io/oauth2-proxy/oauth2-proxy
     pullPolicy: IfNotPresent
