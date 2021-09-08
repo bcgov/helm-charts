@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "generic-api.fullname" . }}-config
+  labels:
+    app: {{ include "generic-api.name" . }}
+    chart: {{ include "generic-api.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+{{- range .Values.config }}
+  {{ .filename }}: |-
+{{ .contents | indent 4 }}
+{{- end }}

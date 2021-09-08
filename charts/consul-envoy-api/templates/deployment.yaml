@@ -1,0 +1,361 @@
+{{- $fullName := include "generic-api.fullname" . -}}
+{{ if .Values.consulSidecar.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "generic-api.fullname" . }}
+  labels:
+    {{- include "generic-api.labels" . | nindent 4 }}
+spec:
+{{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+{{- end }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: {{ .Values.rollingUpdate.maxUnavailable }}
+      maxSurge: {{ .Values.rollingUpdate.maxSurge }}
+  selector:
+    matchLabels:
+      {{- include "generic-api.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+    {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        {{- include "generic-api.selectorLabels" . | nindent 8 }}
+        {{- range $index, $val := .Values.extraLabels }}
+        {{ $index }}: {{ $val }}
+        {{- end }}
+
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "generic-api.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+        - name: consul-bin
+          emptyDir: {}     
+        - name: consul-service
+          emptyDir:
+            medium: Memory
+        - name: consul-ca-cert
+          secret:
+            secretName: svcmesh-consul-ca-cert
+            items:
+              - key: tls.crt
+                path: tls.crt
+            defaultMode: 420
+
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 8 }}
+{{- end }}
+        {{- range $name, $val := .Values.persistence }}
+        - name: {{ $name }}-vol
+          emptyDir: {}
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: tls-vol
+          secret:
+            secretName: {{ template "generic-api.fullname" . }}-tls
+        {{- end }}
+        - name: config-vol
+          configMap:
+            name: {{ template "generic-api.fullname" . }}-config
+            defaultMode: 0644
+      initContainers:
+      - resources:
+          limits:
+            cpu: 50m
+            memory: 150Mi
+          requests:
+            cpu: 50m
+            memory: 25Mi
+        terminationMessagePath: /dev/termination-log
+        name: copy-consul-bin
+        command:
+          - cp
+          - /bin/consul
+          - /consul-bin/consul
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 10 }}
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+          - name: consul-bin
+            mountPath: /consul-bin
+        image: 'docker.pkg.github.com/bcgov-dss/api-serv-infra/consul:1.10-3f3301ed'
+
+      - resources:
+          limits:
+            cpu: 50m
+            memory: 50Mi
+          requests:
+            cpu: 50m
+            memory: 50Mi
+        name: service-init
+        command:
+          - /bin/sh
+          - '-ec'
+          - |
+            cat > /consul/service/service.hcl << EOF
+            service {
+              name = "{{ .Release.Name }}"
+              connect { 
+                sidecar_service {
+                  proxy {
+                    local_service_address = "${POD_IP}"
+                    upstreams = [
+                    {{- range .Values.consulSidecar.upstreams }}
+                      {
+                        destination_name = "{{ .destination_name }}"
+                        local_bind_port = {{ .local_bind_port }}
+                      }
+                    {{- end }}
+                    ]
+                    config {
+                      envoy_prometheus_bind_addr = "0.0.0.0:4000"
+                    }
+                  }
+                } 
+              }
+              meta {
+              }
+              address = "${POD_IP}"
+              port = {{ .Values.containerPort }}
+              checks = [
+                {
+                  name = "{{ .Release.Name }} Listening"
+                  interval = "10s"
+                  tcp = "${POD_IP}:{{ .Values.containerPort }}"
+                  deregister_critical_service_after = "6h"
+                }
+              ]
+            }
+            EOF
+
+            /consul-bin/consul services register \
+              /consul/service/service.hcl
+        env:
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: status.podIP
+          - name: CONSUL_HTTP_ADDR
+            value: 'https://upstream-cloud-consul-server:8501'
+          - name: CONSUL_CACERT
+            value: /consul/tls/ca/tls.crt
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 10 }}
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+          - name: consul-service
+            mountPath: /consul/service
+          - name: consul-bin
+            mountPath: /consul-bin
+          - name: consul-ca-cert
+            readOnly: true
+            mountPath: /consul/tls/ca
+        image: 'ghcr.io/bcgov-dss/api-serv-infra/consul-k8s-control-plane:0.33-a82a5756'
+
+
+      containers:
+        {{ if .Values.consulSidecar.enabled }}
+        - resources:
+            limits:
+              cpu: 100m
+              memory: 100Mi
+            requests:
+              cpu: 50m
+              memory: 50Mi
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - /bin/sh
+                  - '-ec'
+                  - /consul-bin/consul services deregister -id="{{ .Release.Name }}"
+          name: envoy-sidecar
+          command:
+            - /consul-bin/consul
+            - connect
+            - envoy
+            - '-sidecar-for'
+            - '{{ .Release.Name }}'
+          env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
+            - name: CONSUL_HTTP_ADDR
+              value: 'https://upstream-cloud-consul-server:8501'
+            - name: CONSUL_GRPC_ADDR
+              value: 'upstream-cloud-consul-server:8502'
+            - name: CONSUL_CACERT
+              value: /consul/tls/ca/tls.crt
+          ports: 
+            - name: proxy
+              containerPort: 21001
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: consul-bin
+              mountPath: /consul-bin
+            - name: consul-ca-cert
+              readOnly: true
+              mountPath: /consul/tls/ca
+          image: 'ghcr.io/bcgov-dss/api-serv-infra/envoy:1.18-a82a5756'
+
+        - resources:
+            limits:
+              cpu: 40m
+              memory: 200Mi
+            requests:
+              cpu: 40m
+              memory: 100Mi
+          name: consul-sidecar
+          command:
+            - consul-k8s-control-plane
+            - consul-sidecar
+            - '-log-level=info'
+            - '-log-json=false'
+            - '-service-config=/consul/service/service.hcl'
+            - '-consul-binary=/consul-bin/consul'
+          env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
+            - name: CONSUL_HTTP_ADDR
+              value: 'https://upstream-cloud-consul-server:8501'
+            - name: CONSUL_CACERT
+              value: /consul/tls/ca/tls.crt
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: consul-service
+              readOnly: true
+              mountPath: /consul/service
+            - name: consul-bin
+              mountPath: /consul-bin
+            - name: consul-ca-cert
+              readOnly: true
+              mountPath: /consul/tls/ca
+          image: 'ghcr.io/bcgov-dss/api-serv-infra/consul-k8s-control-plane:0.33-a82a5756'
+        {{ end }}
+        
+        {{ if .Values.oauthProxy.enabled }}
+        - name: oauth-proxy
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.oauthProxy.image.repository }}:{{ .Values.oauthProxy.image.tag }}"
+          imagePullPolicy: {{ .Values.oauthProxy.image.pullPolicy }}
+          args:
+          - --login-url={{ index .Values.oauthProxy.config "oidc-issuer-url" }}/protocol/openid-connect/auth
+          - --redeem-url={{ index .Values.oauthProxy.config "oidc-issuer-url" }}/protocol/openid-connect/token
+          - --validate-url={{ index .Values.oauthProxy.config "oidc-issuer-url" }}/protocol/openid-connect/userinfo
+          {{- range $index, $val := .Values.oauthProxy.config }}
+          - --{{ $index }}={{ $val }}
+          {{- end }}
+          volumeMounts:
+          {{- if .Values.tls.enabled }}
+            - name: tls-vol
+              mountPath: {{ .Values.tls.mountPath }}
+              readOnly: true
+          {{- end }}
+          ports:
+            - name: proxy
+              containerPort: 7999
+              protocol: TCP
+          {{ if not .Values.oauthProxy.localUpstream }}
+          {{- if .Values.livenessProbe }}
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.readinessProbe }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- end }}
+        {{- end }}
+
+        {{ if .Values.oauthProxy.localUpstream }}
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.args }}
+          args:
+            {{- toYaml . | nindent 12 }}
+          {{ end }}
+          env:
+          {{- range $index, $val := .Values.env }}
+            {{- if .secure }}
+            - name: {{ $index }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $fullName }}-secrets
+                  key: {{ $index | kebabcase }}
+            {{- else }}
+            - name: {{ $index }}
+              value: {{ .value | quote }}
+            {{- end }}
+          {{- end }}
+          volumeMounts:
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | nindent 12 }}
+{{- end }}
+          {{- range $name, $val := .Values.persistence }}
+            - name: {{ $name }}-vol
+              mountPath: {{ .mountPath }}
+          {{- end }}
+          {{- range .Values.config }}
+            - name: config-vol
+              mountPath: {{ .mountPath }}
+              subPath: {{ .filename }}
+              readOnly: true
+          {{- end }}
+          {{- if .Values.tls.enabled }}
+            - name: tls-vol
+              mountPath: {{ .Values.tls.mountPath }}
+              readOnly: true
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.containerPort }}
+              protocol: TCP
+          {{- if .Values.livenessProbe }}
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.readinessProbe }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+        {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{ end }}
