@@ -222,6 +222,53 @@ entries:
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/ckan-ui-0.1.2/ckan-ui-0.1.2.tgz
     version: 0.1.2
+  consul:
+  - annotations:
+      artifacthub.io/images: |
+        - name: consul
+          image: hashicorp/consul:1.10.0
+        - name: consul-k8s-control-plane
+          image: hashicorp/consul-k8s-control-plane:0.33.0
+        - name: envoy
+          image: envoyproxy/envoy-alpine:v1.18.3
+      artifacthub.io/license: MPL-2.0
+      artifacthub.io/links: |
+        - name: Documentation
+          url: https://www.consul.io/docs/k8s
+        - name: hashicorp/consul
+          url: https://github.com/hashicorp/consul
+        - name: hashicorp/consul-k8s
+          url: https://github.com/hashicorp/consul-k8s
+      artifacthub.io/prerelease: "false"
+      artifacthub.io/signKey: |
+        fingerprint: C874011F0AB405110D02105534365D9472D7468F
+        url: https://keybase.io/hashicorp/pgp_keys.asc
+    apiVersion: v2
+    appVersion: 1.10.0
+    created: "2021-09-08T23:28:15.301358001Z"
+    description: Official HashiCorp Consul Chart
+    digest: 96fd0a18d6cfbd9599fca8e3ac7841777d59d4707a07a409a821d0e223f02742
+    home: https://www.consul.io
+    icon: https://raw.githubusercontent.com/hashicorp/consul-k8s/master/assets/icon.png
+    kubeVersion: '>=1.17.0-0'
+    name: consul
+    sources:
+    - https://github.com/hashicorp/consul
+    - https://github.com/hashicorp/consul-k8s
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/consul-0.33.0/consul-0.33.0.tgz
+    version: 0.33.0
+  consul-envoy-api:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2021-09-08T23:28:15.41843277Z"
+    description: A Helm chart for deploying Consul Connect sidecars to a Microservice API
+    digest: b91546339a838bc6f3c9c8a301fbe37f56dd3b4fa5a7fe1c2cf8ab7b9537144a
+    name: consul-envoy-api
+    type: application
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/consul-envoy-api-0.1.0/consul-envoy-api-0.1.0.tgz
+    version: 0.1.0
   formio:
   - apiVersion: v1
     appVersion: "1.0"
