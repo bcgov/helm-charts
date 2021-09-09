@@ -147,7 +147,7 @@ spec:
                 apiVersion: v1
                 fieldPath: status.podIP
           - name: CONSUL_HTTP_ADDR
-            value: 'https://upstream-cloud-consul-server:8501'
+            value: 'https://{{ .Values.consulSidecar.consulServiceName }}:8501'
           - name: CONSUL_CACERT
             value: /consul/tls/ca/tls.crt
         securityContext:
@@ -194,9 +194,9 @@ spec:
                   apiVersion: v1
                   fieldPath: status.podIP
             - name: CONSUL_HTTP_ADDR
-              value: 'https://upstream-cloud-consul-server:8501'
+              value: 'https://{{ .Values.consulSidecar.consulServiceName }}:8501'
             - name: CONSUL_GRPC_ADDR
-              value: 'upstream-cloud-consul-server:8502'
+              value: '{{ .Values.consulSidecar.consulServiceName }}:8502'
             - name: CONSUL_CACERT
               value: /consul/tls/ca/tls.crt
           ports: 
@@ -234,7 +234,7 @@ spec:
                   apiVersion: v1
                   fieldPath: status.podIP
             - name: CONSUL_HTTP_ADDR
-              value: 'https://upstream-cloud-consul-server:8501'
+              value: 'https://{{ .Values.consulSidecar.consulServiceName }}:8501'
             - name: CONSUL_CACERT
               value: /consul/tls/ca/tls.crt
           securityContext:
