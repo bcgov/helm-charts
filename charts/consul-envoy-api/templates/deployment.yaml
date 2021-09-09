@@ -114,6 +114,9 @@ spec:
                       {
                         destination_name = "{{ .destination_name }}"
                         local_bind_port = {{ .local_bind_port }}
+                        {{- if .datacenter }}
+                        datacenter = {{ .datacenter }}
+                        {{- end }}
                       }
                     {{- end }}
                     ]
