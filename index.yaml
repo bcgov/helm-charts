@@ -261,6 +261,16 @@ entries:
   consul-envoy-api:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2021-09-09T05:21:04.612527897Z"
+    description: A Helm chart for deploying Consul Connect sidecars to a Microservice API
+    digest: d4d22379fefce44f01434d286fd3e3fcd50d1d08250ac894cddf085b29436821
+    name: consul-envoy-api
+    type: application
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/consul-envoy-api-0.1.1/consul-envoy-api-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2021-09-08T23:28:15.41843277Z"
     description: A Helm chart for deploying Consul Connect sidecars to a Microservice API
     digest: b91546339a838bc6f3c9c8a301fbe37f56dd3b4fa5a7fe1c2cf8ab7b9537144a
