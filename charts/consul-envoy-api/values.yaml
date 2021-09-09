@@ -202,6 +202,10 @@ oauthProxy:
 
 consulSidecar:
   enabled: false
+  tls:
+    caCert:
+      # The name of the Kubernetes secret.
+      secretName: null
   upstreams:
     []
     # - destination_name: dashboard

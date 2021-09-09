@@ -46,7 +46,7 @@ spec:
             medium: Memory
         - name: consul-ca-cert
           secret:
-            secretName: svcmesh-consul-ca-cert
+            secretName: {{ .Values.consulSidecar.tls.caCert.secretName }}
             items:
               - key: tls.crt
                 path: tls.crt
