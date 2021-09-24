@@ -61,6 +61,7 @@ solr: "http://127.0.0.1:8983/solr"
 solrCore: "ckan"
 ckan: "http://127.0.0.1:5000"
 frontend: "http://127.0.0.1:3000"
+aboutPageUrl: "https://raw.githubusercontent.com/bcgov/ckan-ui/pages/pages/about.md"
 sessionSecret: "secret"
 classicUi: "https://127.0.0.1:5000"
 
@@ -115,7 +116,6 @@ snowplow:
 
 authGroupSeperator: "/"
 sysAdminGroup: "admin"
-adminApiKey: "adminApiKey"
 
 deploymentEnv: "DEV"
 
