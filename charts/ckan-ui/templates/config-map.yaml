@@ -11,6 +11,7 @@ data:
 
       "frontend": {{ .Values.frontend | quote}},
       "classicUi": {{ .Values.classicUi | quote}},
+      "aboutPageUrl": {{ .Values.aboutPageUrl | quote }},
 
       "oidc": {
         "issuer": {{ .Values.oidc.issuer | quote }},
@@ -63,6 +64,5 @@ data:
 
       "authGroupSeperator": {{ .Values.authGroupSeperator | quote }},
       "sysAdminGroup": {{ .Values.sysAdminGroup | quote}},
-      "adminApiKey": {{ .Values.adminApiKey | quote}},
       "landingTerms": {{ .Values.landingTerms | toJson }}
     }
