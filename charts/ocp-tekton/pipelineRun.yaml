@@ -1,0 +1,13 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: {{ include "ocp-tekton.fullname" . }}-run
+spec:
+  pipelineRef:
+    name: {{ include "ocp-tekton.fullname" . }}
+  serviceAccountName: 40dbf3-vault
+  
+  timeout: 1h0m0s
+  workspaces:
+    - emptyDir: {}
+      name: shared-workspace

@@ -1,0 +1,111 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  labels:
+    wip: 'true'
+  name: {{ include "ocp-tekton.fullname" . }}
+spec:
+  tasks:
+    - name: clone-ckan-ui-repo
+      params:
+        - name: url
+          value: 'https://github.com/bcgov/ckan-ui.git'
+        - name: revision
+          value: dev
+        - name: submodules
+          value: 'true'
+        - name: depth
+          value: '1'
+        - name: sslVerify
+          value: 'true'
+        - name: deleteExisting
+          value: 'true'
+        - name: verbose
+          value: 'true'
+        - name: gitInitImage
+          value: >-
+            gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/git-init:v0.21.0
+        - name: subdirectory
+          value: ckan-ui
+      taskRef:
+        kind: ClusterTask
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+    # - name: build-api-bridge
+    #   params:
+    #     - name: IMAGE
+    #       value: >-
+    #         image-registry.openshift-image-registry.svc:5000/40db83-tools/tmp-ckan-ui-api-bridge-image
+    #     - name: BUILDER_IMAGE
+    #       value: >-
+    #         registry.redhat.io/rhel8/buildah@sha256:6a68ece207bc5fd8db2dd5cc2d0b53136236fb5178eb5b71eebe5d07a3c33d13
+    #     - name: STORAGE_DRIVER
+    #       value: vfs
+    #     - name: DOCKERFILE
+    #       value: ./ckan-ui/Dockerfile
+    #     - name: CONTEXT
+    #       value: ./ckan-ui
+    #     - name: TLSVERIFY
+    #       value: 'true'
+    #     - name: FORMAT
+    #       value: oci
+    #   runAfter:
+    #     - clone-ckan-ui-repo
+    #   taskRef:
+    #     kind: ClusterTask
+    #     name: buildah
+    #   workspaces:
+    #     - name: source
+    #       workspace: shared-workspace
+    # - name: build-ckan-ui
+    #   params:
+    #     - name: IMAGE
+    #       value: >-
+    #         image-registry.openshift-image-registry.svc:5000/40db83-tools/tmp-ckan-ui-image
+    #     - name: BUILDER_IMAGE
+    #       value: >-
+    #         registry.redhat.io/rhel8/buildah@sha256:6a68ece207bc5fd8db2dd5cc2d0b53136236fb5178eb5b71eebe5d07a3c33d13
+    #     - name: STORAGE_DRIVER
+    #       value: vfs
+    #     - name: DOCKERFILE
+    #       value: ./ckan-ui/Dockerfile-frontend
+    #     - name: CONTEXT
+    #       value: ./ckan-ui
+    #     - name: TLSVERIFY
+    #       value: 'true'
+    #     - name: FORMAT
+    #       value: oci
+    #   runAfter:
+    #     - clone-ckan-ui-repo
+    #   taskRef:
+    #     kind: ClusterTask
+    #     name: buildah
+    #   workspaces:
+    #     - name: source
+    #       workspace: shared-workspace
+    - name: helm-upgrade-from-repo
+      params:
+        - name: helm_repo
+          value: 'https://bcgov.github.io/helm-charts/'
+        - name: chart_name
+          value: ckan-ui
+        - name: release_version
+          value: v1.0.0
+        - name: release_name
+          value: ckan-ui-dev-tmp
+        - name: release_namespace
+          value: 40db83-dev
+        - name: helm_image
+          value: >-
+            docker.io/lachlanevenson/k8s-helm@sha256:5c792f29950b388de24e7448d378881f68b3df73a7b30769a6aa861061fd08ae
+    #   runAfter:
+    #     - build-ckan-ui
+    #     - build-api-bridge
+      taskRef:
+        kind: Task
+        name: helm-upgrade-from-repo-with-vault
+
+  workspaces:
+    - name: shared-workspace

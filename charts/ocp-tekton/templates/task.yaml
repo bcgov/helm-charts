@@ -1,0 +1,80 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  annotations:
+    tekton.dev/categories: Deployment
+    tekton.dev/pipelines.minVersion: 0.12.1
+    tekton.dev/platforms: 'linux/amd64,linux/s390x,linux/ppc64le,linux/arm64'
+    tekton.dev/tags: helm
+    
+    vault.hashicorp.com/agent-inject: 'true'
+    vault.hashicorp.com/agent-inject-secret-config: 40db83-nonprod/dwelf-build-secrets
+    vault.hashicorp.com/agent-inject-template-config: |
+        {{ "{{" }} with secret "40db83-nonprod/dwelf-build-secrets" }} {{ "{{" }} .Data.data | toYAML }} {{ "{{" }} end }}
+    vault.hashicorp.com/agent-inject-token: 'true'
+    vault.hashicorp.com/auth-path: auth/k8s-silver
+    vault.hashicorp.com/namespace: platform-services
+    vault.hashicorp.com/role: 40db83-nonprod
+  name: helm-upgrade-from-repo-with-vault
+spec:
+  description: >-
+    These tasks will install / upgrade a helm chart into your Kubernetes /
+    OpenShift Cluster using Helm and vault
+  params:
+    - description: Specify a specific helm repo
+      name: helm_repo
+      type: string
+    - description: Specify chart name that will be deployed
+      name: chart_name
+      type: string
+    - default: v1.0.0
+      description: The helm release version in semantic versioning format
+      name: release_version
+      type: string
+    - default: helm-release
+      description: The helm release name
+      name: release_name
+      type: string
+    - default: ''
+      description: The helm release namespace
+      name: release_namespace
+      type: string
+    - default: ''
+      description: >-
+        Specify the values you want to overwrite, comma separated:
+        autoscaling.enabled=true,replicas=1
+      name: overwrite_values
+      type: string
+    - default: >-
+        docker.io/lachlanevenson/k8s-helm@sha256:5c792f29950b388de24e7448d378881f68b3df73a7b30769a6aa861061fd08ae
+      description: Specify a specific helm image
+      name: helm_image
+      type: string
+  steps:
+    - image: $(params.helm_image)
+      name: upgrade-from-repo
+      resources: {}
+      script: >
+        echo current installed helm releases
+
+        helm list --namespace "$(params.release_namespace)"
+
+        echo parsing helms repo name...
+
+        REPO=`echo "$(params.chart_name)" | cut -d "/" -f 1`
+
+        echo adding helm repo...
+
+        helm repo add $REPO "$(params.helm_repo)"
+
+        echo adding updating repo...
+
+        helm repo update
+
+        cat /vault/secrets/config
+
+        echo installing helm chart...
+
+        helm upgrade --wait --install --namespace "$(params.release_namespace)"
+        $(params.release_name) $(params.chart_name) --debug --set
+        "$(params.overwrite_values)" -f /vault/secrets/config
