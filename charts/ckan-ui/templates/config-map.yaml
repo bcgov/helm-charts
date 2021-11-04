@@ -5,6 +5,8 @@ metadata:
 data:
   prod.json: |-
     {
+      "secretsPath": {{ .Values.secretsPath | quote }},
+
       "solr": {{ .Values.solr | quote }},
       "solrCore": {{ .Values.solrCore | quote }},
       "ckan": {{ .Values.ckan | quote }},
