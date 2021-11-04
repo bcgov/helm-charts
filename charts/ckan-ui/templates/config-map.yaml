@@ -17,6 +17,7 @@ data:
 
       "redisHost": {{ .Values.redisHost | quote }},
       "redisPort": {{ .Values.redisPort | quote }},
+      "redisPassword": {{ .Values.redisPassword | quote }},
 
       "oidc": {
         "issuer": {{ .Values.oidc.issuer | quote }},
