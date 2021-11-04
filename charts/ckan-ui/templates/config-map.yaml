@@ -13,6 +13,9 @@ data:
       "classicUi": {{ .Values.classicUi | quote}},
       "aboutPageUrl": {{ .Values.aboutPageUrl | quote }},
 
+      "redisHost": {{ .Values.redisHost | quote }},
+      "redisPort": {{ .Values.redisPort | quote }},
+
       "oidc": {
         "issuer": {{ .Values.oidc.issuer | quote }},
         "authorizationURL": {{ .Values.oidc.authorizationURL | quote }},

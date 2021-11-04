@@ -65,6 +65,9 @@ aboutPageUrl: "https://raw.githubusercontent.com/bcgov/ckan-ui/pages/pages/about
 sessionSecret: "secret"
 classicUi: "https://127.0.0.1:5000"
 
+redisHost: ""
+redisPort: ""
+
 oidc:
   issuer: "issuer"
   authorizationURL: "authurl"
