@@ -56,6 +56,9 @@ repo:
   url: https://github.com/bcgov/ckan-ui
 webhookKey: 12345678
 
+
+secretsPath: ""
+
 #you must override these
 solr: "http://127.0.0.1:8983/solr"
 solrCore: "ckan"
@@ -64,6 +67,10 @@ frontend: "http://127.0.0.1:3000"
 aboutPageUrl: "https://raw.githubusercontent.com/bcgov/ckan-ui/pages/pages/about.md"
 sessionSecret: "secret"
 classicUi: "https://127.0.0.1:5000"
+
+redisHost: ""
+redisPort: ""
+redisPassword: ""
 
 oidc:
   issuer: "issuer"

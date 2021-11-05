@@ -5,6 +5,8 @@ metadata:
 data:
   prod.json: |-
     {
+      "secretsPath": {{ .Values.secretsPath | quote }},
+
       "solr": {{ .Values.solr | quote }},
       "solrCore": {{ .Values.solrCore | quote }},
       "ckan": {{ .Values.ckan | quote }},
@@ -12,6 +14,10 @@ data:
       "frontend": {{ .Values.frontend | quote}},
       "classicUi": {{ .Values.classicUi | quote}},
       "aboutPageUrl": {{ .Values.aboutPageUrl | quote }},
+
+      "redisHost": {{ .Values.redisHost | quote }},
+      "redisPort": {{ .Values.redisPort | quote }},
+      "redisPassword": {{ .Values.redisPassword | quote }},
 
       "oidc": {
         "issuer": {{ .Values.oidc.issuer | quote }},
