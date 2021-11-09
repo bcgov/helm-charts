@@ -1,0 +1,22 @@
+{{- $root := . }}
+{{- $release := .Release -}}
+{{- range .Values.claims -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $release.Name }}-{{ .name }}
+  labels:
+    {{- include "ocp-transport-claim.labels" $root | nindent 4 }}
+  # annotations:
+  #   service.beta.openshift.io/serving-cert-secret-name: {{ $release.Name }}-{{ .name }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .servicePort }}
+      targetPort: {{ .targetPort }}
+      protocol: TCP
+  selector:
+  {{- range $index, $val := .selectorLabels }}
+    {{ $index }}: {{ $val }}
+  {{- end }}
+{{- end }}
