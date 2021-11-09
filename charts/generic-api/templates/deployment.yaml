@@ -41,6 +41,11 @@ spec:
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 8 }}
 {{- end }}
+        {{- range $secretVolume := .Values.secretVolumes }}
+        - name: {{ . }}
+          secret:
+            secretName: {{ . }}
+        {{- end }}
         {{- range $name, $val := .Values.persistence }}
         - name: {{ $name }}-vol
           emptyDir: {}
@@ -120,6 +125,11 @@ spec:
 {{- if .Values.extraVolumeMounts }}
 {{ toYaml .Values.extraVolumeMounts | nindent 12 }}
 {{- end }}
+          {{- range .Values.secretVolumes }}
+            - name:  {{ . }}
+              mountPath: /etc/secrets/{{ . }}
+          {{- end }}
+
           {{- range $name, $val := .Values.persistence }}
             - name: {{ $name }}-vol
               mountPath: {{ .mountPath }}
