@@ -1,6 +1,9 @@
 nameOverride: ""
 fullnameOverride: ""
 
+transports:
+  enabled: true
+
 claims: []
 # - name: patroni
 #   servicePort: 5432

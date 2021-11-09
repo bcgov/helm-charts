@@ -1,4 +1,5 @@
 {{- $release := .Release -}}
+{{- if .Values.transports.enabled }}
 {{- range .Values.claims -}}
 apiVersion: porter.devops.gov.bc.ca/v1alpha1
 kind: TransportServerClaim
@@ -11,4 +12,5 @@ spec:
     type: tcp
   service: {{ $release.Name }}-{{ .name }}
   servicePort: {{ .servicePort }}
+{{- end }}
 {{- end }}

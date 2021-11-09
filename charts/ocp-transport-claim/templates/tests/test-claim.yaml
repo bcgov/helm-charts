@@ -1,5 +1,6 @@
 {{- $release := .Release -}}
 {{- $env_suffix := .Values.envSuffix }}
+{{- if .Values.transports.enable }}
 {{- range .Values.claims -}}
 apiVersion: v1
 kind: Pod
@@ -22,4 +23,5 @@ spec:
             exit 1
           fi
   restartPolicy: OnFailure
+{{- end }}
 {{- end }}
