@@ -1,0 +1,25 @@
+{{- $release := .Release -}}
+{{- $env_suffix := .Values.envSuffix }}
+{{- range .Values.claims -}}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ $release.Name }}-{{ .name }}-test
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  containers:
+    - name: busybox
+      image: docker.io/busybox:stable
+      command:
+        - /bin/sh
+        - -ec
+        - |
+          if [ $(env | grep {{ .name | snakecase | upper }}_{{ $env_suffix }} | wc -l) == 1 ]; then
+            echo "Great Transport Claim Found! {{ .name | snakecase | upper }}"
+          else
+            exit 1
+          fi
+  restartPolicy: OnFailure
+{{- end }}

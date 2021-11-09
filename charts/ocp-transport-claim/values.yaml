@@ -1,0 +1,13 @@
+nameOverride: ""
+fullnameOverride: ""
+
+envSuffix: ""
+#envSuffix: "GENERIC_API_GOLDDR_SERVICE_PORT"
+
+claims: []
+# - name: patroni
+#   serviceName: patroni-spilo
+#   servicePort: 5432
+# - name: switchover
+#   serviceName: bcgov-switchover-generic-api
+#   servicePort: 8765

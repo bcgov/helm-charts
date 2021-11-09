@@ -1,0 +1,14 @@
+{{- $release := .Release -}}
+{{- range .Values.claims -}}
+apiVersion: porter.devops.gov.bc.ca/v1alpha1
+kind: TransportServerClaim
+metadata:
+  name: {{ $release.Name }}-{{ .name }}
+spec:
+  monitor:
+    interval: 10
+    timeout: 10
+    type: tcp
+  service: {{ .serviceName }}
+  servicePort: {{ .servicePort }}
+{{- end }}
