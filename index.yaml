@@ -834,6 +834,16 @@ entries:
     version: 0.2.1
   ocp-transport-claim:
   - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2021-11-09T21:13:21.780561985Z"
+    description: A Helm chart for creating custom Transport Service Claims for Cluster-Cluster communication
+    digest: 0de58f52fe7a6ab4291400a036c09520e3c0d83f2df7414ce5a7cbac75bb376e
+    name: ocp-transport-claim
+    type: application
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/ocp-transport-claim-0.1.1/ocp-transport-claim-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
     appVersion: 1.16.0
     created: "2021-11-09T19:44:32.801320919Z"
     description: A Helm chart for creating custom Transport Service Claims for Cluster-Cluster communication
