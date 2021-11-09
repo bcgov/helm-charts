@@ -832,6 +832,17 @@ entries:
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/ocp-terraform-pipeline-0.2.1/ocp-terraform-pipeline-0.2.1.tgz
     version: 0.2.1
+  ocp-transport-claim:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2021-11-09T19:44:32.801320919Z"
+    description: A Helm chart for creating custom Transport Service Claims for Cluster-Cluster communication
+    digest: 5676f2729a845380b37d736c0cdd3d396b64a7b4b5bc0594b6a227b764431da8
+    name: ocp-transport-claim
+    type: application
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/ocp-transport-claim-0.1.0/ocp-transport-claim-0.1.0.tgz
+    version: 0.1.0
   patroni:
   - apiVersion: v1
     appVersion: 1.6-p3
