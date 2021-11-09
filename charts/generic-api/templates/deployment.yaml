@@ -149,6 +149,11 @@ spec:
             - name: http
               containerPort: {{ .Values.containerPort }}
               protocol: TCP
+          {{- range .Values.extraPorts }}
+            - name:  {{ .name }}
+              containerPort: {{ .port }}
+              protocol: TCP
+          {{- end }}
           {{- if .Values.livenessProbe }}
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}

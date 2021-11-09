@@ -30,6 +30,10 @@ securityContext:
 
 extraLabels: []
 
+extraPorts: []
+# - name: wss
+#   port: 8765
+
 secretVolumes: []
 
 persistence: {}
