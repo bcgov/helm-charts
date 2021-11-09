@@ -16,7 +16,7 @@ spec:
         - /bin/sh
         - -ec
         - |
-          if [ $(env | grep {{ .name | snakecase | upper }}_{{ $env_suffix }} | wc -l) == 1 ]; then
+          if [ $(env | grep {{ .name | snakecase | upper }}_{{ .envSuffix }} | wc -l) == 1 ]; then
             echo "Great Transport Claim Found! {{ .name | snakecase | upper }}"
           else
             exit 1

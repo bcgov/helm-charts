@@ -9,6 +9,6 @@ spec:
     interval: 10
     timeout: 10
     type: tcp
-  service: {{ .serviceName }}
+  service: {{ $release.Name }}-{{ .name }}
   servicePort: {{ .servicePort }}
 {{- end }}
