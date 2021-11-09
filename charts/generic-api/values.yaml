@@ -30,6 +30,8 @@ securityContext:
 
 extraLabels: []
 
+secretVolumes: []
+
 persistence: {}
 #  temp:
 #    mountPath: /tmp
