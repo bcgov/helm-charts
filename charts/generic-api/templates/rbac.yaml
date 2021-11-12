@@ -16,6 +16,6 @@ roleRef:
   name: {{ include "generic-api.fullname" . }}
 subjects:
   - kind: ServiceAccount
-    name: {{ include "generic-api.serviceAccountName" . }}
+    name: {{ .Values.podServiceAccountName | default (printf "%s" (include "generic-api.serviceAccountName" . )) }}
     namespace: {{ .Release.Namespace }}
 {{- end }}

@@ -102,6 +102,8 @@ serviceAccount:
 
 podAnnotations: {}
 
+podServiceAccountName: ""
+
 rbac:
   create: false
   rules: []
