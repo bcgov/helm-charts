@@ -49,6 +49,9 @@ consul:
 # Extra custom environment variables.
 env: {}
 
+extraEnvConfigMaps: []
+#   - patroni-spilo-env-vars
+
 walE:
   # Specifies whether Wal-E should be enabled
   enable: false
@@ -87,7 +90,8 @@ persistentVolume:
   accessModes:
     - ReadWriteOnce
 
-resources: {}
+resources:
+  {}
   # If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   # limits:
@@ -115,7 +119,6 @@ affinityTemplate: |
             app:  {{ template "patroni.name" . }}
             release: {{ .Release.Name | quote }}
 affinity: {}
-
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
 ##
