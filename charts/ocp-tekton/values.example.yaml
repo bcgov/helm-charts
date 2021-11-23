@@ -1,0 +1,7 @@
+repo: https://github.com/bcgov/ckan.git
+branch: dev
+helm:
+  chart: ckan-ui
+  repo: https://bcgov.github.io/helm-charts/
+  release: dev-ckan-ui
+  namespace: ENTER_NAMESPACE_HERE
