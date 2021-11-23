@@ -14,6 +14,7 @@ spec:
       labels:
         app: {{ include "ocp-tekton-ckan-ui.fullname" . }}-pvc-explorer
     spec:
+      serviceAccountName: pipeline
       volumes: 
         - name: pv-to-explore
           persistentVolumeClaim:

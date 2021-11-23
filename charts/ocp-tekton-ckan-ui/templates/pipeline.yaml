@@ -11,7 +11,7 @@ spec:
         - name: url
           value: 'https://github.com/bcgov/ckan-ui.git'
         - name: revision
-          value: dev
+          value: {{ .Values.branch }}
         - name: submodules
           value: 'true'
         - name: depth
