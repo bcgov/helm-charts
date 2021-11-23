@@ -7,7 +7,7 @@ spec:
     - name: build-with-buildah
       params:
         - name: IMAGE
-          value: image-registry.openshift-image-registry.svc:5000/40db83-tools/{{ include "ocp-tekton-ckan-ui.fullname" . }}-backend
+          value: image-registry.apps.silver.devops.gov.bc.ca/40db83-tools/{{ include "ocp-tekton-ckan-ui.fullname" . }}-backend
         - name: BUILDAH_IMAGE
           value: >-
             registry.redhat.io/rhel8/buildah@sha256:6a68ece207bc5fd8db2dd5cc2d0b53136236fb5178eb5b71eebe5d07a3c33d13
