@@ -81,5 +81,4 @@ spec:
         - clone-ckan-ui-repo
   workspaces:
     - name: shared-workspace
-    - name: source
     - name: dockerconfig
