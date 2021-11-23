@@ -30,7 +30,7 @@ spec:
       script: |
         curl -L -O https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux32
         chmod ugo+x ./jq-linux32
-        AUTH=$(./jq-linux32 '.["image-registry.apps.silver.devops.gov.bc.ca"].auth' -r dockerconfig.json | base64 -d)
+        AUTH=$(./jq-linux32 '.["image-registry.apps.silver.devops.gov.bc.ca"].auth' -r /root/.docker/.dockerconfigjson | base64 -d)
         buildah --creds="$AUTH" --storage-driver=$(params.STORAGE_DRIVER) bud \
           --no-cache -f $(params.DOCKERFILE) -t $(params.IMAGE) --isolation chroot $(params.CONTEXT)
       volumeMounts:
