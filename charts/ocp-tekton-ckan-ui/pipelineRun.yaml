@@ -5,8 +5,7 @@ metadata:
 spec:
   pipelineRef:
     name: {{ include "ocp-tekton-ckan-ui.fullname" . }}
-  serviceAccountName: 40dbf3-vault
-  
+
   timeout: 1h0m0s
   workspaces:
     - emptyDir: {}
