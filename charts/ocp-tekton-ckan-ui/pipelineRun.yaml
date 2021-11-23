@@ -1,10 +1,10 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  name: {{ include "ocp-tekton.fullname" . }}-run
+  name: {{ include "ocp-tekton-ckan-ui.fullname" . }}-run
 spec:
   pipelineRef:
-    name: {{ include "ocp-tekton.fullname" . }}
+    name: {{ include "ocp-tekton-ckan-ui.fullname" . }}
   serviceAccountName: 40dbf3-vault
   
   timeout: 1h0m0s

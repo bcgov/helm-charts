@@ -3,7 +3,7 @@ kind: Pipeline
 metadata:
   labels:
     wip: 'true'
-  name: {{ include "ocp-tekton.fullname" . }}
+  name: {{ include "ocp-tekton-ckan-ui.fullname" . }}
 spec:
   tasks:
     - name: clone-ckan-ui-repo
