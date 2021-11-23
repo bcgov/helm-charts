@@ -1,0 +1,33 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: tmp-{{ include "ocp-tekton-ckan-ui.fullname" . }}-build-the-image
+spec:
+  tasks:
+    - name: build-with-buildah
+      params:
+        - name: IMAGE
+          value: {{ include "ocp-tekton-ckan-ui.fullname" . }}-backend
+        - name: BUILDER_IMAGE
+          value: >-
+            registry.redhat.io/rhel8/buildah@sha256:6a68ece207bc5fd8db2dd5cc2d0b53136236fb5178eb5b71eebe5d07a3c33d13
+        - name: STORAGE_DRIVER
+          value: vfs
+        - name: DOCKERFILE
+          value: ./ckan-ui/Dockerfile
+        - name: CONTEXT
+          value: ./ckan-ui
+        - name: TLSVERIFY
+          value: 'true'
+        - name: FORMAT
+          value: oci
+        # - name: PUSH_EXTRA_ARGS
+        #   value: 
+      taskRef:
+        kind: ClusterTask
+        name: buildah
+      workspaces:
+        - name: repo
+          workspace: shared-workspace
+  workspaces:
+    - name: shared-workspace
