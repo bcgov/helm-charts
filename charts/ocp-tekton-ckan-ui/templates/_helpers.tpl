@@ -2,7 +2,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "ocp-tekton.name" -}}
+{{- define "ocp-tekton-ckan-ui.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
@@ -11,7 +11,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "ocp-tekton.fullname" -}}
+{{- define "ocp-tekton-ckan-ui.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -27,16 +27,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "ocp-tekton.chart" -}}
+{{- define "ocp-tekton-ckan-ui.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
 Common labels
 */}}
-{{- define "ocp-tekton.labels" -}}
-helm.sh/chart: {{ include "ocp-tekton.chart" . }}
-{{ include "ocp-tekton.selectorLabels" . }}
+{{- define "ocp-tekton-ckan-ui.labels" -}}
+helm.sh/chart: {{ include "ocp-tekton-ckan-ui.chart" . }}
+{{ include "ocp-tekton-ckan-ui.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -46,17 +46,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "ocp-tekton.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "ocp-tekton.name" . }}
+{{- define "ocp-tekton-ckan-ui.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "ocp-tekton-ckan-ui.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "ocp-tekton.serviceAccountName" -}}
+{{- define "ocp-tekton-ckan-ui.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
-    {{ default (include "ocp-tekton.fullname" .) .Values.serviceAccount.name }}
+    {{ default (include "ocp-tekton-ckan-ui.fullname" .) .Values.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
