@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .Chart.Name }}-{{ .Release.Name }}-pvc
+  name: {{ include "ocp-tekton-ckan-ui.fullname" . }}-pvc
 spec:
   accessModes:
   - ReadWriteMany

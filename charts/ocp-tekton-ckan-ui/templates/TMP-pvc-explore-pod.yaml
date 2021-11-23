@@ -1,15 +1,29 @@
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: {{ include "ocp-tekton-ckan-ui.fullname" . }}-show-contents-of-pipeline-pvc
+  labels:
+    app: {{ include "ocp-tekton-ckan-ui.fullname" . }}-pvc-explorer
 spec:
-  volumes:
-    - name: pv-to-explore
-      persistentVolumeClaim:
-        claimName: {{ .Chart.Name }}-{{ .Release.Name }}-pvc
-  containers:
-    - name: task-pv-container
-      image: ubuntu
-      volumeMounts:
-        - mountPath: "/workspace"
-          name: pv-to-explore
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "ocp-tekton-ckan-ui.fullname" . }}-pvc-explorer
+  template:
+    metadata:
+      labels:
+        app: {{ include "ocp-tekton-ckan-ui.fullname" . }}-pvc-explorer
+    spec:
+      volumes: 
+        - name: pv-to-explore
+          persistentVolumeClaim:
+            claimName: {{ include "ocp-tekton-ckan-ui.fullname" . }}-pvc
+      containers:
+        - name: task-pv-container
+          image: ubuntu
+          command:
+            - sleep
+            - infinity
+          volumeMounts:
+            - mountPath: "/workspace"
+              name: pv-to-explore
