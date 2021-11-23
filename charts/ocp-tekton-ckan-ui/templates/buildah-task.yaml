@@ -33,6 +33,11 @@ spec:
       volumeMounts:
         - name: varlibcontainers
           mountPath: /var/lib/containers
+      resources:
+        requests:
+          memory: 1Gi
+        limits:
+          memory: 2Gi
     - name: push
       image: $(params.BUILDAH_IMAGE)
       workingDir: $(workspaces.source.path)
