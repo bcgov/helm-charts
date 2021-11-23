@@ -7,8 +7,8 @@ spec:
     - name: build-with-buildah
       params:
         - name: IMAGE
-          value: {{ include "ocp-tekton-ckan-ui.fullname" . }}-backend
-        - name: BUILDER_IMAGE
+          value: image-registry.openshift-image-registry.svc:5000/40db83-tools/{{ include "ocp-tekton-ckan-ui.fullname" . }}-backend
+        - name: BUILDAH_IMAGE
           value: >-
             registry.redhat.io/rhel8/buildah@sha256:6a68ece207bc5fd8db2dd5cc2d0b53136236fb5178eb5b71eebe5d07a3c33d13
         - name: STORAGE_DRIVER
@@ -17,17 +17,14 @@ spec:
           value: ./ckan-ui/Dockerfile
         - name: CONTEXT
           value: ./ckan-ui
-        - name: TLSVERIFY
-          value: 'true'
-        - name: FORMAT
-          value: oci
-        # - name: PUSH_EXTRA_ARGS
-        #   value: 
       taskRef:
-        kind: ClusterTask
+        kind: Task
         name: buildah
       workspaces:
-        - name: repo
+        - name: source
           workspace: shared-workspace
+        - name: dockerconfig
+          workspace: dockerconfig
   workspaces:
     - name: shared-workspace
+    - name: dockerconfig
