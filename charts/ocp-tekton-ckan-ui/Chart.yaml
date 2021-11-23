@@ -1,5 +1,5 @@
 apiVersion: v2
-name: ocp-tekton
+name: ocp-tekton-ckan-ui
 description: A Helm chart for Deploying a Tekton Pipeline
 
 # A chart can be either an 'application' or a 'library' chart.
