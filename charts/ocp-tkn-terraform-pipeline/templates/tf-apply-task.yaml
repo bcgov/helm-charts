@@ -1,0 +1,77 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: {{ include "ocp-tkn-terraform-pipeline.fullname" . }}-terraform-apply
+  labels:
+    {{- include "ocp-tkn-terraform-pipeline.labels" . | nindent 4 }}
+spec:
+  description: This Task can be used to download terraform cli
+  params:
+    - description: Terraform version
+      name: terraformVersion
+      type: string
+    - description: Source folder of terraform files
+      name: terraformSourceFolder
+      type: string
+    - description: Source NPM Package
+      name: packageRef
+      type: string
+    - description: Postgres connection string
+      name: terraformBackendPostgresql
+      type: string
+    - description: Release destination namespace
+      name: releaseNamespace
+      type: string
+  steps:
+    - env:
+        - name: TERRAFORM_VERSION
+          value: $(params.terraformVersion)
+        - name: TERRAFORM_SOURCE_FOLDER
+          value: $(params.terraformSourceFolder)
+        - name: WORKSPACE_TERRAFORM_PATH
+          value: $(workspaces.terraform.path)
+        - name: PACKAGE_REF
+          value: $(params.packageRef)
+        - name: TF_BACKEND_POSTGRES_CONN_STR
+          value: $(params.terraformBackendPostgresql)
+      image: 'docker.io/node:16'
+      name: download-terraform
+      resources: {}
+      script: >
+        #!/usr/bin/env sh
+
+        set +x
+
+        cd "${WORKSPACE_TERRAFORM_PATH}"
+
+        export PATH=$PATH:`pwd`
+
+        if [ ! -e terraform_"${TERRAFORM_VERSION}"_linux_amd64.zip ]; then
+          curl -L -O https://releases.hashicorp.com/terraform/"${TERRAFORM_VERSION}"/terraform_"${TERRAFORM_VERSION}"_linux_amd64.zip
+          unzip terraform_"${TERRAFORM_VERSION}"_linux_amd64.zip
+        fi
+
+        terraform version
+
+
+        export
+
+        SOURCE_FILES_PATH=node_modules/@"${PACKAGE_REF}"/"${TERRAFORM_SOURCE_FOLDER}"
+
+        cd "${SOURCE_FILES_PATH}"
+
+        terraform init -no-color -backend-config="${TF_BACKEND_POSTGRES_CONN_STR}"  || echo
+        "Done!"
+
+        terraform workspace new default || if [ \$? -eq 0 ]; then echo "Done!";
+        else echo "Workspace \"default\" was not created"; fi
+
+        terraform init -no-color
+
+        oc project ${releaseNamespace}
+
+        terraform plan
+  workspaces:
+    - name: terraform
+    - name: source
+    - name: output

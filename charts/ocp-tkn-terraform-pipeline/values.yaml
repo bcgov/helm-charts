@@ -1,0 +1,33 @@
+githubAccessToken: ""
+
+githubWebhookSecret: ""
+
+pvc:
+  storage: "1Gi"
+  storageClassName: "netapp-file-standard"
+  volumeMode: "Filesystem"
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+npmPackageRef: ""
+
+# gitBranch contains the source code
+# gitTriggerBranch is responsible for activating webhook upon push events. Ignore if same as gitBranch.
+terraformConfig:
+  sourceFolder: ""
+  pgUser: ""
+  pgPassword: ""
+  pgInstance: ""
+  releaseNamespace: ""
+  environments: []
+  # dev:
+  #   gitBranch: "deploy/dev"
+  #   gitTriggerBranch: "dev"
+  #   pgDatabase: "terraform_dev"
