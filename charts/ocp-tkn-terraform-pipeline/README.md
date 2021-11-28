@@ -1,4 +1,4 @@
-# ocp-tkn-terraform-pipeline Terraform
+# Tekton CI/CD for Terraform Deployment
 
 Helm chart to create a tekton pipeline on OCP to deploy a terraform plan
 
@@ -31,10 +31,10 @@ The following tables list the configurable parameters of the ocp-terraform-pipel
 | `githubAccessToken`           | Personal access token to access private repository | ""                       |
 | `githubWebhookSecret`     | Secret key - GitHub uses it to create a hash signature with each payload. This hash signature is included with the headers of each request as `X-Hub-Signature-25`. The intention is to calculate a hash using your `githubWebhookSecret`, and ensure that the result matches the hash from GitHub | ""                               |
 | `pvc`         | Persistence Volume Claim  |                                                              |
-| `pvc.storage`         | Persistence Volume Claim  | `1Gi` |
-| `pvc.storageClassName`         | Persistence Volume Claim  | netapp-file-standard |
-| `pvc.volumeMode`         | Persistence Volume Claim  | Filesystem |
-| `serviceAccount` | The service account that holds git access token and used for cloning the private repository |                                                 |
+| `pvc.storage`         | Storage Size  | `1Gi` |
+| `pvc.storageClassName`         | Storage Class Name  | netapp-file-standard |
+| `pvc.volumeMode`         | Volume Mode  | Filesystem |
+| `serviceAccount` | The service account that holds git access token and used for cloning private repo |                                                 |
 | `serviceAccount.create` | The service account used for cloning the private repository  |true|
 | `serviceAccount.annotations` | The service account used for cloning the private repository  |{}|
 | `serviceAccount.name` | The service account used for cloning the private repository  |""|
@@ -46,10 +46,10 @@ The following tables list the configurable parameters of the ocp-terraform-pipel
 | `terraformConfig.pgInstance` | Postgres instance name |                          |
 | `terraformConfig.releaseNamespace         ` | The namespace where the apps to be deployed |      |
 | `terraformConfig.environments` | A map object containing key value pairs, where key is the environment name and value is an object that holds environment specific properties | [dev: [gitBranch: "deploy/dev", gitTriggerBranch: "dev", pgDatabase: "terraform_dev"]] |
-| `terraformConfig.environments['ENVIRONMENT_NAME']` | `ENVIRONMENT_NAME` is the name of the environment (ex.: dev, test or prod) | dev |
-| `gitBranch` | The github branch that has the `package-tag` file containing the version to deploy | deploy/dev |
-| `gitTriggerBranch` (optional) | The github branch that triggers webhook. Leave it empty if same as `gitBranch` | dev |
-| `pgDatabase` | Database that hold environment specific terraform state | terraform_dev |
+| `terraformConfig.environments['<ENVIRONMENT_NAME>']` | `<ENVIRONMENT_NAME>` is the name of the environment (ex.: dev, test or prod) | dev |
+| `<ENVIRONMENT_NAME>.gitBranch` | The github branch that has the `package-tag` file containing the version to deploy | deploy/dev |
+| `<ENVIRONMENT_NAME>.gitTriggerBranch` (optional) | The github branch that triggers webhook. Leave it empty if same as `gitBranch` | dev |
+| `<ENVIRONMENT_NAME>.pgDatabase` | Database that hold environment specific terraform state | terraform_dev |
 
 ## Create a webhook
 
