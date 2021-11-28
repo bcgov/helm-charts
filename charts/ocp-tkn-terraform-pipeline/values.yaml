@@ -16,7 +16,7 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
-npmPackageRef: ""
+npmPackageRef: "bcgov-dss/api-serv-infra"
 
 # gitBranch contains the source code
 # gitTriggerBranch is responsible for activating webhook upon push events. Ignore if same as gitBranch.
@@ -26,8 +26,8 @@ terraformConfig:
   pgPassword: ""
   pgInstance: ""
   releaseNamespace: ""
-  environments: []
-  # dev:
-  #   gitBranch: "deploy/dev"
-  #   gitTriggerBranch: "dev"
-  #   pgDatabase: "terraform_dev"
+  environments:
+    dev:
+      gitBranch: "deploy/dev"
+      gitTriggerBranch: "dev"
+      pgDatabase: "terraform_dev"

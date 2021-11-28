@@ -59,3 +59,20 @@ The following tables list the configurable parameters of the ocp-terraform-pipel
 - Use `githubWebhookSecret` from your `values` file as the secret 
 - Since this pipeline supports only push events, choose `Just the push event` option
 - Click `Add webhook`
+
+## Grant `Pipeline` Service Account Acesss to Environment Projects
+
+```bash
+export tools=<TOOLS_NAMESPACE>
+
+oc -n $tools policy add-role-to-user admin system:serviceaccount:$tools:pipeline
+
+export project=<DEV_NAMESPACE>
+oc -n $project policy add-role-to-user admin system:serviceaccount:$tools:pipeline
+
+export project=<TEST_NAMESPACE>
+oc -n $project policy add-role-to-user admin system:serviceaccount:$tools:pipeline
+
+export project=<PROD_NAMESPACE>
+oc -n $project policy add-role-to-user admin system:serviceaccount:$tools:pipeline
+```

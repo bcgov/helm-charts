@@ -34,15 +34,17 @@ spec:
           value: $(params.packageRef)
         - name: TF_BACKEND_POSTGRES_CONN_STR
           value: $(params.terraformBackendPostgresql)
+        - name: OCP_RELEASE_NAMESPACE
+          value: $(params.releaseNamespace)
       image: 'docker.io/node:16'
       name: download-terraform
       resources: {}
       script: >
         #!/usr/bin/env sh
 
-        set +x
-
         cd "${WORKSPACE_TERRAFORM_PATH}"
+
+        set +x
 
         export PATH=$PATH:`pwd`
 
@@ -54,9 +56,7 @@ spec:
         terraform version
 
 
-        export
-
-        SOURCE_FILES_PATH=node_modules/@"${PACKAGE_REF}"/"${TERRAFORM_SOURCE_FOLDER}"
+        export SOURCE_FILES_PATH=node_modules/@"${PACKAGE_REF}"/"${TERRAFORM_SOURCE_FOLDER}"
 
         cd "${SOURCE_FILES_PATH}"
 
@@ -68,9 +68,9 @@ spec:
 
         terraform init -no-color
 
-        oc project ${releaseNamespace}
+        oc project "${OCP_RELEASE_NAMESPACE}"
 
-        terraform plan
+        terraform apply -no-color --auto-approve
   workspaces:
     - name: terraform
     - name: source
