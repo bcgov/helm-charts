@@ -1,0 +1,40 @@
+{{- $fullName := include "ocp-tkn-terraform-pipeline.fullname" . -}}
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: {{ $fullName }}-git-trigger
+  labels:
+    {{- include "ocp-tkn-terraform-pipeline.labels" . | nindent 4 }}
+spec:
+  namespaceSelector: {}
+  podTemplate: {}
+  resources: {}
+  serviceAccountName: pipeline
+  triggers:
+    {{- range $key, $val := .Values.terraformConfig.environments }}
+    - bindings:
+        - kind: TriggerBinding
+          ref: {{ $fullName }}-binding
+      interceptors:
+        - github:
+            eventTypes:
+              - push
+            secretRef:
+              secretKey: secretToken
+              secretName: {{ $fullName }}-git-webhook
+        - cel:
+            filter: body.ref == "refs/heads/{{ .gitTriggerBranch | default .gitBranch }}"
+            overlays:
+              - expression: r"{{ $key }}"
+                key: name
+              - expression: r"{{ $val.gitBranch }}"
+                key: deploy_branch
+              - expression: r"{{ $.Values.terraformConfig.releaseNamespace }}-{{ $key }}"
+                key: release_namespace
+              - expression: >-
+                  r"conn_str=postgres://{{ $.Values.terraformConfig.pgUser }}:{{ $.Values.terraformConfig.pgPassword }}@{{ $.Values.terraformConfig.pgInstance }}/{{ $val.pgDatabase }}?sslmode=disable"
+                key: db_conn_str
+      name: github-listener
+      template:
+        ref: {{ $fullName }}-template
+    {{- end }}

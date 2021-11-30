@@ -1,0 +1,14 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ include "ocp-tkn-terraform-pipeline.fullname" . }}-pvc
+  labels:
+    {{- include "ocp-tkn-terraform-pipeline.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{.Values.pvc.storage}}
+  storageClassName: {{.Values.pvc.storageClassName}}
+  volumeMode: {{.Values.pvc.volumeMode}}

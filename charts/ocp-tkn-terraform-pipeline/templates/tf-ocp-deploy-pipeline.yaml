@@ -1,0 +1,92 @@
+{{- $fullName := include "ocp-tkn-terraform-pipeline.fullname" . -}}
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "ocp-tkn-terraform-pipeline.labels" . | nindent 4 }}
+spec:
+  params:
+    - description: Git repository url
+      name: git-repo-url
+      type: string
+    - description: Git deploy/release branch
+      name: git-release-branch
+      type: string
+    - description: Deploy namespace
+      name: release-namespace
+      type: string
+    - description: Deployment environment
+      name: deployment-env
+      type: string
+    - description: Source NPM Package
+      name: package-ref
+      type: string
+    - description: Terraform CLI version
+      name: terraform-version
+      type: string
+    - description: Postgres connection string
+      name: terraform-backend-postgresql
+      type: string
+    - description: Folder containing terraform files
+      name: terraform-source-folder
+      type: string
+  tasks:
+    - name: clone-repository
+      params:
+        - name: url
+          value: $(params.git-repo-url)
+        - name: subdirectory
+          value: deployment
+        - name: revision
+          value: $(params.git-release-branch)
+      taskRef:
+        kind: Task
+        name: {{ $fullName }}-git-clone
+      workspaces:
+        - name: output
+          workspace: shared-data
+    - name: install-source-code
+      params:
+        - name: packageRef
+          value: $(params.package-ref)
+        - name: terraformSourceFolder
+          value: $(params.terraform-source-folder)
+        - name: deploymentEnv
+          value: $(params.deployment-env)
+      runAfter:
+        - clone-repository
+      taskRef:
+        kind: Task
+        name: {{ $fullName }}-pull-source-code
+      workspaces:
+        - name: source
+          workspace: shared-data
+        - name: output
+          workspace: shared-data
+    - name: setup-terraform
+      params:
+        - name: terraformVersion
+          value: $(params.terraform-version)
+        - name: terraformSourceFolder
+          value: $(params.terraform-source-folder)
+        - name: packageRef
+          value: $(params.package-ref)
+        - name: terraformBackendPostgresql
+          value: $(params.terraform-backend-postgresql)
+        - name: releaseNamespace
+          value: $(params.release-namespace)
+      runAfter:
+        - install-source-code
+      taskRef:
+        kind: Task
+        name: {{ $fullName }}-terraform-apply
+      workspaces:
+        - name: terraform
+          workspace: shared-data
+        - name: source
+          workspace: shared-data
+        - name: output
+          workspace: shared-data
+  workspaces:
+    - name: shared-data

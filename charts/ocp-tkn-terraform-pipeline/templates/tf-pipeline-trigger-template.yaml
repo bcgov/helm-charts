@@ -1,0 +1,54 @@
+{{- $fullName := include "ocp-tkn-terraform-pipeline.fullname" . -}}
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: {{ $fullName }}-template
+  labels:
+    {{- include "ocp-tkn-terraform-pipeline.labels" . | nindent 4 }}
+spec:
+  params:
+    - name: git-repo-url
+    - name: ocp-release-namespace
+    - name: git-deploy-branch
+    - name: pipeline-db-conn-str
+    - name: deployment-environment
+    - name: deployment-env-name
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: {{ $fullName }}-deployment-
+      spec:
+        serviceAccountName: pipeline
+        serviceAccountNames:
+          - taskName: clone-repository
+            serviceAccountName: {{ .Values.serviceAccount.name }}-git-clone
+        params:
+          - name: git-repo-url
+            value: $(tt.params.git-repo-url)
+          - name: git-release-branch
+            value: $(tt.params.git-deploy-branch)
+          - name: release-namespace
+            value: $(tt.params.ocp-release-namespace)
+          - name: deployment-env
+            value: $(tt.params.deployment-env-name)
+          - name: package-ref
+            value: {{ .Values.npmPackageRef }}
+          - name: terraform-version
+            value: {{ .Values.terraformConfig.version}}
+          - name: terraform-backend-postgresql
+            value: $(tt.params.pipeline-db-conn-str)
+          - name: terraform-source-folder
+            value: {{ .Values.terraformConfig.sourceFolder }}
+        pipelineRef:
+          name: {{ $fullName }}
+        workspaces:
+          - name: shared-data
+            persistentVolumeClaim:
+              claimName: {{ $fullName }}-pvc
+          - name: ssh-creds
+            secret:
+              secretName: tkn-ssh-credentials
+          - name: docker-config
+            secret:
+              secretName: tkn-docker-credentials

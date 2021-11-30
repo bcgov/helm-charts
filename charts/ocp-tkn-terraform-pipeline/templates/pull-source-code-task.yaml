@@ -1,0 +1,81 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: {{ include "ocp-tkn-terraform-pipeline.fullname" . }}-pull-source-code
+  labels:
+    {{- include "ocp-tkn-terraform-pipeline.labels" . | nindent 4 }}
+spec:
+  description: This Task downloads npm package and extract source files 
+  params:
+    - description: Source folder
+      name: terraformSourceFolder
+      type: string
+    - description: Source NPM Package
+      name: packageRef
+      type: string
+    - description: Deployment environment
+      name: deploymentEnv
+      type: string
+  steps:
+    - env:
+        - name: TERRAFORM_SOURCE_FOLDER
+          value: $(params.terraformSourceFolder)
+        - name: PACKAGE_REF
+          value: $(params.packageRef)
+        - name: DEPLOYMENT_ENV
+          value: $(params.deploymentEnv)
+        - name: WORKSPACE_SOURCE_PATH
+          value: $(workspaces.source.path)
+        - name: GITHUB_AUTH_SECRET
+          value: {{ include "ocp-tkn-terraform-pipeline.fullname" . }}-git-auth
+      image: 'docker.io/node:16'
+      name: init-source
+      resources: {}
+      script: >
+        #!/usr/bin/env sh
+
+        cd "${WORKSPACE_SOURCE_PATH}"
+
+        set +x
+
+        export PATH=$PATH:`pwd`
+
+        if [ ! -e oc ]; then
+          curl -L -O https://downloads-openshift-console.apps.gold.devops.gov.bc.ca/amd64/linux/oc.tar
+          tar -xf oc.tar
+        fi
+
+        if [ ! -e jq ]; then
+          curl -L -O https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux32
+          chmod ugo+x ./jq-linux32
+          mv jq-linux32 jq
+        fi
+
+        npm install -g json2yaml
+
+        export PACKAGE_TAG=`cat deployment/package-tag`
+
+        echo "Using ${PACKAGE_TAG}"
+
+        export GITHUB_TOKEN=`oc get secret "${GITHUB_AUTH_SECRET}" -o json | ./jq
+        .data.username | sed -e 's/^"//' -e 's/"\$//' | base64 -d`
+
+        echo "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" > ~/.npmrc
+
+        echo "registry=https://npm.pkg.github.com" >> ~/.npmrc
+
+        npm install "@${PACKAGE_REF}@${PACKAGE_TAG}"
+
+        export
+        SOURCE_FILES_PATH=node_modules/@"${PACKAGE_REF}"/"${TERRAFORM_SOURCE_FOLDER}"
+
+        cd "${SOURCE_FILES_PATH}"
+
+        oc get secret terraform-pipeline-"${DEPLOYMENT_ENV}"-tfvars -o json >
+        secrets.json
+
+        node ../../scripts/split-tfvars.js secrets.json
+        terraform.secret.auto.tfvars
+  workspaces:
+    - name: source
+    - name: output
