@@ -1,0 +1,17 @@
+{{- $fullName := include "ocp-tkn-terraform-pipeline.fullname" . -}}
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: el-{{ $fullName }}-listener-route
+  labels:
+    {{- include "ocp-tkn-terraform-pipeline.labels" . | nindent 4 }}
+    eventlistener: {{ $fullName }}-git-trigger
+spec:
+  host: >-
+    el-{{ $fullName }}-listener-{{ .Values.terraformConfig.releaseNamespace }}-tools.{{ .Values.edgeBaseUrl }}
+  to:
+    kind: Service
+    name: el-{{ $fullName }}-git-trigger
+  port:
+    targetPort: http-listener
+  wildcardPolicy: None

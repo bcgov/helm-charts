@@ -1,0 +1,28 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: {{ include "ocp-tkn-terraform-pipeline.fullname" . }}-binding
+  labels:
+    {{- include "ocp-tkn-terraform-pipeline.labels" . | nindent 4 }}
+spec:
+  params:
+    - name: git-revision
+      value: $(body.head_commit.id)
+    - name: git-commit-message
+      value: $(body.head_commit.message)
+    - name: git-repo-url
+      value: $(body.repository.clone_url)
+    - name: git-repo-name
+      value: $(body.repository.name)
+    - name: content-type
+      value: $(header.Content-Type)
+    - name: pusher-name
+      value: $(body.pusher.name)
+    - name: git-deploy-branch
+      value: $(extensions.deploy_branch)
+    - name: ocp-release-namespace
+      value: $(extensions.release_namespace)
+    - name: pipeline-db-conn-str
+      value: $(extensions.db_conn_str)
+    - name: deployment-env-name
+      value: $(extensions.name)
