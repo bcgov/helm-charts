@@ -39,6 +39,7 @@ The following tables list the configurable parameters of the ocp-terraform-pipel
 | `serviceAccount.annotations` | The service account used for cloning the private repository  |{}|
 | `serviceAccount.name` | The service account used for cloning the private repository  |""|
 | `npmPackageRef`         | The NPM package that holds the terraform configuration | bcgov-dss/api-serv-infra |
+| `pipelineRunsRetentionDays` | The pipelineruns are kept upto the number of days | "5" |
 | `terraformConfig`         | Terraform configuration |      |
 | `terraformConfig.sourceFolder` | Folder that contains terraform source code |  |
 | `terraformConfig.pgUser` | Username of the database owner that holds terraform state |      |
