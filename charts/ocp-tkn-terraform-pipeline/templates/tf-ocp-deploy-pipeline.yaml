@@ -31,12 +31,9 @@ spec:
     - description: Folder containing terraform files
       name: terraform-source-folder
       type: string
-<<<<<<< HEAD
     - description: Pipelineruns are only kept up to this number of days
       name: retain-days
       type: string
-=======
->>>>>>> master
   tasks:
     - name: clone-repository
       params:
@@ -94,7 +91,6 @@ spec:
           workspace: shared-data
         - name: output
           workspace: shared-data
-<<<<<<< HEAD
   finally:
     - name: cleanup
       params:
@@ -106,7 +102,5 @@ spec:
       workspaces:
         - name: cleanup
           workspace: shared-data
-=======
->>>>>>> master
   workspaces:
     - name: shared-data
