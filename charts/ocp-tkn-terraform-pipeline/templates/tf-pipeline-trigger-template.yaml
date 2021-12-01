@@ -40,8 +40,11 @@ spec:
             value: $(tt.params.pipeline-db-conn-str)
           - name: terraform-source-folder
             value: {{ .Values.terraformConfig.sourceFolder }}
+<<<<<<< HEAD
           - name: retain-days
             value: '{{ .Values.pipelineRunsRetentionDays }}'
+=======
+>>>>>>> master
         pipelineRef:
           name: {{ $fullName }}
         workspaces:
