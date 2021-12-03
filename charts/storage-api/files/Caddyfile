@@ -10,5 +10,7 @@
         header_upstream Forwarded host={host}
         header_downstream Access-Control-Allow-Origin *
         header_downstream Access-Control-Allow-Headers *
+        header_upstream Access-Control-Allow-Origin *
+        header_upstream Access-Control-Allow-Headers *
     }
 }
