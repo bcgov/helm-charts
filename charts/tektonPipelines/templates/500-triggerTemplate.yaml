@@ -1,0 +1,67 @@
+{{ range .Values.pipelines }}
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: {{ .triggerName }}
+  labels:
+    app: {{ template "pipelines.name" $ }}
+    chart: {{ template "pipelines.chart" $ }}
+    release: {{ $.Release.Name }}
+    heritage: {{ $.Release.Service }}
+spec:
+  {{- if .params -}}
+  {{- if gt (len .params) 0 }}
+  params:
+    {{- range .params }}
+    - name: {{ .name }}
+      description: {{ .description }}
+      {{- if .default }}
+      default: {{ .default }}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- end }}
+  
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1alpha1
+      kind: PipelineRun
+      metadata:
+        name: {{ .name }}-run-$(uid)
+      spec:
+        serviceAccountName: {{ $.Values.serviceAccountName }}
+        pipelineRef:
+          name: {{ .name }}
+
+        {{- if .params -}}
+        {{- if gt (len .params) 0 }}
+        params:
+          {{- range .params }}
+          - name: {{ .name }}
+            value: {{ .resourceTemplate }}
+          {{- end -}}
+        {{- end -}}
+        {{- end }}
+
+        {{- if .resources -}}
+        {{- if gt (len .resources) 0 }}
+        resources:
+          {{- range .resources }}
+          - name: {{ .name }}
+            resourceSpec:
+              type: {{ .type }}
+              {{- if .params -}}
+              {{- if gt (len .params) 0 }}
+              params:
+                {{- range .params }}
+                - name: {{ .name }}
+                  value: {{ .value }}
+                {{- end -}}
+              {{- end -}}
+              {{- end -}}
+
+          {{- end -}}
+        {{- end -}}
+        {{- end -}}
+        
+{{ end }}

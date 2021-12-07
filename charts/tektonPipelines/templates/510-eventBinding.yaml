@@ -1,0 +1,26 @@
+{{- if .Values.events.install -}}
+{{ range .Values.events.listeners }}
+
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: {{ .name }}
+  labels:
+    app: {{ template "pipelines.name" $ }}
+    chart: {{ template "pipelines.chart" $ }}
+    release: {{ $.Release.Name }}
+    heritage: {{ $.Release.Service }}
+spec:
+  serviceAccountName: {{ $.Values.serviceAccountName }}
+  triggers:
+    {{- range .triggers }}
+    - template:
+        name: {{ .trigger }}
+      bindings:
+        - name: {{ .binding }}
+          value: {{ .binding }}
+    {{- end -}}
+
+{{- end -}}
+{{ end }}

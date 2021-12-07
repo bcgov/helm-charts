@@ -1,0 +1,71 @@
+{{ range .Values.tasks -}}
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: {{ .name }}
+  labels:
+    app: {{ template "pipelines.name" $ }}
+    chart: {{ template "pipelines.chart" $ }}
+    release: {{ $.Release.Name }}
+    heritage: {{ $.Release.Service }}
+spec:
+  {{- if .workspaces }}
+  workspaces:
+{{ .workspaces | toYaml | indent 4}}
+{{ end }}
+  {{- if .params -}}
+  {{- if gt (len .params) 0 }}
+  params:
+    {{- range .params }}
+    - name: {{ .name }}
+      type: {{ .type }}
+      description: {{ .description }}
+      default: {{ .default }}
+    {{- end -}}
+  {{- end -}}
+  {{- end }}
+  
+  {{- if .resources -}}
+  {{- if gt (len .resources) 0 }}
+  inputs:
+    resources:
+      {{- range .resources }}
+      - name: {{ .name }}
+        type: {{ .type }}
+      {{- end -}}
+  {{- end -}}
+  {{- end }}
+
+  {{- if .steps -}}
+  {{- if gt (len .steps) 0 }}
+  steps:
+    {{- range .steps }}
+    - name: {{ .name }}
+      image: {{ .image }}
+      {{ if .script }}
+      script: |
+{{ .script | indent 8 }}
+      {{ else }}
+      command: 
+      {{- range .command }}
+        - {{ . }}
+      {{- end -}}
+      {{ end }}
+      env: 
+      {{- range .env }}
+        - name: {{ .name }}
+          {{ if .secret }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ .secret }}
+              key: {{ .key }}
+          {{- else }}
+          value: "{{ .value }}"
+          {{- end }}
+      {{- end -}}
+    {{ end }}
+  {{ end }}
+  {{ end }}
+
+{{ end }}

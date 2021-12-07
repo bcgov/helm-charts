@@ -1,0 +1,261 @@
+serviceAccountName: build-bot
+
+nameOverride: ""
+fullnameOverride: ""
+
+vault:
+  token: TOKEN
+  address: https://vault.server:8200
+
+gitlab:
+  host: "gitlab.com"
+  access_token: TOKEN
+
+git:
+  username: USERNAME_HERE
+  password: PASSWORD_HERE
+
+repos:
+  - name: metadata-curator
+    branch: master
+    url: git@github.com:bcgov/metadata-curator.git
+
+tasks:
+  - name: helm-deploy
+    params:
+      - name: release
+        type: string
+        description: "Helm Release name"
+        default: ""
+      - name: repo
+        type: string
+        description: "Helm Repo url"
+        default: ""
+      - name: chart
+        type: string
+        description: "Helm Chart name"
+        default: ""
+      - name: namespace
+        type: string
+        description: "Release Namespace"
+        default: ""
+    steps:
+      - name: install-or-upgrade
+        image: alpine/helm:3.0.2
+        command:
+          - /bin/ash
+          - "-c"
+          - "helm repo add stable $(params.repo) && helm upgrade -i --force -n $(params.namespace) $(params.release) stable/$(params.chart) --set nsp.enabled=false"
+
+
+pipelines:
+  - name: mc-pipeline-tmp
+    triggerName: mc-pipe-trigger
+    bindingName: mc-pipe-binding
+    tasks:
+      - name: clone-repo
+        ref: 
+          kind: ClusterTask
+          name: git-clone
+        params:
+          - name: url
+            value: 'https://github.com/bcgov/metadata-curator.git'
+      - name: helm-deploy
+        runAfter: 
+          - clone-repo
+        ref: 
+          name: helm-deploy
+        params:
+          - name: release
+            value: 'tek-mc-dev'
+          - name: repo
+            value: 'https://bcgov.github.io/helm-charts/'
+          - name: chart
+            value: 'metadata-curator'
+          - name: namespace
+            value: '17db4f-dev'
+
+services:
+  - name: tek-webhook-service
+    image:
+      repository: h3brandon/webhookservice
+      tag: b47305d2ecb8
+      pullPolicy: IfNotPresent
+    env:
+      - name: GITHUB
+        value: 1
+      - name: SECRET
+        secret: true
+        secretName: github-tek-secret
+        secretKey: key
+        secretValue: wootest
+      - name: REQUEST_METHOD
+        value: post
+      - name: FORWARD_TO
+        value: http://el-mc-tek-test-el.pipelines.svc.cluster.local:8080
+    port: 3000
+    type: ClusterIP
+    resources: {}
+    # If you want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+    #  cpu: 100m
+    #  memory: 128Mi
+
+    
+  
+  
+
+
+events:
+  #must be false initially or will fail
+  install: true
+  listeners:
+    - name: mc-tek-test-el
+      triggers:
+        - trigger: mc-pipe-trigger
+          binding: mc-pipe-binding
+      ingress:
+        enabled: true
+        name: mc-tek-test-ingress
+        annotations:
+          kubernetes.io/ingress.class: nginx
+        path: /
+        hosts:
+          - name: mc-tek-test-17db4f-tools.apps.silver.devops.gov.bc.ca
+            service: webhook-service
+            port: 3000
+        tls: []serviceAccountName: build-bot
+
+nameOverride: ""
+fullnameOverride: ""
+
+vault:
+  token: TOKEN
+  address: https://vault.server:8200
+
+gitlab:
+  host: "gitlab.com"
+  access_token: TOKEN
+
+git:
+  username: USERNAME_HERE
+  password: PASSWORD_HERE
+
+repos:
+  - name: metadata-curator
+    branch: master
+    url: git@github.com:bcgov/metadata-curator.git
+
+tasks:
+  - name: helm-deploy
+    params:
+      - name: release
+        type: string
+        description: "Helm Release name"
+        default: ""
+      - name: repo
+        type: string
+        description: "Helm Repo url"
+        default: ""
+      - name: chart
+        type: string
+        description: "Helm Chart name"
+        default: ""
+      - name: namespace
+        type: string
+        description: "Release Namespace"
+        default: ""
+    steps:
+      - name: install-or-upgrade
+        image: alpine/helm:3.0.2
+        command:
+          - /bin/ash
+          - "-c"
+          - "helm repo add stable $(params.repo) && helm upgrade -i --force -n $(params.namespace) $(params.release) stable/$(params.chart) --set nsp.enabled=false"
+
+
+pipelines:
+  - name: mc-pipeline-tmp
+    triggerName: mc-pipe-trigger
+    bindingName: mc-pipe-binding
+    tasks:
+      - name: clone-repo
+        ref: 
+          kind: ClusterTask
+          name: git-clone
+        params:
+          - name: url
+            value: 'https://github.com/bcgov/metadata-curator.git'
+      - name: helm-deploy
+        runAfter: 
+          - clone-repo
+        ref: 
+          name: helm-deploy
+        params:
+          - name: release
+            value: 'tek-mc-dev'
+          - name: repo
+            value: 'https://bcgov.github.io/helm-charts/'
+          - name: chart
+            value: 'metadata-curator'
+          - name: namespace
+            value: '17db4f-dev'
+
+services:
+  - name: tek-webhook-service
+    image:
+      repository: h3brandon/webhookservice
+      tag: b47305d2ecb8
+      pullPolicy: IfNotPresent
+    env:
+      - name: GITHUB
+        value: 1
+      - name: SECRET
+        secret: true
+        secretName: github-tek-secret
+        secretKey: key
+        secretValue: wootest
+      - name: REQUEST_METHOD
+        value: post
+      - name: FORWARD_TO
+        value: http://el-mc-tek-test-el.pipelines.svc.cluster.local:8080
+    port: 3000
+    type: ClusterIP
+    resources: {}
+    # If you want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+    #  cpu: 100m
+    #  memory: 128Mi
+
+    
+  
+  
+
+
+events:
+  #must be false initially or will fail
+  install: true
+  listeners:
+    - name: mc-tek-test-el
+      triggers:
+        - trigger: mc-pipe-trigger
+          binding: mc-pipe-binding
+      ingress:
+        enabled: true
+        name: mc-tek-test-ingress
+        annotations:
+          kubernetes.io/ingress.class: nginx
+        path: /
+        hosts:
+          - name: mc-tek-test-17db4f-tools.apps.silver.devops.gov.bc.ca
+            service: webhook-service
+            port: 3000
+        tls: []

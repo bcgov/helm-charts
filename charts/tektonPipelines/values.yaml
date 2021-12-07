@@ -1,0 +1,86 @@
+serviceAccountName: build-bot
+
+nameOverride: ""
+fullnameOverride: ""
+
+repos:
+  - name: ds-infra-git
+    branch: master
+    url: git@github.com:bcgov-idd/ds-infra.git
+
+tasks:
+  - name: helm3-spark
+    resources:
+      - name: ds-infra-git
+        type: git
+    steps:
+      - name: install-spark
+        image: alpine/helm:3.0.2
+        command:
+          - /bin/ash
+          - "-c"
+          - "helm repo add stable https://kubernetes-charts.storage.googleapis.com/ && helm upgrade --install -n spark spark stable/spark"
+
+pipelines:
+  - name: spark-pipeline
+    namespace: pipelines
+    createNamespace: spark
+    triggerName: spark-trigger-template
+    bindingName: spark-binding
+    tasks:
+      - name: create-namespace-spark
+        ref: 
+          name: create-namespace-spark
+      - name: helm3-spark
+        ref: 
+          name: helm3-spark
+
+services:
+  - name: webhook-service
+    image:
+      repository: h3brandon/webhookservice
+      tag: b47305d2ecb8
+      pullPolicy: IfNotPresent
+    env:
+      - name: GITHUB
+        value: 1
+      - name: SECRET
+        secret: true
+        secretName: github-secret
+        secretKey: key
+        secretValue: wootest
+      - name: REQUEST_METHOD
+        value: post
+      - name: FORWARD_TO
+        value: http://el-ds-infra-listener.pipelines.svc.cluster.local:8080
+    port: 3000
+    type: ClusterIP
+    resources: {}
+    # If you want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+    #  cpu: 100m
+    #  memory: 128Mi
+
+
+events:
+  install: true
+  listeners:
+    - name: ds-infra-listener
+      triggers:
+        - trigger: spark-trigger-template
+          binding: spark-binding
+      ingress:
+        enabled: true
+        name: spark-pipeline-ingress
+        annotations:
+          kubernetes.io/ingress.class: nginx
+        path: /
+        hosts:
+          - name: chart-example.local
+            service: webhook-service
+            port: 3000
+        tls: []
