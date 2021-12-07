@@ -18,6 +18,8 @@ serviceAccount:
 
 npmPackageRef: "bcgov-dss/api-serv-infra"
 
+pipelineRunsRetentionDays: ""
+
 # gitBranch contains the source code
 # gitTriggerBranch is responsible for activating webhook upon push events. Ignore if same as gitBranch.
 terraformConfig:
