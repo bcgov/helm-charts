@@ -1,0 +1,5 @@
+apiVersion: v2
+name: crunchy-postgres
+description: A Helm chart for Creating a Postgres Cluster Operated by Crunchy Postgres Operator
+version: 0.2.1
+appVersion: 5.0.4

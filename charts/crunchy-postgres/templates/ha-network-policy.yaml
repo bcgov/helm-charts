@@ -1,0 +1,22 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: {{ default .Release.Name .Values.name }}-allow-crunchydb-ha
+  labels:
+    postgres-operator.crunchydata.com/cluster: {{ default .Release.Name .Values.name }}
+spec:
+  podSelector:
+    matchLabels:
+      postgres-operator.crunchydata.com/cluster: {{ default .Release.Name .Values.name }}
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              postgres-operator.crunchydata.com/cluster: {{ default .Release.Name .Values.name }}
+      ports:
+        - protocol: TCP
+          port: 5432
+        - protocol: TCP
+          port: 8008
+        - protocol: TCP
+          port: 2022
