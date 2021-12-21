@@ -42,9 +42,11 @@ spec:
       script: >
         #!/usr/bin/env sh
 
-        cd "${WORKSPACE_TERRAFORM_PATH}"
+        set -eu
 
-        set +x
+        set -x
+
+        cd "${WORKSPACE_TERRAFORM_PATH}"
 
         export PATH=$PATH:`pwd`
 
@@ -54,7 +56,6 @@ spec:
         fi
 
         terraform version
-
 
         export SOURCE_FILES_PATH="${PACKAGE_REF}"/node_modules/@"${PACKAGE_REF}"/"${TERRAFORM_SOURCE_FOLDER}"
 
