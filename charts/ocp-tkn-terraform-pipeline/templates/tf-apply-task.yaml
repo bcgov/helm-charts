@@ -56,7 +56,7 @@ spec:
         terraform version
 
 
-        export SOURCE_FILES_PATH=node_modules/@"${PACKAGE_REF}"/"${TERRAFORM_SOURCE_FOLDER}"
+        export SOURCE_FILES_PATH="${PACKAGE_REF}"/node_modules/@"${PACKAGE_REF}"/"${TERRAFORM_SOURCE_FOLDER}"
 
         cd "${SOURCE_FILES_PATH}"
 
