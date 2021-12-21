@@ -34,7 +34,9 @@ spec:
       script: >
         #!/usr/bin/env sh
 
-        set +x
+        set -eu
+
+        set -x
 
         SOURCE_CODE_DIR="${WORKSPACE_SOURCE_PATH}/${PACKAGE_REF}"
 
