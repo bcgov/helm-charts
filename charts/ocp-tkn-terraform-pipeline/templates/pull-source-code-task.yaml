@@ -34,9 +34,32 @@ spec:
       script: >
         #!/usr/bin/env sh
 
-        cd "${WORKSPACE_SOURCE_PATH}"
+        set -eu
 
-        set +x
+        set -x
+
+        SOURCE_CODE_DIR="${WORKSPACE_SOURCE_PATH}/${PACKAGE_REF}"
+
+        mkdir -p "${SOURCE_CODE_DIR}"
+
+        cleandir() {
+          # Delete any existing contents of the repo directory if it exists.
+          #
+          # We don't just "rm -rf ${SOURCE_CODE_DIR}" because ${SOURCE_CODE_DIR} might be "/"
+          # or the root of a mounted volume.
+          if [ -d "${SOURCE_CODE_DIR}" ] ; then
+            # Delete non-hidden files and directories
+            rm -rf "${SOURCE_CODE_DIR:?}"/*
+            # Delete files and directories starting with . but excluding ..
+            rm -rf "${SOURCE_CODE_DIR}"/.[!.]*
+            # Delete files and directories starting with .. plus any other character
+            rm -rf "${SOURCE_CODE_DIR}"/..?*
+          fi
+        }
+
+        cleandir
+
+        cd "${WORKSPACE_SOURCE_PATH}"
 
         export PATH=$PATH:`pwd`
 
@@ -57,8 +80,10 @@ spec:
 
         echo "Using ${PACKAGE_TAG}"
 
-        export GITHUB_TOKEN=`oc get secret "${GITHUB_AUTH_SECRET}" -o json | ./jq
-        .data.username | sed -e 's/^"//' -e 's/"\$//' | base64 -d`
+        export GITHUB_TOKEN=`oc get secret "${GITHUB_AUTH_SECRET}" -o json |
+        ./jq .data.username | sed -e 's/^"//' -e 's/"\$//' | base64 -d`
+
+        cd "${SOURCE_CODE_DIR}"
 
         echo "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" > ~/.npmrc
 
@@ -67,7 +92,7 @@ spec:
         npm install "@${PACKAGE_REF}@${PACKAGE_TAG}"
 
         export
-        SOURCE_FILES_PATH=node_modules/@"${PACKAGE_REF}"/"${TERRAFORM_SOURCE_FOLDER}"
+        SOURCE_FILES_PATH="${SOURCE_CODE_DIR}"/node_modules/@"${PACKAGE_REF}"/"${TERRAFORM_SOURCE_FOLDER}"
 
         cd "${SOURCE_FILES_PATH}"
 
