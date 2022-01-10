@@ -62,6 +62,10 @@ spec:
                 secretKeyRef:
                   name: {{ template "ocwaStorageApi.fullname" . }}-secrets
                   key: access_secret
+            - name: MINIO_API_REQUESTS_DEADLINE
+              value: '30m'
+            - name: MINIO_API_REQUESTS_MAX
+              value: '200'
           ports:
             - name: minio
               containerPort: 9000
