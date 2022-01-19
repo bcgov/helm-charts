@@ -23,7 +23,7 @@ spec:
               secretKey: secretToken
               secretName: {{ $fullName }}-git-webhook
         - cel:
-            filter: body.ref == "refs/heads/{{ .gitTriggerBranch | default .gitBranch }}"
+            filter: body.ref == "refs/heads/{{ $val.gitBranch }}"
             overlays:
               - expression: r"{{ $key }}"
                 key: name
