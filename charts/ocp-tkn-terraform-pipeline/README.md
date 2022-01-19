@@ -49,7 +49,6 @@ The following tables list the configurable parameters of the ocp-terraform-pipel
 | `terraformConfig.environments` | A map object containing key value pairs, where key is the environment name and value is an object that holds environment specific properties | [dev: [gitBranch: "deploy/dev", gitTriggerBranch: "dev", pgDatabase: "terraform_dev"]] |
 | `terraformConfig.environments['<ENVIRONMENT_NAME>']` | `<ENVIRONMENT_NAME>` is the name of the environment (ex.: dev, test or prod) | dev |
 | `<ENVIRONMENT_NAME>.gitBranch` | The github branch that has the `package-tag` file containing the version to deploy | deploy/dev |
-| `<ENVIRONMENT_NAME>.gitTriggerBranch` (optional) | The github branch that triggers webhook. Leave it empty if same as `gitBranch` | dev |
 | `<ENVIRONMENT_NAME>.pgDatabase` | Database that hold environment specific terraform state | terraform_dev |
 
 ## Create a webhook
