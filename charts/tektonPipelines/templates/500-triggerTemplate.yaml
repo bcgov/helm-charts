@@ -32,6 +32,10 @@ spec:
         serviceAccountName: {{ $.Values.serviceAccountName }}
         pipelineRef:
           name: {{ .name }}
+          
+        workspaces:
+          - emptyDir: {}
+            name: shared-workspace
 
         {{- if .params -}}
         {{- if gt (len .params) 0 }}

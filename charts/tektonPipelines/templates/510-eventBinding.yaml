@@ -1,4 +1,35 @@
 {{- if .Values.events.install -}}
+
+---
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: {{ .Release.Name }}-tek-github-secret
+#   labels:
+#     app: {{ template "pipelines.name" $ }}
+#     chart: {{ template "pipelines.chart" $ }}
+#     release: {{ .Release.Name }}
+#     heritage: {{ .Release.Service }}
+# type: Opaque
+# stringData:
+#   secretToken: {{ .Values.events.token }}
+
+{{- if .Values.events.defaultRB -}}
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: defaultEdit
+subjects:
+  - kind: ServiceAccount
+    name: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: edit
+{{- end -}}
+
+
 {{ range .Values.events.listeners }}
 
 ---
@@ -12,7 +43,19 @@ metadata:
     release: {{ $.Release.Name }}
     heritage: {{ $.Release.Service }}
 spec:
-  serviceAccountName: {{ $.Values.serviceAccountName }}
+  resources:
+    kubernetesResource:
+      spec:
+        template:
+          spec:
+            containers:
+              - resources:
+                  requests:
+                    memory: "64Mi"
+                    cpu: "250m"
+                  limits:
+                    memory: "128Mi"
+                    cpu: "500m"
   triggers:
     {{- range .triggers }}
     - template:
@@ -20,6 +63,14 @@ spec:
       bindings:
         - name: {{ .binding }}
           value: {{ .binding }}
+      # interceptors:
+      #   - ref:
+      #       name: "github"
+      #     params:
+      #       - name: "secretRef"
+      #         value:
+      #           secretName: {{ $.Release.Name }}-tek-github-secret
+      #           secretKey: secretToken
     {{- end -}}
 
 {{- end -}}

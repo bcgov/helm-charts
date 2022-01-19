@@ -35,39 +35,10 @@ pipelines:
         ref: 
           name: helm3-spark
 
-services:
-  - name: webhook-service
-    image:
-      repository: h3brandon/webhookservice
-      tag: b47305d2ecb8
-      pullPolicy: IfNotPresent
-    env:
-      - name: GITHUB
-        value: 1
-      - name: SECRET
-        secret: true
-        secretName: github-secret
-        secretKey: key
-        secretValue: wootest
-      - name: REQUEST_METHOD
-        value: post
-      - name: FORWARD_TO
-        value: http://el-ds-infra-listener.pipelines.svc.cluster.local:8080
-    port: 3000
-    type: ClusterIP
-    resources: {}
-    # If you want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #  cpu: 100m
-    #  memory: 128Mi
-    # requests:
-    #  cpu: 100m
-    #  memory: 128Mi
-
 
 events:
   install: true
+  token: "token"
   listeners:
     - name: ds-infra-listener
       triggers:
