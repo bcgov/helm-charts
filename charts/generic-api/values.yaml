@@ -12,6 +12,11 @@ image:
 
 imagePullSecrets: []
 
+hostAliases: []
+# - ip: "1.2.3.4"
+#   hostnames:
+#   - "override.com"
+
 args: {}
 
 nameOverride: ""
