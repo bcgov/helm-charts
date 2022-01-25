@@ -9,7 +9,7 @@ This chart will do the following:
 * Deploy A Tekton pipeline to suit your needs as you configure based on the values.
 
 ## Examples
-Examples are available in the [examples](/examples) directory, if you have examples you can share please make a PR.
+Examples are available in the [examples](/charts/tekton-pipelines/examples) directory, if you have examples you can share please make a PR.
 
 ## Installing the Chart
 
