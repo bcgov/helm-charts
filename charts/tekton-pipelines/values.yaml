@@ -3,16 +3,8 @@ serviceAccountName: build-bot
 nameOverride: ""
 fullnameOverride: ""
 
-repos:
-  - name: ds-infra-git
-    branch: master
-    url: git@github.com:bcgov-idd/ds-infra.git
-
 tasks:
   - name: helm3-spark
-    resources:
-      - name: ds-infra-git
-        type: git
     steps:
       - name: install-spark
         image: alpine/helm:3.0.2
@@ -23,21 +15,17 @@ tasks:
 
 pipelines:
   - name: spark-pipeline
-    namespace: pipelines
-    createNamespace: spark
     triggerName: spark-trigger-template
     bindingName: spark-binding
     tasks:
       - name: create-namespace-spark
         ref: 
           name: create-namespace-spark
-      - name: helm3-spark
-        ref: 
-          name: helm3-spark
 
 
 events:
   install: true
+  defaultRB: false
   token: "token"
   listeners:
     - name: ds-infra-listener
@@ -52,6 +40,6 @@ events:
         path: /
         hosts:
           - name: chart-example.local
-            service: webhook-service
-            port: 3000
+            service: el-name-el
+            port: 8080
         tls: []
