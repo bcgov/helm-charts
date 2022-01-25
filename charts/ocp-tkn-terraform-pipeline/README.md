@@ -50,6 +50,8 @@ The following tables list the configurable parameters of the ocp-terraform-pipel
 | `terraformConfig.environments['<ENVIRONMENT_NAME>']` | `<ENVIRONMENT_NAME>` is the name of the environment (ex.: dev, test or prod) | dev |
 | `<ENVIRONMENT_NAME>.gitBranch` | The github branch that has the `package-tag` file containing the version to deploy | deploy/dev |
 | `<ENVIRONMENT_NAME>.pgDatabase` | Database that hold environment specific terraform state | terraform_dev |
+| `notifications.enabled` | Enable failure notifications | false |
+| `notifications.msteams.webhook` | MS Teams Webhook URL | |
 
 ## Create a webhook
 
