@@ -2,6 +2,12 @@ githubAccessToken: ""
 
 githubWebhookSecret: ""
 
+# Enable failure notifications
+notifications:
+  enabled: false
+  msteams:
+    webhook:
+
 pvc:
   storage: "1Gi"
   storageClassName: "netapp-file-standard"
