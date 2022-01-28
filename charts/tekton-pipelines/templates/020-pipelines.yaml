@@ -13,7 +13,7 @@ spec:
 
   workspaces:
     - name: shared-workspace
-    
+
   {{- if .resources -}}
   {{- if gt (len .resources) 0 }}
   resources:
@@ -24,10 +24,10 @@ spec:
   {{- end -}}
   {{- end }}
 
-  {{- if .params -}}
-  {{- if gt (len .params) 0 }}
+  {{- if .pipeline_params -}}
+  {{- if gt (len .pipeline_params) 0 }}
   params:
-    {{- range .params }}
+    {{- range .pipeline_params }}
     - name: {{ .name }}
       type: {{ .type }}
       description: {{ .description }}

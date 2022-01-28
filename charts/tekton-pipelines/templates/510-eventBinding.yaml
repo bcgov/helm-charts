@@ -58,20 +58,34 @@ spec:
                     cpu: "500m"
   triggers:
     {{- range .triggers }}
-    - template:
-        name: {{ .trigger }}
+    - name: {{ .name }}
+      template:
+        ref: {{ .trigger }}
       bindings:
-        - name: {{ .binding }}
-          value: {{ .binding }}
-      # interceptors:
-      #   - ref:
-      #       name: "github"
-      #     params:
-      #       - name: "secretRef"
-      #         value:
-      #           secretName: {{ $.Release.Name }}-tek-github-secret
-      #           secretKey: secretToken
+      - ref: {{ .binding }}
+      {{- if .interceptors -}}
+      {{- if gt (len .interceptors) 0 }}
+      interceptors:
+      {{- range .interceptors }}
+        - {{ .name }}:
+            {{ if .secretName }}
+            secretRef:
+              secretName: {{ .secretName }}
+              secretKey: secretToken
+            {{ end }}
+            {{ if .eventTypes }}
+            {{- if gt (len .eventTypes) 0 }}
+            eventTypes:
+              {{- range .eventTypes }}
+              - {{ .name }}
+              {{- end }}
+            {{- end }}
+            {{ else if .filter }}
+            filter: {{ .filter }}
+            {{ end }}
+      {{- end }}
+      {{- end -}}
+      {{- end }}
     {{- end -}}
-
 {{- end -}}
 {{ end }}

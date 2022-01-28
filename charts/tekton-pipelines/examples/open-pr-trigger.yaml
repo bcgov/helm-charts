@@ -1,0 +1,71 @@
+serviceAccountName: git-bot
+
+nameOverride: ""
+fullnameOverride: ""
+
+pipelines:
+  - name: geomark-clone-helm
+    triggerName: geomark-trigger-helm
+    bindingName: geomark-binding-helm
+    pipeline_params:
+      - name: git-url
+        type: string
+        description: git repo url
+        incomingValue: $(body.repository.ssh_url)
+        resourceTemplate: $(tt.params.git-url)
+      - name: pr-url
+        description: pull request url
+        type: string
+        incomingValue: $(body.pull_request.html_url)
+        resourceTemplate: $(tt.params.pr-url)
+      - name: git-revision
+        type: string
+        description: pull request head commit id
+        default: main
+        incomingValue: $(body.pull_request.head.sha)
+        resourceTemplate: $(tt.params.git-revision)
+    workspaces:
+      - name: output
+        workspace: shared-workspace
+    tasks:
+      - name: clone-repo
+        workspaces:
+          - name: output
+            workspace: shared-workspace
+        ref:
+          kind: ClusterTask
+          name: git-clone
+        params:
+          - name: url
+            value: $(params.git-url)
+          - name: revision
+            value: $(params.git-revision)
+
+events:
+  install: true
+  defaultRB: true
+  token: token
+  listeners:
+    - name: geomark-listener-helm
+      triggers:
+        - name: pr-open-trigger
+          trigger: geomark-trigger-helm
+          binding: geomark-binding-helm
+          interceptors:
+            - name: github
+              eventTypes:
+                - name: pull_request
+              secretName: github-secret
+            - name: cel
+              filter: "body.action in ['opened', 'reopened']"
+      ingress:
+        enabled: true
+        name: geomark-ingress-helm
+        annotations:
+          kubernetes.io/ingress.class: nginx
+        path: /
+        hosts:
+          - name: el-geomark-listener-helm-f8d638-tools.apps.silver.devops.gov.bc.ca
+            service: el-geomark-listener-helm
+            port: 8080
+        tls: []

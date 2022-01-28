@@ -10,11 +10,11 @@ metadata:
     release: {{ $.Release.Name }}
     heritage: {{ $.Release.Service }}
 
-{{ if .params }}
-{{ if gt  (len .params) 0}}
+{{ if .pipeline_params }}
+{{ if gt  (len .pipeline_params) 0}}
 spec:
   params:
-  {{ range .params}}
+  {{ range .pipeline_params}}
     - name: {{ .name}}
       value: {{ .incomingValue}}
 
