@@ -43,11 +43,13 @@ These are the configurable values for the tasks array, these will create new tas
 | Parameter                         | Description                          | Default                                   |
 | --------------------------------- | ------------------------------------ | ----------------------------------------- |
 | `name              `              | The name for the task                | helm3-spark                               |
+| `volumes              `           | Array of volumes to be mounted       | nil                                       |
 | `steps             `              | Array of steps that make up the task | Array of size 1 object described below    |
 | `steps[0].name     `              | Name for this step                   | install-spark                             |
 | `steps[0].image     `             | The container image to use for this step | alpine/helm:3.0.2                     |
 | `steps[0].command   `             | The command to run in the container  | [/bin/ash, -c, helm repo add...]          |
-
+| `steps[0].volumeMounts   `        | Specifies mountPath for volumes      | nil                                       |
+| `steps[0].resources   `           | Can supply requests/limits memory and cpu | nil                                  |
 
 ### Pipelines
 
@@ -60,6 +62,10 @@ These are the configurable values for the pipelines array, these will create new
 | `bindingName    `                 | Binding Name for pipeline andtrigger | spark-binding                             |
 | `workspaces[].name   `            | Name of workspace to make available  | nil                                       |
 | `workspaces[].workspace `         | Workspace to make available          | nil                                       |
+| `workspaces[].persistentVolumeClaim ` | PVC name for workspace           | emptyDir                                  |
+| `workspaces[].podTemplate `       | Override default pod template, e.g. securityContext | nil                        |
+
+
 | `tasks     `                      | Array of tasks to run                | Arary of size 1 described below           |
 | `tasks[0].name   `                | Name of task in pipeline             | create-namespace                          |
 | `tasks[0].ref.name   `            | Name of task to run                  | create-namespace                          |

@@ -41,7 +41,7 @@ spec:
             {{ if .persistentVolumeClaim }}
             persistentVolumeClaim:
               claimName: {{ .persistentVolumeClaim }}
-            {{ else if .emptyDir }}
+            {{ else }}
             emptyDir: {}
             {{ end }}
           {{ end }}
