@@ -114,5 +114,16 @@ spec:
       workspaces:
         - name: cleanup
           workspace: shared-data
+    - name: notifications
+      params:
+        - name: pipelineRunName
+          value: $(context.pipelineRun.name)
+      when:
+        - input: $(tasks.setup-terraform.status)
+          operator: in
+          values: ["Failed", "None"]
+      taskRef:
+        kind: Task
+        name: {{ $fullName }}-teams-notif
   workspaces:
     - name: shared-data
