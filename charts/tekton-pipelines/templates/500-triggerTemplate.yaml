@@ -34,8 +34,28 @@ spec:
           name: {{ .name }}
 
         workspaces:
-          - emptyDir: {}
-            name: shared-workspace
+        {{- if .workspaces -}}
+        {{ if gt (len .workspaces) 0 }}
+          {{ range .workspaces }}
+          - name: {{ .workspace }}
+            {{ if .persistentVolumeClaim }}
+            persistentVolumeClaim:
+              claimName: {{ .persistentVolumeClaim }}
+            {{ else if .emptyDir }}
+            emptyDir: {}
+            {{ end }}
+          {{ end }}
+        {{ end }}
+        {{- end -}}
+
+        {{ with .podTemplate }}
+        podTemplate:
+            {{ with .securityContext }}
+            securityContext:
+                runAsNonRoot: {{ .runAsNonRoot }}
+                runAsUser: {{ .runAsUser }}
+            {{ end }}
+        {{ end }}
 
         {{- if .pipeline_params -}}
         {{- if gt (len .pipeline_params) 0 }}

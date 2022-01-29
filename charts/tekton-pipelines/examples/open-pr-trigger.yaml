@@ -3,6 +3,42 @@ serviceAccountName: git-bot
 nameOverride: ""
 fullnameOverride: ""
 
+tasks:
+  - name: maven-helm
+    volumes:
+    - name: m2-vol
+      persistentVolumeClaim: pip-tkt-m2-pvc
+    - name: conf-vol
+      configMap: maven-config
+    workspaces:
+      - name: source
+    steps:
+      - name: build
+        image: maven:3.8.2-jdk-11-slim
+        command:
+          - /bin/bash
+          - "-s"
+          - "/workspace/mvn-config/settings.xml"
+          - "/usr/bin/mvn"
+          - "install"
+        env:
+        - name: MAVEN_OPTS
+          value: "-server -Xms256m -Xmx512m -XX:MetaspaceSize=96m -XX:MaxMetaspaceSize=256m -Djava.net.preferIPv4Stack=true -Djava.awt.headless=true -XX:+UseParallelOldGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90"
+        volumeMounts:
+        - name: conf-vol
+          mountPath: /workspace/mvn-config
+        - name: m2-vol
+          mountPath: /workspace/.m2/repository
+        workingDir: /workspace/source
+        resources:
+          requests:
+            memory: 500Mi
+            cpu: 250m
+          limits:
+            memory: 3Gi
+            cpu: "2"
+
+
 pipelines:
   - name: geomark-clone-helm
     triggerName: geomark-trigger-helm
@@ -27,6 +63,11 @@ pipelines:
     workspaces:
       - name: output
         workspace: shared-workspace
+        persistentVolumeClaim: pip-tkt-repo-pvc
+    podTemplate:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
     tasks:
       - name: clone-repo
         workspaces:
@@ -40,6 +81,14 @@ pipelines:
             value: $(params.git-url)
           - name: revision
             value: $(params.git-revision)
+      - name: maven-build
+        ref:
+          name: maven-helm
+        runAfter:
+          - clone-repo
+        workspaces:
+        - name: source
+          workspace: shared-workspace
 
 events:
   install: true

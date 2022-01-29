@@ -11,8 +11,14 @@ metadata:
     heritage: {{ $.Release.Service }}
 spec:
 
+  {{- if .workspaces -}}
+  {{ if gt (len .workspaces) 0 }}
   workspaces:
-    - name: shared-workspace
+    {{ range .workspaces }}
+    - name: {{ .workspace }}
+    {{ end }}
+  {{ end }}
+  {{- end -}}
 
   {{- if .resources -}}
   {{- if gt (len .resources) 0 }}
