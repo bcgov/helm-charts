@@ -41,7 +41,29 @@ spec:
     {{- end -}}
   {{- end -}}
   {{- end }}
-
+  {{- if .finally -}}
+  {{- if gt (len .finally) 0 }}
+  finally:
+    {{- range .finally }}
+    - name: {{ .name }}
+      taskRef:
+{{ .ref | toYaml | indent 8 }}
+      {{- if .workspaces }}
+      workspaces:
+{{ .workspaces | toYaml | indent 8 }}
+      {{ end }}
+      {{- if .params -}}
+      {{- if gt (len .params) 0 }}
+      params:
+      {{- range .params }}
+      - name: {{ .name }}
+        value: "{{ .value }}"
+      {{ end }}
+      {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+  {{ end }}
   {{- if .tasks -}}
   {{- if gt (len .tasks) 0 }}
   tasks:

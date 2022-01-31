@@ -2,6 +2,30 @@ nameOverride: ""
 fullnameOverride: ""
 
 tasks:
+  - name: tests-helm
+    params:
+      - name: api_url
+        type: string
+    workspaces:
+    - name: source
+    - name: pr
+    steps:
+      - image: registry.fedoraproject.org/f33/python3:latest
+        name: pytest
+        env:
+        - name: API_URL
+          value: $(params.api_url)
+        script: |
+          #!/usr/bin/env sh
+          cd /workspace/pr/
+          mkdir -p comments
+          cd /workspace/source/geomark-testing
+          python -m pip install pytest
+          python -m pip install shapely
+          python -m pip install fiona
+          python -m pip install requests
+          NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          python -m pytest -sv --api_url=$API_URL > /workspace/pr/comments/$NOW
   - name: cli-build-helm
     params:
       - name: git-tag
@@ -86,7 +110,7 @@ tasks:
 
 
 pipelines:
-  - name: geomark-clone-build-helm
+  - name: geomark-pr-helm
     triggerName: geomark-trigger-helm
     bindingName: geomark-binding-helm
     serviceAccountName:
@@ -94,7 +118,9 @@ pipelines:
         taskServiceAccountName: git-bot
       - pipelineTaskName: maven-build
         taskServiceAccountName: pipeline
-      - pipelineTaskName: image-build
+      - pipelineTaskName: pull-tests
+        taskServiceAccountName: git-bot
+      - pipelineTaskName: run-tests
         taskServiceAccountName: pipeline
     pipeline_params:
       - name: git-url
@@ -117,6 +143,8 @@ pipelines:
       - name: shared-workspace
         persistentVolumeClaim: pip-tkt-repo-pvc
       - name: input
+      - name: pr-content
+        persistentVolumeClaim: pr-pvc
     podTemplate:
       securityContext:
         runAsNonRoot: true
@@ -161,7 +189,69 @@ pipelines:
             value: https://geomark-tomcat-f8d638-test.apps.silver.devops.gov.bc.ca/pub/geomark/geomarks/
           - name: ns
             value: f8d638-test
-
+      - name: pull-tests
+        ref:
+          name: git-cli
+          kind: ClusterTask
+        runAfter:
+          - image-build
+        workspaces:
+        - name: source
+          workspace: shared-workspace
+        - name: input
+          workspace: input
+        params:
+        - name: GIT_SCRIPT
+          value: |
+              git reset --hard && git clean -f && git fetch && git checkout tools
+      - name: pull-pr-meta
+        ref:
+          name: pull-request
+          kind: ClusterTask
+        workspaces:
+        - name: pr
+          workspace: pr-content
+        params:
+        - name: url
+          value: $(params.pr-url)
+        - name: secret-key-ref
+          value: github-auth-token
+        - name: mode
+          value: download
+        - name: provider
+          value: github
+        runAfter:
+        - pull-tests
+      - name: run-tests
+        ref:
+          name: tests-helm
+        runAfter:
+          - pull-pr-meta
+        workspaces:
+        - name: source
+          workspace: shared-workspace
+        - name: pr
+          workspace: pr-content
+        params:
+        - name: api_url
+          value: "https://geomark-tomcat-f8d638-test.apps.silver.devops.gov.bc.ca/pub/geomark/api/geomarks/"
+    finally:
+      - name: notify-test-results
+        ref:
+          name: pull-request
+          kind: ClusterTask
+        workspaces:
+        - name: pr
+          workspace: pr-content
+        params:
+        - name: url
+          value: $(params.pr-url)
+        - name: secret-key-ref
+          value: github-auth-token
+        - name: mode
+          value: upload
+        - name: provider
+          value: github
 events:
   install: true
   defaultRB: true
