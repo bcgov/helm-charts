@@ -86,7 +86,11 @@ spec:
         params:
           {{- range .pipeline_params }}
           - name: {{ .name }}
+            {{ if .resourceTemplate }}
             value: {{ .resourceTemplate }}
+            {{ else if .default }}
+            value: {{ .default }}
+            {{ end }}
           {{- end -}}
         {{- end -}}
         {{- end }}

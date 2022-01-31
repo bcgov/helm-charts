@@ -142,6 +142,26 @@ pipelines:
         default: main
         incomingValue: $(body.pull_request.head.sha)
         resourceTemplate: $(tt.params.git-revision)
+      - name: route-url
+        type: string
+        description: api url subject to testing
+        default: https://geomark-tomcat-f8d638-test.apps.silver.devops.gov.bc.ca/pub/geomark/api/geomarks/
+      - name: git-auth-token
+        description: machine account auth token used for pushing content
+        type: string
+        default: github-auth-token
+      - name: git-tag
+        description: default tag that is build in main
+        type: string
+        default: 6.0.x-SNAPSHOT
+      - name: ns
+        description: namespace used for test deployment
+        type: string
+        default: f8d638-test
+      - name: image-tag
+        description: image deployment trigger tag
+        type: string
+        default: test
     workspaces:
       - name: shared-workspace
         volumeClaimTemplate: 2Gi
@@ -203,14 +223,14 @@ pipelines:
           workspace: shared-workspace
         params:
           - name: git-tag
-            value: 6.0.x-SNAPSHOT
+            value: $(params.git-tag)
             # value: $(params.git-revision)
           - name: image-tag
-            value: test
+            value: $(params.image-tag)
           - name: route-url
-            value: https://geomark-tomcat-f8d638-test.apps.silver.devops.gov.bc.ca/pub/geomark/geomarks/
+            value: $(params.route-url)
           - name: ns
-            value: f8d638-test
+            value: $(params.ns)
       - name: pull-tests
         ref:
           name: git-cli
@@ -238,7 +258,7 @@ pipelines:
           workspace: pr-content
         params:
         - name: api_url
-          value: "https://geomark-tomcat-f8d638-test.apps.silver.devops.gov.bc.ca/pub/geomark/api/geomarks/"
+          value: $(params.route-url)
     finally:
       - name: notify-test-results
         ref:
@@ -251,7 +271,7 @@ pipelines:
         - name: url
           value: $(params.pr-url)
         - name: secret-key-ref
-          value: github-auth-token
+          value: $(params.git-auth-token)
         - name: mode
           value: upload
         - name: provider
