@@ -15,7 +15,7 @@ spec:
   {{ if gt (len .workspaces) 0 }}
   workspaces:
     {{ range .workspaces }}
-    - name: {{ .workspace }}
+    - name: {{ .name }}
     {{ end }}
   {{ end }}
   {{- end -}}

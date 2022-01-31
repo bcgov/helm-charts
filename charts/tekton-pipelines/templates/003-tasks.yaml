@@ -58,8 +58,8 @@ spec:
     - name: {{ .name }}
       image: {{ .image }}
       {{ if .script }}
-      script: |
-{{ .script | indent 8 }}
+      script:
+        {{- toYaml .script | indent 8 }}
       {{ else }}
       command:
       {{- range .command }}

@@ -1,15 +1,61 @@
-serviceAccountName: git-bot
-
 nameOverride: ""
 fullnameOverride: ""
 
 tasks:
+  - name: cli-build-helm
+    params:
+      - name: git-tag
+        type: string
+      - name: image-tag
+        type: string
+      - name: route-url
+        type: string
+      - name: ns
+        type: string
+    volumes:
+      - name: m2-vol
+        persistentVolumeClaim: pip-tkt-m2-pvc
+    workspaces:
+    - name: source
+    steps:
+      - image: quay.io/openshift/origin-cli:latest
+        name: image-build
+        volumeMounts:
+          - name: m2-vol
+            mountPath: /workspace/m2-content
+        env:
+        - name: GIT_TAG
+          value: $(params.git-tag)
+        - name: IMG_TAG
+          value: $(params.image-tag)
+        - name: ROUTE_URL
+          value: $(params.route-url)
+        - name: NAME_SPACE
+          value: $(params.ns)
+        script: |
+          #!/usr/bin/env sh
+          echo "---Moving .war to staging area--"
+          cd /workspace/source/
+          rm -rf war || true
+          mkdir war
+          git_tag=$(echo "$GIT_TAG" | sed "s/.*\///")
+          cp "/workspace/m2-content/ca/bc/gov/geomark/geomark-war/${git_tag}/geomark-war-${git_tag}.war" /workspace/source/war/pub#geomark.war
+          cd war
+          echo "--Commencing the build--"
+          oc start-build geomark-sidecar --from-dir=/workspace/source/war --wait
+          oc tag geomark-sidecar:latest geomark-sidecar:$IMG_TAG
+          oc start-build tomcat --wait
+          oc tag tomcat:latest tomcat:$IMG_TAG
+          oc -n $NAME_SPACE scale deployment/geomark-tomcat --replicas=0
+          oc -n $NAME_SPACE scale deployment/geomark-tomcat --replicas=1
+          sh -c 'until $(curl --output /dev/null --silent --head --fail $ROUTE_URL); do printf '.'; sleep 5; done;'
+          echo "---Geomark is up in test namespace---"
   - name: maven-helm
     volumes:
     - name: m2-vol
       persistentVolumeClaim: pip-tkt-m2-pvc
     - name: conf-vol
-      configMap: maven-config
+      configMap: maven-settings
     workspaces:
       - name: source
     steps:
@@ -17,16 +63,16 @@ tasks:
         image: maven:3.8.2-jdk-11-slim
         command:
           - /bin/bash
-          - "-s"
-          - "/workspace/mvn-config/settings.xml"
           - "/usr/bin/mvn"
           - "install"
+          - "-s"
+          - "/workspace/.m2/settings.xml"
         env:
         - name: MAVEN_OPTS
           value: "-server -Xms256m -Xmx512m -XX:MetaspaceSize=96m -XX:MaxMetaspaceSize=256m -Djava.net.preferIPv4Stack=true -Djava.awt.headless=true -XX:+UseParallelOldGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90"
         volumeMounts:
         - name: conf-vol
-          mountPath: /workspace/mvn-config
+          mountPath: /workspace/.m2
         - name: m2-vol
           mountPath: /workspace/.m2/repository
         workingDir: /workspace/source
@@ -40,9 +86,16 @@ tasks:
 
 
 pipelines:
-  - name: geomark-clone-helm
+  - name: geomark-clone-build-helm
     triggerName: geomark-trigger-helm
     bindingName: geomark-binding-helm
+    serviceAccountName:
+      - pipelineTaskName: clone-repo
+        taskServiceAccountName: git-bot
+      - pipelineTaskName: maven-build
+        taskServiceAccountName: pipeline
+      - pipelineTaskName: image-build
+        taskServiceAccountName: pipeline
     pipeline_params:
       - name: git-url
         type: string
@@ -61,9 +114,9 @@ pipelines:
         incomingValue: $(body.pull_request.head.sha)
         resourceTemplate: $(tt.params.git-revision)
     workspaces:
-      - name: output
-        workspace: shared-workspace
+      - name: shared-workspace
         persistentVolumeClaim: pip-tkt-repo-pvc
+      - name: input
     podTemplate:
       securityContext:
         runAsNonRoot: true
@@ -89,6 +142,25 @@ pipelines:
         workspaces:
         - name: source
           workspace: shared-workspace
+
+      - name: image-build
+        ref:
+          name: cli-build-helm
+        runAfter:
+          - maven-build
+        workspaces:
+        - name: source
+          workspace: shared-workspace
+        params:
+          - name: git-tag
+            value: 6.0.x-SNAPSHOT
+            # value: $(params.git-revision)
+          - name: image-tag
+            value: test
+          - name: route-url
+            value: https://geomark-tomcat-f8d638-test.apps.silver.devops.gov.bc.ca/pub/geomark/geomarks/
+          - name: ns
+            value: f8d638-test
 
 events:
   install: true

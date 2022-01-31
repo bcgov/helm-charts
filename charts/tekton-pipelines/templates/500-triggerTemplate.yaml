@@ -24,12 +24,11 @@ spec:
   {{- end }}
 
   resourcetemplates:
-    - apiVersion: tekton.dev/v1alpha1
+    - apiVersion: tekton.dev/v1beta1
       kind: PipelineRun
       metadata:
         name: {{ .name }}-run-$(uid)
       spec:
-        serviceAccountName: {{ $.Values.serviceAccountName }}
         pipelineRef:
           name: {{ .name }}
 
@@ -37,7 +36,7 @@ spec:
         {{- if .workspaces -}}
         {{ if gt (len .workspaces) 0 }}
           {{ range .workspaces }}
-          - name: {{ .workspace }}
+          - name: {{ .name }}
             {{ if .persistentVolumeClaim }}
             persistentVolumeClaim:
               claimName: {{ .persistentVolumeClaim }}
@@ -56,6 +55,16 @@ spec:
                 runAsUser: {{ .runAsUser }}
             {{ end }}
         {{ end }}
+
+        {{- if .serviceAccountName -}}
+        {{- if gt (len .serviceAccountName) 0 }}
+        taskRunSpecs:
+          {{- range .serviceAccountName }}
+          - pipelineTaskName: {{ .pipelineTaskName }}
+            taskServiceAccountName: {{ .taskServiceAccountName }}
+          {{- end -}}
+        {{- end -}}
+        {{- end }}
 
         {{- if .pipeline_params -}}
         {{- if gt (len .pipeline_params) 0 }}

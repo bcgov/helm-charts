@@ -61,11 +61,8 @@ These are the configurable values for the pipelines array, these will create new
 | `triggerName       `              | Trigger Name to create for this pipeline (for events) | spark-trigger-template   |
 | `bindingName    `                 | Binding Name for pipeline andtrigger | spark-binding                             |
 | `workspaces[].name   `            | Name of workspace to make available  | nil                                       |
-| `workspaces[].workspace `         | Workspace to make available          | nil                                       |
 | `workspaces[].persistentVolumeClaim ` | PVC name for workspace           | emptyDir                                  |
 | `workspaces[].podTemplate `       | Override default pod template, e.g. securityContext | nil                        |
-
-
 | `tasks     `                      | Array of tasks to run                | Arary of size 1 described below           |
 | `tasks[0].name   `                | Name of task in pipeline             | create-namespace                          |
 | `tasks[0].ref.name   `            | Name of task to run                  | create-namespace                          |
@@ -77,8 +74,12 @@ These are the configurable values for the pipelines array, these will create new
 | `pipeline_params[].name   `       | Name of pipeline parameter shared across multiple tasks | nil                    |
 | `pipeline_params[].default   `    | Default value of pipeline parameter shared across multiple tasks | ''            |
 | `pipeline_params[].type   `       | Type of pipeline parameter shared across multiple tasks: string/array | string   |
-| `pipeline_params[].incomingValue` | JSONPath string used by TemplateBinding to extract value from WebHook | nil     |
+| `pipeline_params[].incomingValue` | JSONPath string used by TemplateBinding to extract value from WebHook | nil      |
 | `pipeline_params[].resourceTemplate` | Used to assign value to parameter in TemplateTrigger  | nil                   |
+| `serviceAccountName   `           | Array of service accounts for each task | Empty array                            |
+| `serviceAccountName[].pipelineTaskName ` | Name of task                 | nil                                        |
+| `serviceAccountName[].taskServiceAccountName `|  Name of service account| nil                                        |
+
 
 ### Events
 
