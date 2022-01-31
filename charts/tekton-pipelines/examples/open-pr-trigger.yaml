@@ -58,7 +58,7 @@ tasks:
           value: $(params.ns)
         script: |
           #!/usr/bin/env sh
-          echo "---Moving .war to staging area--"
+          echo "---Moving .war to staging area---"
           cd /workspace/source/
           rm -rf war || true
           mkdir war
@@ -82,15 +82,18 @@ tasks:
       configMap: maven-settings
     workspaces:
       - name: source
+      - name: pr
     steps:
       - name: build
         image: maven:3.8.2-jdk-11-slim
-        command:
-          - /bin/bash
-          - "/usr/bin/mvn"
-          - "install"
-          - "-s"
-          - "/workspace/.m2/settings.xml"
+        script: |
+          #!/usr/bin/env bash
+          NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          /usr/bin/mvn install -q -s /workspace/.m2/settings.xml > /workspace/pr/comments/$NOW
+          if [[ "$?" -eq 0 ]] ; then
+            rm /workspace/pr/comments/$NOW;
+          fi
+          echo "---Maven build complete---"
         env:
         - name: MAVEN_OPTS
           value: "-server -Xms256m -Xmx512m -XX:MetaspaceSize=96m -XX:MaxMetaspaceSize=256m -Djava.net.preferIPv4Stack=true -Djava.awt.headless=true -XX:+UseParallelOldGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90"
@@ -141,10 +144,10 @@ pipelines:
         resourceTemplate: $(tt.params.git-revision)
     workspaces:
       - name: shared-workspace
-        persistentVolumeClaim: pip-tkt-repo-pvc
+        volumeClaimTemplate: 2Gi
       - name: input
       - name: pr-content
-        persistentVolumeClaim: pr-pvc
+        volumeClaimTemplate: 50Mi
     podTemplate:
       securityContext:
         runAsNonRoot: true
@@ -162,15 +165,34 @@ pipelines:
             value: $(params.git-url)
           - name: revision
             value: $(params.git-revision)
+      - name: pull-pr-meta
+        ref:
+          name: pull-request
+          kind: ClusterTask
+        workspaces:
+        - name: pr
+          workspace: pr-content
+        params:
+        - name: url
+          value: $(params.pr-url)
+        - name: secret-key-ref
+          value: github-auth-token
+        - name: mode
+          value: download
+        - name: provider
+          value: github
+        runAfter:
+        - clone-repo
       - name: maven-build
         ref:
           name: maven-helm
         runAfter:
-          - clone-repo
+          - pull-pr-meta
         workspaces:
         - name: source
           workspace: shared-workspace
-
+        - name: pr
+          workspace: pr-content
       - name: image-build
         ref:
           name: cli-build-helm
@@ -203,30 +225,12 @@ pipelines:
         params:
         - name: GIT_SCRIPT
           value: |
-              git reset --hard && git clean -f && git fetch && git checkout tools
-      - name: pull-pr-meta
-        ref:
-          name: pull-request
-          kind: ClusterTask
-        workspaces:
-        - name: pr
-          workspace: pr-content
-        params:
-        - name: url
-          value: $(params.pr-url)
-        - name: secret-key-ref
-          value: github-auth-token
-        - name: mode
-          value: download
-        - name: provider
-          value: github
-        runAfter:
-        - pull-tests
+            git reset --hard && git clean -f && git fetch origin && git checkout -b tools origin/tools
       - name: run-tests
         ref:
           name: tests-helm
         runAfter:
-          - pull-pr-meta
+          - pull-tests
         workspaces:
         - name: source
           workspace: shared-workspace

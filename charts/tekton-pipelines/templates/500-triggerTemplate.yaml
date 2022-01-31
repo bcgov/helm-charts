@@ -40,6 +40,21 @@ spec:
             {{ if .persistentVolumeClaim }}
             persistentVolumeClaim:
               claimName: {{ .persistentVolumeClaim }}
+            {{ else if .volumeClaimTemplate }}
+            volumeClaimTemplate:
+              metadata:
+                name: pr-pvc
+                labels:
+                  app: {{ template "pipelines.name" $ }}
+                  chart: {{ template "pipelines.chart" $ }}
+                  release: {{ $.Release.Name }}
+                  heritage: {{ $.Release.Service }}
+              spec:
+                accessModes:
+                  - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: {{ .volumeClaimTemplate }}
             {{ else }}
             emptyDir: {}
             {{ end }}
