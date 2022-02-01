@@ -2,6 +2,34 @@ nameOverride: ""
 fullnameOverride: ""
 
 tasks:
+  - name: acquire-mutex
+    workspaces:
+    - name: source
+    steps:
+      - image: quay.io/openshift/origin-cli:latest
+        name: mutex
+        script: |
+          #!/usr/bin/env bash
+          cd /workspace/source/
+          echo "kind: ConfigMap" > mutex.yaml
+          echo "apiVersion: v1" >> mutex.yaml
+          echo "metadata:" >> mutex.yaml
+          echo "  name: mutex" >> mutex.yaml
+          echo "data:" >> mutex.yaml
+          echo "mutex: 'on'" >> mutex.yaml
+          echo "---Waiting for mutex---"
+          sh -c 'until $(oc create -f mutex.yaml &>/dev/null); do printf '.'; sleep 5; done;'
+          echo "---Mutex acquired---"
+  - name: release-mutex
+    workspaces:
+    - name: source
+    steps:
+      - image: quay.io/openshift/origin-cli:latest
+        name: mutex
+        script: |
+          #!/usr/bin/env sh
+          oc delete configmap mutex
+          echo "---Mutex released---"
   - name: tests-helm
     params:
       - name: api_url
@@ -28,7 +56,7 @@ tasks:
           python -m pytest -sv --api_url=$API_URL > /workspace/pr/comments/$NOW
   - name: cli-build-helm
     params:
-      - name: git-tag
+      - name: git-revision
         type: string
       - name: image-tag
         type: string
@@ -48,8 +76,8 @@ tasks:
           - name: m2-vol
             mountPath: /workspace/m2-content
         env:
-        - name: GIT_TAG
-          value: $(params.git-tag)
+        - name: GIT_REVISION
+          value: $(params.git-revision)
         - name: IMG_TAG
           value: $(params.image-tag)
         - name: ROUTE_URL
@@ -62,8 +90,8 @@ tasks:
           cd /workspace/source/
           rm -rf war || true
           mkdir war
-          git_tag=$(echo "$GIT_TAG" | sed "s/.*\///")
-          cp "/workspace/m2-content/ca/bc/gov/geomark/geomark-war/${git_tag}/geomark-war-${git_tag}.war" /workspace/source/war/pub#geomark.war
+          git_rev=$(echo "$GIT_REVISION")
+          cp "/workspace/m2-content/ca/bc/gov/geomark/geomark-war/${git_rev}/geomark-war-${git_rev}.war" /workspace/source/war/pub#geomark.war
           cd war
           echo "--Commencing the build--"
           oc start-build geomark-sidecar --from-dir=/workspace/source/war --wait
@@ -75,6 +103,9 @@ tasks:
           sh -c 'until $(curl --output /dev/null --silent --head --fail $ROUTE_URL); do printf '.'; sleep 5; done;'
           echo "---Geomark is up in test namespace---"
   - name: maven-helm
+    params:
+    - name: git-revision
+      type: string
     volumes:
     - name: m2-vol
       persistentVolumeClaim: pip-tkt-m2-pvc
@@ -88,6 +119,8 @@ tasks:
         image: maven:3.8.2-jdk-11-slim
         script: |
           #!/usr/bin/env bash
+          /usr/bin/mvn versions:set -s /workspace/.m2/settings.xml -DnewVersion=$GIT_REVISION -DgroupId='*' -DgenerateBackupPoms=false
+          sed -i "s/__VERSION__mvn/$GIT_REVISION/g" src/docs/*.html
           NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           /usr/bin/mvn install -q -s /workspace/.m2/settings.xml > /workspace/pr/comments/$NOW
           if [[ "$?" -eq 0 ]] ; then
@@ -95,6 +128,8 @@ tasks:
           fi
           echo "---Maven build complete---"
         env:
+        - name: GIT_REVISION
+          value: $(params.git-revision)
         - name: MAVEN_OPTS
           value: "-server -Xms256m -Xmx512m -XX:MetaspaceSize=96m -XX:MaxMetaspaceSize=256m -Djava.net.preferIPv4Stack=true -Djava.awt.headless=true -XX:+UseParallelOldGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90"
         volumeMounts:
@@ -145,7 +180,7 @@ pipelines:
       - name: route-url
         type: string
         description: api url subject to testing
-        default: https://geomark-tomcat-f8d638-test.apps.silver.devops.gov.bc.ca/pub/geomark/api/geomarks/
+        default: https://geomark-tomcat-f8d638-test.apps.silver.devops.gov.bc.ca/pub/geomark/geomarks/
       - name: git-auth-token
         description: machine account auth token used for pushing content
         type: string
@@ -206,6 +241,9 @@ pipelines:
       - name: maven-build
         ref:
           name: maven-helm
+        params:
+        - name: git-revision
+          value: $(params.git-revision)
         runAfter:
           - pull-pr-meta
         workspaces:
@@ -213,17 +251,25 @@ pipelines:
           workspace: shared-workspace
         - name: pr
           workspace: pr-content
+      - name: get-mutex
+        ref:
+          name: acquire-mutex
+        workspaces:
+        - name: source
+          workspace: shared-workspace
+        runAfter:
+        - maven-build
       - name: image-build
         ref:
           name: cli-build-helm
         runAfter:
-          - maven-build
+          - get-mutex
         workspaces:
         - name: source
           workspace: shared-workspace
         params:
-          - name: git-tag
-            value: $(params.git-tag)
+          - name: git-revision
+            value: $(params.git-revision)
             # value: $(params.git-revision)
           - name: image-tag
             value: $(params.image-tag)
@@ -260,6 +306,12 @@ pipelines:
         - name: api_url
           value: $(params.route-url)
     finally:
+      - name: free-mutex
+        ref:
+          name: release-mutex
+        workspaces:
+        - name: source
+          workspace: shared-workspace
       - name: notify-test-results
         ref:
           name: pull-request
