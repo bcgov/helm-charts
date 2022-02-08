@@ -17,7 +17,7 @@ spec:
     - apiVersion: tekton.dev/v1beta1
       kind: PipelineRun
       metadata:
-        generateName: {{ $fullName }}-deployment-
+        generateName: {{ $fullName }}-deployment-$(tt.params.ocp-release-namespace)-
       spec:
         serviceAccountName: pipeline
         serviceAccountNames:
@@ -40,6 +40,10 @@ spec:
             value: $(tt.params.pipeline-db-conn-str)
           - name: terraform-source-folder
             value: {{ .Values.terraformConfig.sourceFolder }}
+          - name: retain-days
+            value: '{{ .Values.pipelineRunsRetentionDays }}'
+          - name: current-pipelinerun-name
+            value: $(context.pipelineRun.name)
         pipelineRef:
           name: {{ $fullName }}
         workspaces:

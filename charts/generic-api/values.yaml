@@ -12,6 +12,11 @@ image:
 
 imagePullSecrets: []
 
+hostAliases: []
+# - ip: "1.2.3.4"
+#   hostnames:
+#   - "override.com"
+
 args: {}
 
 nameOverride: ""
@@ -33,6 +38,13 @@ extraLabels: []
 extraPorts: []
 # - name: wss
 #   port: 8765
+
+extraEnvs: []
+# - name: A_TOKEN
+#   valueFrom:
+#     secretKeyRef:
+#       name: my-secret
+#       key: a-token
 
 secretVolumes: []
 

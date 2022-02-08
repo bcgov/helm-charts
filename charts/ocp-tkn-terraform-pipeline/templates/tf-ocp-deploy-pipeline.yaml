@@ -31,7 +31,20 @@ spec:
     - description: Folder containing terraform files
       name: terraform-source-folder
       type: string
+    - description: Pipelineruns are only kept up to this number of days
+      name: retain-days
+      type: string
+    - description: The name of current pipelinerun
+      name: current-pipelinerun-name
+      type: string
   tasks:
+    - name: initialize-pipelinerun
+      params:
+        - name: currentPipelineRunName
+          value: $(params.current-pipelinerun-name)
+      taskRef:
+        kind: Task
+        name: {{ $fullName }}-init
     - name: clone-repository
       params:
         - name: url
@@ -40,6 +53,8 @@ spec:
           value: deployment
         - name: revision
           value: $(params.git-release-branch)
+      runAfter:
+        - initialize-pipelinerun
       taskRef:
         kind: Task
         name: {{ $fullName }}-git-clone
@@ -88,5 +103,27 @@ spec:
           workspace: shared-data
         - name: output
           workspace: shared-data
+  finally:
+    - name: cleanup
+      params:
+        - name: retainDays
+          value: $(params.retain-days)
+      taskRef:
+        kind: Task
+        name: {{ $fullName }}-cleanup
+      workspaces:
+        - name: cleanup
+          workspace: shared-data
+    - name: notifications
+      params:
+        - name: pipelineRunName
+          value: $(context.pipelineRun.name)
+      when:
+        - input: $(tasks.setup-terraform.status)
+          operator: in
+          values: ["Failed", "None"]
+      taskRef:
+        kind: Task
+        name: {{ $fullName }}-teams-notif
   workspaces:
     - name: shared-data

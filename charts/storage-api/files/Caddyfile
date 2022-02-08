@@ -1,5 +1,7 @@
 0.0.0.0:2015 {
 
+    timeouts 0
+
     rewrite {
         if {method} is GET
         to /method_not_allowed

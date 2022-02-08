@@ -2,6 +2,12 @@ githubAccessToken: ""
 
 githubWebhookSecret: ""
 
+# Enable failure notifications
+notifications:
+  enabled: false
+  msteams:
+    webhook:
+
 pvc:
   storage: "1Gi"
   storageClassName: "netapp-file-standard"
@@ -17,6 +23,8 @@ serviceAccount:
   name: ""
 
 npmPackageRef: "bcgov-dss/api-serv-infra"
+
+pipelineRunsRetentionDays: ""
 
 # gitBranch contains the source code
 # gitTriggerBranch is responsible for activating webhook upon push events. Ignore if same as gitBranch.
