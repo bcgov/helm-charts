@@ -1,0 +1,87 @@
+nameOverride: ""
+fullnameOverride: ""
+
+tasks:
+
+
+pipelines:
+  - name: geocoder-clone-repo
+    triggerName: geocoder-trigger-pr-merged
+    bindingName: geocoder-binding-pr-merged
+    # serviceAccountName:
+    #   - pipelineTaskName: image-build
+    #     taskServiceAccountName: pipeline
+    pipeline_params:
+      - name: git-revision
+        type: string
+        description: pull request head commit id
+        default: main
+        incomingValue: $(body.pull_request.head.sha)
+        resourceTemplate: $(tt.params.git-revision)
+    workspaces:
+      - name: shared-workspace
+        volumeClaimTemplate: 2Gi
+    tasks:
+      - name: clone-repo
+        workspaces:
+          - name: output
+            workspace: shared-workspace
+        ref:
+          kind: ClusterTask
+          name: git-clone
+        params:
+          - name: url
+            value: 'https://github.com/bcgov/ols-geocoder.git'
+          # - name: git-revision
+          #   value: $(params.git-revision)
+
+events:
+  install: true
+  defaultRB: true
+  # token: token
+  listeners:
+    - name: geocoder-listener-helm
+      triggers:
+        - name: pr-open-trigger
+          trigger: geocoder-trigger-pr-open
+          binding: geocoder-binding-pr-open
+          interceptors:
+            - name: github
+              eventTypes:
+                - name: pull_request
+              secretName: github-secret
+            - name: cel
+              filter: "body.action in ['opened', 'reopened']"
+        # - name: pr-merge-trigger
+        #   trigger: geomark-trigger-pr-merged
+        #   binding: geomark-binding-pr-merged
+        #   interceptors:
+        #     - name: github
+        #       eventTypes:
+        #         - name: pull_request
+        #       secretName: github-secret
+        #     - name: cel
+        #       filter: "body.action in ['closed']"
+        #     - name: cel
+        #       filter: "body.pull_request.merged"
+        # - name: release-listener
+        #   trigger: geomark-trigger-published
+        #   binding: geomark-binding-published
+        #   interceptors:
+        #     - name: github
+        #       eventTypes:
+        #         - name: release
+        #       secretName: github-secret
+        #     - name: cel
+        #       filter: "body.action in ['published']"
+      ingress:
+        enabled: true
+        name: geocoder-ingress-helm
+        annotations:
+          kubernetes.io/ingress.class: nginx
+        path: /
+        hosts:
+          - name: el-geocoder-listener-helm-988040-tools.apps.silver.devops.gov.bc.ca
+            service: el-geocoder-listener-helm
+            port: 8080
+        tls: []
