@@ -1,15 +1,16 @@
-
-
 {{- if .Values.events.install -}}
 {{range .Values.events.listeners}}
 {{- if .ingress.enabled -}}
 {{ $ingressPath := .ingress.path }}
 ---
-apiVersion: extensions/v1beta1
-kind: Ingress
+kind: Route
+apiVersion: route.openshift.io/v1
 metadata:
   name: {{ .ingress.name }}
   labels:
+    app.kubernetes.io/managed-by: EventListener
+    app.kubernetes.io/part-of: Triggers
+    eventlistener: {{ .ingress.name }}
     app: {{ template "pipelines.name" $ }}
     chart: {{ template "pipelines.chart" $ }}
     release: {{ $.Release.Name }}
@@ -18,27 +19,23 @@ metadata:
   annotations:
 {{ toYaml . | indent 4 }}
 {{- end }}
+  managedFields:
+    - manager: kubectl-expose
+      apiVersion: route.openshift.io/v1
+    - manager: openshift-router
+      apiVersion: route.openshift.io/v1
 spec:
-{{- if .ingress.tls }}
-  tls:
-  {{- range .ingress.tls }}
-    - hosts:
-      {{- range .hosts }}
-        - {{ . }}
-      {{- end }}
-      secretName: {{ .secretName }}
-  {{- end }}
-{{- end }}
-  rules:
-  {{ range $i, $host := .ingress.hosts }}
-    - host: {{ $host.name }}
-      http:
-        paths:
-          - path: {{ $ingressPath }}
-            backend:
-              serviceName: {{ $host.service }}
-              servicePort: {{ $host.port }}
-  {{- end }}
+  host: {{ .ingress.host }}
+  to:
+    kind: Service
+    name: {{ .ingress.service }}
+  port:
+    targetPort: http-listener
+status:
+  ingress:
+    - host: {{ .ingress.host }}
+      routerName: default
+      wildcardPolicy: None
 {{ end }}
 {{- end -}}
 {{- end -}}

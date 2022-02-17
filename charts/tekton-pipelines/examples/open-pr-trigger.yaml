@@ -148,9 +148,68 @@ tasks:
 
 
 pipelines:
-  - name: geomark-pr-helm
-    triggerName: geomark-trigger-helm
-    bindingName: geomark-binding-helm
+  - name: geomark-merge
+    triggerName: geomark-trigger-pr-merged
+    bindingName: geomark-binding-pr-merged
+    serviceAccountName:
+      - pipelineTaskName: image-build
+        taskServiceAccountName: pipeline
+    pipeline_params:
+      - name: git-revision
+        type: string
+        description: pull request head commit id
+        default: main
+        incomingValue: $(body.pull_request.head.sha)
+        resourceTemplate: $(tt.params.git-revision)
+      - name: ns
+        description: namespace used for dev deployment
+        type: string
+        default: f8d638-dev
+      - name: image-tag
+        description: image deployment trigger tag
+        type: string
+        default: dev
+      - name: route-url
+        type: string
+        description: api url subject to testing
+        default: https://geomark-tomcat-f8d638-dev.apps.silver.devops.gov.bc.ca/pub/geomark/geomarks/
+    workspaces:
+      - name: shared-workspace
+        volumeClaimTemplate: 2Gi
+    tasks:
+      - name: get-mutex
+        ref:
+          name: acquire-mutex
+        workspaces:
+        - name: source
+          workspace: shared-workspace
+      - name: image-build
+        ref:
+          name: cli-build-helm
+        runAfter:
+          - get-mutex
+        workspaces:
+        - name: source
+          workspace: shared-workspace
+        params:
+          - name: git-revision
+            value: $(params.git-revision)
+          - name: image-tag
+            value: $(params.image-tag)
+          - name: route-url
+            value: $(params.route-url)
+          - name: ns
+            value: $(params.ns)
+    finally:
+      - name: free-mutex
+        ref:
+          name: release-mutex
+        workspaces:
+        - name: source
+          workspace: shared-workspace
+  - name: geomark-test
+    triggerName: geomark-trigger-pr-open
+    bindingName: geomark-binding-pr-open
     serviceAccountName:
       - pipelineTaskName: clone-repo
         taskServiceAccountName: git-bot
@@ -185,10 +244,6 @@ pipelines:
         description: machine account auth token used for pushing content
         type: string
         default: github-auth-token
-      - name: git-tag
-        description: default tag that is build in main
-        type: string
-        default: 6.0.x-SNAPSHOT
       - name: ns
         description: namespace used for test deployment
         type: string
@@ -270,7 +325,6 @@ pipelines:
         params:
           - name: git-revision
             value: $(params.git-revision)
-            # value: $(params.git-revision)
           - name: image-tag
             value: $(params.image-tag)
           - name: route-url
@@ -333,11 +387,11 @@ events:
   defaultRB: true
   token: token
   listeners:
-    - name: geomark-listener-helm
+    - name: geomark-listener
       triggers:
         - name: pr-open-trigger
-          trigger: geomark-trigger-helm
-          binding: geomark-binding-helm
+          trigger: geomark-trigger-pr-open
+          binding: geomark-binding-pr-open
           interceptors:
             - name: github
               eventTypes:
@@ -345,14 +399,32 @@ events:
               secretName: github-secret
             - name: cel
               filter: "body.action in ['opened', 'reopened']"
+        - name: pr-merge-trigger
+          trigger: geomark-trigger-pr-merged
+          binding: geomark-binding-pr-merged
+          interceptors:
+            - name: github
+              eventTypes:
+                - name: pull_request
+              secretName: github-secret
+            - name: cel
+              filter: "body.action in ['closed']"
+            - name: cel
+              filter: "body.pull_request.merged"
+        - name: release-listener
+          trigger: geomark-trigger-published
+          binding: geomark-binding-published
+          interceptors:
+            - name: github
+              eventTypes:
+                - name: release
+              secretName: github-secret
+            - name: cel
+              filter: "body.action in ['published']"
       ingress:
         enabled: true
-        name: geomark-ingress-helm
+        name: geomark-route
         annotations:
-          kubernetes.io/ingress.class: nginx
-        path: /
-        hosts:
-          - name: el-geomark-listener-helm-f8d638-tools.apps.silver.devops.gov.bc.ca
-            service: el-geomark-listener-helm
-            port: 8080
-        tls: []
+          openshift.io/host.generated: 'true'
+        host: el-geomark-listener-f8d638-tools.apps.silver.devops.gov.bc.ca
+        service: el-geomark-listener
