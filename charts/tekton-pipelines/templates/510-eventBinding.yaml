@@ -43,6 +43,7 @@ metadata:
     release: {{ $.Release.Name }}
     heritage: {{ $.Release.Service }}
 spec:
+  serviceAccountName: pipeline
   resources:
     kubernetesResource:
       spec:
