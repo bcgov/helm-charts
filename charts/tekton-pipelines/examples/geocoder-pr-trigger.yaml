@@ -6,12 +6,17 @@ tasks:
 
 pipelines:
   - name: geocoder-clone-repo
-    triggerName: geocoder-trigger-pr-merged
-    bindingName: geocoder-binding-pr-merged
-    # serviceAccountName:
-    #   - pipelineTaskName: image-build
-    #     taskServiceAccountName: pipeline
+    triggerName: geocoder-trigger-pr-open
+    bindingName: geocoder-binding-pr-open
+    serviceAccountName:
+      - pipelineTaskName: clone-repo
+        taskServiceAccountName: pipeline
     pipeline_params:
+      - name: git-url
+        type: string
+        description: git repo url
+        incomingValue: $(body.repository.ssh_url)
+        resourceTemplate: $(tt.params.git-url)
       - name: git-revision
         type: string
         description: pull request head commit id
@@ -20,7 +25,7 @@ pipelines:
         resourceTemplate: $(tt.params.git-revision)
     workspaces:
       - name: shared-workspace
-        volumeClaimTemplate: 2Gi
+        volumeClaimTemplate: 1Gi
     tasks:
       - name: clone-repo
         workspaces:
@@ -31,14 +36,14 @@ pipelines:
           name: git-clone
         params:
           - name: url
-            value: 'https://github.com/bcgov/ols-geocoder.git'
-          # - name: git-revision
-          #   value: $(params.git-revision)
+            value: https://github.com/bcgov/ols-geocoder.git
+            # value: $(params.git-url)
+          - name: revision
+            value: $(params.git-revision)
 
 events:
   install: true
-  defaultRB: true
-  # token: token
+  defaultRB: false
   listeners:
     - name: geocoder-listener-helm
       triggers:
@@ -49,39 +54,12 @@ events:
             - name: github
               eventTypes:
                 - name: pull_request
-              secretName: github-secret
             - name: cel
               filter: "body.action in ['opened', 'reopened']"
-        # - name: pr-merge-trigger
-        #   trigger: geomark-trigger-pr-merged
-        #   binding: geomark-binding-pr-merged
-        #   interceptors:
-        #     - name: github
-        #       eventTypes:
-        #         - name: pull_request
-        #       secretName: github-secret
-        #     - name: cel
-        #       filter: "body.action in ['closed']"
-        #     - name: cel
-        #       filter: "body.pull_request.merged"
-        # - name: release-listener
-        #   trigger: geomark-trigger-published
-        #   binding: geomark-binding-published
-        #   interceptors:
-        #     - name: github
-        #       eventTypes:
-        #         - name: release
-        #       secretName: github-secret
-        #     - name: cel
-        #       filter: "body.action in ['published']"
       ingress:
         enabled: true
         name: geocoder-ingress-helm
         annotations:
-          kubernetes.io/ingress.class: nginx
-        path: /
-        hosts:
-          - name: el-geocoder-listener-helm-988040-tools.apps.silver.devops.gov.bc.ca
-            service: el-geocoder-listener-helm
-            port: 8080
-        tls: []
+          openshift.io/host.generated: 'true'
+        host: el-geocoder-listener-helm-988040-tools.apps.silver.devops.gov.bc.ca
+        service: el-geocoder-listener-helm
