@@ -43,7 +43,7 @@ pipelines:
 
 events:
   install: true
-  defaultRB: false
+  defaultRB: true
   listeners:
     - name: geocoder-listener-helm
       triggers:
