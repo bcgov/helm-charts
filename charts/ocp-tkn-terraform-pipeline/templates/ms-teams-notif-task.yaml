@@ -27,13 +27,26 @@ spec:
     - name: pipelineRunName
       type: string
       description: The name of the pipeline run
+    - name: releaseBranch
+      type: string
+      description: The release branch
+    - name: releaseCommit
+      type: string
+      description: The commit sha
+    - name: releaseAuthor
+      type: string
+      description: The author of the release
+    - name: deploymentStatus
+      type: string
+      description: The status of the deployment
   steps:
     - name: post
       image: docker.io/curlimages/curl:7.70.0@sha256:031df77a11e5edded840bc761a845eab6e3c2edee22669fb8ad6d59484b6a1c4 #tag: 7.70.0
       script: |
         #!/usr/bin/env sh
-        MESSAGE=$(echo "${MESSAGE}" | sed -e 's/\"/\\\\"/g')
-        JSON="{\"text\": \"${MESSAGE}\" }"
+        # MESSAGE=$(echo "${MESSAGE}" | sed -e 's/\"/\\\\"/g')
+        LOGS_LINK={{ .Values.notifications.ocp4Link }}/k8s/ns/{{ .Values.terraformConfig.releaseNamespace }}-tools/tekton.dev~v1beta1~PipelineRun/"$(params.pipelineRunName)"/logs
+        JSON="{\"@type\":\"MessageCard\",\"@context\":\"https://schema.org/extensions\",\"summary\":\"{{ .Values.notifications.title }}\",\"themeColor\":\"0078D7\",\"title\":\"{{ .Values.notifications.title }}\",\"sections\":[{\"activityTitle\":\"$(params.pipelineRunName)\",\"facts\":[{\"name\":\"Branch:\",\"value\":\"$(params.releaseBranch)\"},{\"name\":\"Commit:\",\"value\":\"$(params.releaseCommit)\"},{\"name\":\"Author:\",\"value\":\"$(params.releaseAuthor)\"},{\"name\":\"Status:\",\"value\":\"$(params.deploymentStatus)\"}],\"text\":\"${MESSAGE}\"}],\"potentialAction\":[{\"@type\":\"OpenUri\",\"name\":\"View Logs\",\"targets\":[{\"os\":\"default\",\"uri\":\"${LOGS_LINK}\"}]}]}"
         curl -X POST -H 'Content-Type: application/json' -d "${JSON}" "${WEBHOOK_URL}"
       env:
         - name: WEBHOOK_URL
@@ -41,6 +54,4 @@ spec:
             secretKeyRef:
               name: $(params.webhookUrlSecret)
               key: $(params.webhookUrlSecretKey)
-        - name: MESSAGE
-          value: Deployment $(params.pipelineRunName) Failed!
 {{ end }}
