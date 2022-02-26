@@ -37,6 +37,12 @@ spec:
     - description: The name of current pipelinerun
       name: current-pipelinerun-name
       type: string
+    - description: The release author name
+      name: git-release-author
+      type: string
+    - description: The release commit id
+      name: git-release-commit-sha
+      type: string
   tasks:
     - name: initialize-pipelinerun
       params:
@@ -118,10 +124,20 @@ spec:
       params:
         - name: pipelineRunName
           value: $(context.pipelineRun.name)
+        - name: releaseBranch
+          value: $(params.git-release-branch)
+        - name: releaseCommit
+          value: $(params.git-release-commit-sha)
+        - name: releaseAuthor
+          value: $(params.git-release-author)
+        - name: deploymentStatus
+          value: $(tasks.setup-terraform.status)
+      {{ if eq .Values.notifications.type "failed"}}
       when:
         - input: $(tasks.setup-terraform.status)
           operator: in
           values: ["Failed", "None"]
+      {{- end }}
       taskRef:
         kind: Task
         name: {{ $fullName }}-teams-notif

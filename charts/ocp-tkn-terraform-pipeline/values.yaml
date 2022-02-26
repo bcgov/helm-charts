@@ -5,6 +5,9 @@ githubWebhookSecret: ""
 # Enable failure notifications
 notifications:
   enabled: false
+  title: ""
+  ocp4Link: ""
+  type: "all"
   msteams:
     webhook:
 
