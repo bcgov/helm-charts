@@ -582,6 +582,26 @@ entries:
   metadata-curator:
   - apiVersion: v2
     appVersion: 0.9.0
+    created: "2022-02-28T21:35:28.071788096Z"
+    dependencies:
+    - name: forum-api
+      repository: https://bcgov.github.io/helm-charts/
+      version: 0.1.0
+    - name: formio
+      repository: https://bcgov.github.io/helm-charts/
+      version: 0.1.0
+    - name: storage-api
+      repository: https://bcgov.github.io/helm-charts/
+      version: 0.1.5
+    description: A Helm chart for Metadata Curator
+    digest: 19e2ed00e4be1d3af9dda4b18711e71bd8507eba7f189f50b0decee3da4611b8
+    name: metadata-curator
+    type: application
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/metadata-curator-0.1.17/metadata-curator-0.1.17.tgz
+    version: 0.1.17
+  - apiVersion: v2
+    appVersion: 0.9.0
     created: "2022-02-28T21:29:53.995451311Z"
     dependencies:
     - name: forum-api
