@@ -6,7 +6,6 @@
         if {method} is GET
         to /method_not_allowed
     }
-    status 405 /method_not_allowed
 
     rewrite {
         if {method} is DELETE
