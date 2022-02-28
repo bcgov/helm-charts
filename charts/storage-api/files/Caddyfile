@@ -8,6 +8,12 @@
     }
     status 405 /method_not_allowed
 
+    rewrite {
+        if {method} is DELETE
+        to /method_not_allowed
+    }
+    status 405 /method_not_allowed
+
     proxy / http://127.0.0.1:1080  {
         header_upstream Forwarded host={host}
         header_downstream Access-Control-Allow-Origin *
