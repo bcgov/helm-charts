@@ -122,7 +122,7 @@ tasks:
           /usr/bin/mvn versions:set -s /workspace/.m2/settings.xml -DnewVersion=$GIT_REVISION -DgroupId='*' -DgenerateBackupPoms=false
           sed -i "s/__VERSION__mvn/$GIT_REVISION/g" src/docs/*.html
           NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-          /usr/bin/mvn install -q -s /workspace/.m2/settings.xml > /workspace/pr/comments/$NOW
+          /usr/bin/mvn install -s /workspace/.m2/settings.xml > /workspace/pr/comments/$NOW
           if [[ "$?" -eq 0 ]] ; then
             rm /workspace/pr/comments/$NOW;
           fi
@@ -199,7 +199,7 @@ pipelines:
           - name: route-url
             value: $(params.route-url)
           - name: ns
-            value: $(params.ns)
+            value: f8d638-dev
     finally:
       - name: free-mutex
         ref:
