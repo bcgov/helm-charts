@@ -20,6 +20,6 @@ dependencies:
       repository: https://bcgov.github.io/helm-charts/
   
     - name: storage-api
-      version: 0.1.4
+      version: 0.1.5
       repository: https://bcgov.github.io/helm-charts/
   
