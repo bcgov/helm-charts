@@ -1123,6 +1123,15 @@ entries:
   storage-api:
   - apiVersion: v1
     appVersion: "1.0"
+    created: "2022-03-01T15:00:31.745888701Z"
+    description: A Helm chart for Minio & tusd
+    digest: 00c5df919c094db90f9e3bbd89392b202b2772bddd736b28ad71bd5c145a91ed
+    name: storage-api
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/storage-api-0.1.7/storage-api-0.1.7.tgz
+    version: 0.1.7
+  - apiVersion: v1
+    appVersion: "1.0"
     created: "2022-02-28T22:26:00.611922082Z"
     description: A Helm chart for Minio & tusd
     digest: 10ca6fa342c5f819c715e96780b9b659eaa89566758a80f6f48f2f61b0a1e773
