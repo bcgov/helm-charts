@@ -32,26 +32,29 @@ The following tables list the configurable parameters of the ocp-terraform-pipel
 | `githubWebhookSecret`     | Secret key - GitHub uses it to create a hash signature with each payload. This hash signature is included with the headers of each request as `X-Hub-Signature-25`. The intention is to calculate a hash using your `githubWebhookSecret`, and ensure that the result matches the hash from GitHub | ""                               |
 | `pvc`         | Persistence Volume Claim  |                                                              |
 | `pvc.storage`         | Storage Size  | `1Gi` |
-| `pvc.storageClassName`         | Storage Class Name  | netapp-file-standard |
-| `pvc.volumeMode`         | Volume Mode  | Filesystem |
+| `pvc.storageClassName`         | Storage Class Name  | `netapp-file-standard` |
+| `pvc.volumeMode`         | Volume Mode  | `Filesystem` |
 | `serviceAccount` | The service account that holds git access token and used for cloning private repo |                                                 |
-| `serviceAccount.create` | The service account used for cloning the private repository  |true|
+| `serviceAccount.create` | The service account used for cloning the private repository  |`true`|
 | `serviceAccount.annotations` | The service account used for cloning the private repository  |{}|
 | `serviceAccount.name` | The service account used for cloning the private repository  |""|
-| `npmPackageRef`         | The NPM package that holds the terraform configuration | bcgov-dss/api-serv-infra |
-| `pipelineRunsRetentionDays` | The pipelineruns are kept upto the number of days | "5" |
+| `npmPackageRef`         | The NPM package that holds the terraform configuration | `bcgov-dss/api-serv-infra` |
+| `pipelineRunsRetentionDays` | The pipelineruns are kept upto the number of days | `5` |
 | `terraformConfig`         | Terraform configuration |      |
 | `terraformConfig.sourceFolder` | Folder that contains terraform source code |  |
 | `terraformConfig.pgUser` | Username of the database owner that holds terraform state |      |
 | `terraformConfig.pgPassword` | Password of the database owner that holds terraform state |      |
 | `terraformConfig.pgInstance` | Postgres instance name |                          |
 | `terraformConfig.releaseNamespace         ` | The namespace where the apps to be deployed |      |
-| `terraformConfig.environments` | A map object containing key value pairs, where key is the environment name and value is an object that holds environment specific properties | [dev: [gitBranch: "deploy/dev", gitTriggerBranch: "dev", pgDatabase: "terraform_dev"]] |
-| `terraformConfig.environments['<ENVIRONMENT_NAME>']` | `<ENVIRONMENT_NAME>` is the name of the environment (ex.: dev, test or prod) | dev |
-| `<ENVIRONMENT_NAME>.gitBranch` | The github branch that has the `package-tag` file containing the version to deploy | deploy/dev |
-| `<ENVIRONMENT_NAME>.pgDatabase` | Database that hold environment specific terraform state | terraform_dev |
-| `notifications.enabled` | Enable failure notifications | false |
+| `terraformConfig.environments` | A map object containing key value pairs, where key is the environment name and value is an object that holds environment specific properties | <pre>dev:<br>  gitBranch: "deploy/dev"<br>  pgDatabase: "terraform_dev"</pre> |
+| `terraformConfig.environments['<ENVIRONMENT_NAME>']` | `<ENVIRONMENT_NAME>` is the name of the environment (ex.: dev, test or prod) | `dev` |
+| `<ENVIRONMENT_NAME>.gitBranch` | The github branch that has the `package-tag` file containing the version to deploy | `deploy/dev` |
+| `<ENVIRONMENT_NAME>.pgDatabase` | Database that hold environment specific terraform state | `terraform_dev` |
+| `notifications.enabled` | Enable failure notifications | `false` |
 | `notifications.msteams.webhook` | MS Teams Webhook URL | |
+| `notifications.title` | Notification message title | |
+| `notifications.ocp4Link` | Openshift link | `silver`: https://console.apps.silver.devops.gov.bc.ca<br> `gold`: https://console.apps.gold.devops.gov.bc.ca |
+| `notifications.type` | Type of notifications | `all`: sends all notifications<br>`failed`: sends only failed notifications |
 
 ## Create a webhook
 

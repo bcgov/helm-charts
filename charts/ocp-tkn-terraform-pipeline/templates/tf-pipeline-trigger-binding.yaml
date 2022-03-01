@@ -16,8 +16,8 @@ spec:
       value: $(body.repository.name)
     - name: content-type
       value: $(header.Content-Type)
-    - name: pusher-name
-      value: $(body.pusher.name)
+    - name: git-pusher-name
+      value: $(body.head_commit.author.username)
     - name: git-deploy-branch
       value: $(extensions.deploy_branch)
     - name: ocp-release-namespace

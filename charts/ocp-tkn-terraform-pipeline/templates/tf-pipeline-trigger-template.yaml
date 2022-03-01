@@ -13,6 +13,8 @@ spec:
     - name: pipeline-db-conn-str
     - name: deployment-environment
     - name: deployment-env-name
+    - name: git-pusher-name
+    - name: git-revision
   resourcetemplates:
     - apiVersion: tekton.dev/v1beta1
       kind: PipelineRun
@@ -44,6 +46,10 @@ spec:
             value: '{{ .Values.pipelineRunsRetentionDays }}'
           - name: current-pipelinerun-name
             value: $(context.pipelineRun.name)
+          - name: git-release-author
+            value: $(tt.params.git-pusher-name)
+          - name: git-release-commit-sha
+            value: $(tt.params.git-revision)
         pipelineRef:
           name: {{ $fullName }}
         workspaces:
