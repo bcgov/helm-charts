@@ -76,7 +76,7 @@ tolerations: []
 
 affinity: {}
 database:
-  host: "mc-formio-mongo.mc:27017"
+  host: "mc-forum-api-mongo.mc:27017"
   username: "forumApi"
   password: "password"
   dbName: "oc_db"
@@ -133,10 +133,6 @@ requiredRoleToCreateRequest: "exporter"
 alwaysNotifyListOnTopicCreate: "false"
 alwaysNotifyUninvolvedOnCommentAdd: "true"
 adminGroup: "mc-admin"
-formioConf:
-  url: "http://localhost:3006"
-  username: "admin@example.com"
-  password: "CHANGEME"
 jwtSecret: "jwtSecret"
 userIdField: "email"
 
