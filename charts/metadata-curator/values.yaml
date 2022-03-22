@@ -135,6 +135,7 @@ alwaysNotifyUninvolvedOnCommentAdd: "true"
 adminGroup: "mc-admin"
 jwtSecret: "jwtSecret"
 userIdField: "email"
+bcdc: "bcdcUrl"
 
 nsp:
   enabled: true
