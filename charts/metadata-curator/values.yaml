@@ -137,8 +137,7 @@ jwtSecret: "jwtSecret"
 userIdField: "email"
 bcdc: "bcdcUrl"
 
-wsPort: "3030"
-wsProto: "ws"
+wsUrl: "ws://localhost:3030"
 
 nsp:
   enabled: true
