@@ -137,6 +137,9 @@ jwtSecret: "jwtSecret"
 userIdField: "email"
 bcdc: "bcdcUrl"
 
+wsPort: "3030"
+wsProto: "ws"
+
 nsp:
   enabled: true
 
@@ -145,6 +148,7 @@ hashLabel: "1"
 
 forumApiConf:
   baseUrl: "mc-forum-api.svc"
+  wsUrl: "ws://localhost:3001"
 
 
 

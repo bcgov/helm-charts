@@ -13,3 +13,21 @@ spec:
       name: http
   selector:
     {{- include "metadata-curator.selectorLabels" . | nindent 4 }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "metadata-curator.fullname" . }}-ws
+  labels:
+    {{- include "metadata-curator.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: 3030
+      targetPort: ws
+      protocol: TCP
+      name: ws
+  selector:
+    {{- include "metadata-curator.selectorLabels" . | nindent 4 }}
