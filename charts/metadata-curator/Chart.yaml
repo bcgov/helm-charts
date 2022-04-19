@@ -6,13 +6,13 @@ author: Brandon Sharratt
 type: application
 
 
-version: 0.1.24
+version: 0.1.23
 
 appVersion: 0.9.0
 
 dependencies:
     - name: forum-api
-      version: 0.1.1
+      version: 0.1.0
       repository: https://bcgov.github.io/helm-charts/
   
     - name: storage-api
