@@ -149,6 +149,15 @@ forumApiConf:
   baseUrl: "mc-forum-api.svc"
   wsUrl: "ws://localhost:3001"
 
+supplementalUploadUrl: "mc-storage-api-supplemental.mc"
+minio:
+  url: "mc-storage-api.svc"
+  port: 9000
+  ssl: false
+  key: "accessKey"
+  secret: "secretKey"
+  bucket: "supplemental"
+
 
 
   

@@ -21,9 +21,12 @@
 {{ $userIdField := .Values.userIdField }}
 {{ $bcdcUrl := .Values.bcdc }}
 
+{{ $supplemental := .Values.supplementalUploadUrl }}
+{{ $minio := .Values.minio | toJson | toString }}
+
 {{ $wsUrl := .Values.wsUrl }}
 
-{{ $nodeConfig := printf "{\"database\": %s, \"wsUrl\": \"%s\", \"logLevel\": \"%s\", \"sessionSecret\": \"%s\", \"frontend\": \"%s\", \"oidc\": %s, \"uploadUrl\": \"%s\", \"jwtAud\": \"%s\", \"base64EncodedPGPPublicKey\": \"%s\", \"approverGroups\": %s, \"alwaysNotifyList\": %s, \"email\": %s, \"orgAttribute\": \"%s\", \"requiredRoleToCreateRequest\": \"%s\", \"alwaysNotifyListOnTopicCreate\": \"%s\", \"alwaysNotifyUninvolvedOnCommentAdd\": \"%s\", \"adminGroup\": \"%s\", \"formio\": %s, \"jwtSecret\": \"%s\", \"forumApi\": %s, \"userIdField\": \"%s\", \"bcdc\": \"%s\" }" $database $wsUrl $logLevel $sessionSecret $frontend $oidc $uploadUrl $jwtAud $base64EncodedPGPPublicKey $approverGroups $alwaysNotifyList $email $orgAttribute $requiredRoleToCreateRequest $alwaysNotifyListOnTopicCreate $alwaysNotifyUninvolvedOnCommentAdd $adminGroup $formio $jwtSecret $forumApi $userIdField $bcdcUrl }}
+{{ $nodeConfig := printf "{\"supplementalUploadUrl\": \"%s\", \"minio\": %s, \"database\": %s, \"wsUrl\": \"%s\", \"logLevel\": \"%s\", \"sessionSecret\": \"%s\", \"frontend\": \"%s\", \"oidc\": %s, \"uploadUrl\": \"%s\", \"jwtAud\": \"%s\", \"base64EncodedPGPPublicKey\": \"%s\", \"approverGroups\": %s, \"alwaysNotifyList\": %s, \"email\": %s, \"orgAttribute\": \"%s\", \"requiredRoleToCreateRequest\": \"%s\", \"alwaysNotifyListOnTopicCreate\": \"%s\", \"alwaysNotifyUninvolvedOnCommentAdd\": \"%s\", \"adminGroup\": \"%s\", \"formio\": %s, \"jwtSecret\": \"%s\", \"forumApi\": %s, \"userIdField\": \"%s\", \"bcdc\": \"%s\" }" $supplemental $minio $database $wsUrl $logLevel $sessionSecret $frontend $oidc $uploadUrl $jwtAud $base64EncodedPGPPublicKey $approverGroups $alwaysNotifyList $email $orgAttribute $requiredRoleToCreateRequest $alwaysNotifyListOnTopicCreate $alwaysNotifyUninvolvedOnCommentAdd $adminGroup $formio $jwtSecret $forumApi $userIdField $bcdcUrl }}
 
 apiVersion: apps/v1
 kind: Deployment
