@@ -155,3 +155,13 @@ forumApiConf:
 forum-api:
   wsService:
     type: ClusterIP
+
+storage-api-supplemental:
+  tus:
+    bucket: supplmental
+  minio:
+    image: minio/RELEASE.2022-04-16T04-26-02Z
+
+storage-api:
+  minio:
+    image: minio/RELEASE.2022-04-16T04-26-02Z
