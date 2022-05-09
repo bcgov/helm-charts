@@ -169,8 +169,8 @@ storage-api-supplemental:
   tus:
     bucket: supplmental
   minio:
-    image: minio/RELEASE.2022-04-16T04-26-02Z
+    image: minio/minio:RELEASE.2022-04-16T04-26-02Z
 
 storage-api:
   minio:
-    image: minio/RELEASE.2022-04-16T04-26-02Z
+    image: minio/minio:RELEASE.2022-04-16T04-26-02Z
