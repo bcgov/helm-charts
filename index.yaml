@@ -1307,6 +1307,22 @@ entries:
   patroni-spilo:
   - apiVersion: v1
     appVersion: 1.6-p3
+    created: "2022-06-09T22:48:27.373989892Z"
+    description: 'Highly available elephant herd: HA PostgreSQL cluster.'
+    digest: c3b987f4320bc3afbe4cf7c34e0da7096dee5537acc753919e9319a8c8901da2
+    home: https://github.com/zalando/patroni
+    maintainers:
+    - email: matthieu@button.is
+      name: Matthieu Foucault
+    name: patroni-spilo
+    sources:
+    - https://github.com/zalando/patroni
+    - https://github.com/zalando/spilo
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/patroni-spilo-0.21.6/patroni-spilo-0.21.6.tgz
+    version: 0.21.6
+  - apiVersion: v1
+    appVersion: 1.6-p3
     created: "2021-11-16T12:23:21.874726247Z"
     description: 'Highly available elephant herd: HA PostgreSQL cluster.'
     digest: 9f8ed2c84bd533237e61d92f1c27aeba12b7e72dab449dd3e7dad34b07eb55ab
