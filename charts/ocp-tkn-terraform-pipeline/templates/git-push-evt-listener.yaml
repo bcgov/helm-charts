@@ -7,7 +7,6 @@ metadata:
     {{- include "ocp-tkn-terraform-pipeline.labels" . | nindent 4 }}
 spec:
   namespaceSelector: {}
-  podTemplate: {}
   resources: {}
   serviceAccountName: pipeline
   triggers:
@@ -16,24 +15,34 @@ spec:
         - kind: TriggerBinding
           ref: {{ $fullName }}-binding
       interceptors:
-        - github:
-            eventTypes:
-              - push
-            secretRef:
-              secretKey: secretToken
-              secretName: {{ $fullName }}-git-webhook
-        - cel:
-            filter: body.ref == "refs/heads/{{ $val.gitBranch }}"
-            overlays:
-              - expression: r"{{ $key }}"
-                key: name
-              - expression: r"{{ $val.gitBranch }}"
-                key: deploy_branch
-              - expression: r"{{ $.Values.terraformConfig.releaseNamespace }}-{{ $key }}"
-                key: release_namespace
-              - expression: >-
-                  r"conn_str=postgres://{{ $.Values.terraformConfig.pgUser }}:{{ $.Values.terraformConfig.pgPassword }}@{{ $.Values.terraformConfig.pgInstance }}/{{ $val.pgDatabase }}?sslmode=disable"
-                key: db_conn_str
+        - params:
+            - name: secretRef
+              value:
+                secretKey: secretToken
+                secretName: {{ $fullName }}-git-webhook
+            - name: eventTypes
+              value:
+                - push
+          ref:
+            kind: ClusterInterceptor
+            name: github
+        - params:
+            - name: filter
+              value: body.ref == "refs/heads/{{ $val.gitBranch }}"
+            - name: overlays
+              value:
+                - expression: r"{{ $key }}"
+                  key: name
+                - expression: r"{{ $val.gitBranch }}"
+                  key: deploy_branch
+                - expression: r"{{ $.Values.terraformConfig.releaseNamespace }}-{{ $key }}"
+                  key: release_namespace
+                - expression: >-
+                    r"conn_str=postgres://{{ $.Values.terraformConfig.pgUser }}:{{ $.Values.terraformConfig.pgPassword }}@{{ $.Values.terraformConfig.pgInstance }}/{{ $val.pgDatabase }}?sslmode=disable"
+                  key: db_conn_str
+          ref:
+            kind: ClusterInterceptor
+            name: cel
       name: github-listener
       template:
         ref: {{ $fullName }}-template
