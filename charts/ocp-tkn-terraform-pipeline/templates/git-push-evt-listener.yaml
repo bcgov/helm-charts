@@ -43,7 +43,7 @@ spec:
           ref:
             kind: ClusterInterceptor
             name: cel
-      name: github-listener
+      name: github-listener-{{ $key }}
       template:
         ref: {{ $fullName }}-template
     {{- end }}
