@@ -1169,6 +1169,15 @@ entries:
   ocp-tkn-terraform-pipeline:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2022-06-29T21:29:59.337408282Z"
+    description: A Helm chart for Openshift terraform pipelines using Tekton
+    digest: cb5a9a3ebc3a0d8c348f140f9005c55d6195eba993894754fb987e5108651646
+    name: ocp-tkn-terraform-pipeline
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/ocp-tkn-terraform-pipeline-1.0.6/ocp-tkn-terraform-pipeline-1.0.6.tgz
+    version: 1.0.6
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2022-03-01T21:16:05.882063302Z"
     description: A Helm chart for Openshift terraform pipelines using Tekton
     digest: 51a043db3dbec79389b88f70429e16f62f6268f5064cd6b644562d2c62c3efeb
