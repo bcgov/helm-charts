@@ -70,5 +70,7 @@ data:
 
       "authGroupSeperator": {{ .Values.authGroupSeperator | quote }},
       "sysAdminGroup": {{ .Values.sysAdminGroup | quote}},
+      "sysAdminGroupField": {{ .Values.sysAdminGroupField | quote}},
+
       "landingTerms": {{ .Values.landingTerms | toJson }}
     }

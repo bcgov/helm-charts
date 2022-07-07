@@ -123,6 +123,7 @@ snowplow:
 
 authGroupSeperator: "/"
 sysAdminGroup: "admin"
+sysAdminGroupField: "groups"
 
 deploymentEnv: "DEV"
 
