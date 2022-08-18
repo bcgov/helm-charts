@@ -8,6 +8,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
+  ttlSecondsAfterFinished: {{ .Values.ttlSecondsAfterFinished }}
   backoffLimit: {{ .Values.backoffLimit }}
   manualSelector: true
   selector:

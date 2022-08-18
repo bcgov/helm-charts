@@ -16,6 +16,9 @@ backoffLimit: 1
 
 restartPolicy: Never
 
+# 5 days
+ttlSecondsAfterFinished: 432000
+
 shell: sh
 script: |
   echo "All good"
@@ -25,13 +28,15 @@ annotations:
 
 podAnnotations: {}
 
-config: []
+config:
+  []
   # - filename: index.html
   #   mountPath: /usr/share/nginx/html/index.html
   #   contents: |
   #     <html><body>Hello</body></html>
 
-env: {}
+env:
+  {}
   # SOME_ENV_VAR:
   #   value: "var2"
   #   secure: false
@@ -59,8 +64,9 @@ rbac:
   #    verbs:
   #      - get
   #      - list
-  
-securityContext: {}
+
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -68,7 +74,8 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
-resources: {}
+resources:
+  {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
