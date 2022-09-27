@@ -25,7 +25,7 @@ spec:
     {{- end -}}
   {{- end -}}
   {{- end }}
-  
+
   {{- if .resources -}}
   {{- if gt (len .resources) 0 }}
   inputs:
@@ -36,7 +36,21 @@ spec:
       {{- end -}}
   {{- end -}}
   {{- end }}
-
+  {{- if .volumes -}}
+  {{ if gt (len .volumes) 0 }}
+  volumes:
+    {{ range .volumes }}
+  - name: {{ .name }}
+    {{ if .persistentVolumeClaim }}
+    persistentVolumeClaim:
+      claimName: {{ .persistentVolumeClaim }}
+    {{ else if .configMap }}
+    configMap:
+      name: {{ .configMap }}
+    {{ end }}
+    {{ end }}
+  {{ end }}
+  {{- end -}}
   {{- if .steps -}}
   {{- if gt (len .steps) 0 }}
   steps:
@@ -44,15 +58,44 @@ spec:
     - name: {{ .name }}
       image: {{ .image }}
       {{ if .script }}
-      script: |
-{{ .script | indent 8 }}
+      script:
+        {{- toYaml .script | indent 8 }}
       {{ else }}
-      command: 
+      command:
       {{- range .command }}
         - {{ . }}
       {{- end -}}
       {{ end }}
-      env: 
+      {{ if .workingDir }}
+      workingDir: {{ .workingDir }}
+      {{ end }}
+      {{ with .resources }}
+      resources:
+        {{ with .requests }}
+        requests:
+            memory: {{ .memory }}
+            cpu: {{ .cpu }}
+        {{ end }}
+        {{ with .limits }}
+        limits:
+            {{ if .memory }}
+            memory: {{ .memory }}
+            {{ end }}
+            {{ if .cpu }}
+            cpu: {{ .cpu }}
+            {{ end }}
+        {{ end }}
+      {{ end }}
+      {{- if .volumeMounts -}}
+      {{ if gt (len .volumeMounts) 0 }}
+      volumeMounts:
+      {{ range .volumeMounts }}
+      - name: {{ .name }}
+        mountPath: {{ .mountPath }}
+      {{ end }}
+      {{ end }}
+      {{- end -}}
+      env:
       {{- range .env }}
         - name: {{ .name }}
           {{ if .secret }}

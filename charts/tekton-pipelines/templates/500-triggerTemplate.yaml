@@ -10,10 +10,10 @@ metadata:
     release: {{ $.Release.Name }}
     heritage: {{ $.Release.Service }}
 spec:
-  {{- if .params -}}
-  {{- if gt (len .params) 0 }}
+  {{- if .pipeline_params -}}
+  {{- if gt (len .pipeline_params) 0 }}
   params:
-    {{- range .params }}
+    {{- range .pipeline_params }}
     - name: {{ .name }}
       description: {{ .description }}
       {{- if .default }}
@@ -22,27 +22,75 @@ spec:
     {{- end -}}
   {{- end -}}
   {{- end }}
-  
+
   resourcetemplates:
-    - apiVersion: tekton.dev/v1alpha1
+    - apiVersion: tekton.dev/v1beta1
       kind: PipelineRun
       metadata:
         name: {{ .name }}-run-$(uid)
       spec:
-        serviceAccountName: {{ $.Values.serviceAccountName }}
         pipelineRef:
           name: {{ .name }}
-          
-        workspaces:
-          - emptyDir: {}
-            name: shared-workspace
 
-        {{- if .params -}}
-        {{- if gt (len .params) 0 }}
-        params:
-          {{- range .params }}
+        workspaces:
+        {{- if .workspaces -}}
+        {{ if gt (len .workspaces) 0 }}
+          {{ range .workspaces }}
           - name: {{ .name }}
+            {{ if .persistentVolumeClaim }}
+            persistentVolumeClaim:
+              claimName: {{ .persistentVolumeClaim }}
+            {{ else if .volumeClaimTemplate }}
+            volumeClaimTemplate:
+              metadata:
+                name: pr-pvc
+                labels:
+                  app: {{ template "pipelines.name" $ }}
+                  chart: {{ template "pipelines.chart" $ }}
+                  release: {{ $.Release.Name }}
+                  heritage: {{ $.Release.Service }}
+              spec:
+                accessModes:
+                  - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: {{ .volumeClaimTemplate }}
+            {{ else }}
+            emptyDir: {}
+            {{ end }}
+          {{ end }}
+        {{ end }}
+        {{- end -}}
+
+        {{ with .podTemplate }}
+        podTemplate:
+            {{ with .securityContext }}
+            securityContext:
+                runAsNonRoot: {{ .runAsNonRoot }}
+                runAsUser: {{ .runAsUser }}
+            {{ end }}
+        {{ end }}
+
+        {{- if .serviceAccountName -}}
+        {{- if gt (len .serviceAccountName) 0 }}
+        taskRunSpecs:
+          {{- range .serviceAccountName }}
+          - pipelineTaskName: {{ .pipelineTaskName }}
+            taskServiceAccountName: {{ .taskServiceAccountName }}
+          {{- end -}}
+        {{- end -}}
+        {{- end }}
+
+        {{- if .pipeline_params -}}
+        {{- if gt (len .pipeline_params) 0 }}
+        params:
+          {{- range .pipeline_params }}
+          - name: {{ .name }}
+            {{ if .resourceTemplate }}
             value: {{ .resourceTemplate }}
+            {{ else if .default }}
+            value: {{ .default }}
+            {{ end }}
           {{- end -}}
         {{- end -}}
         {{- end }}
@@ -67,5 +115,5 @@ spec:
           {{- end -}}
         {{- end -}}
         {{- end -}}
-        
+
 {{ end }}
