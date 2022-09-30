@@ -22,9 +22,9 @@ spec:
         generateName: {{ $fullName }}-deployment-$(tt.params.ocp-release-namespace)-
       spec:
         serviceAccountName: pipeline
-        serviceAccountNames:
-          - taskName: clone-repository
-            serviceAccountName: {{ .Values.serviceAccount.name }}-git-clone
+        taskRunSpecs:
+          - pipelineTaskName: clone-repository
+            taskServiceAccountName: {{ .Values.serviceAccount.name }}-git-clone
         params:
           - name: git-repo-url
             value: $(tt.params.git-repo-url)
