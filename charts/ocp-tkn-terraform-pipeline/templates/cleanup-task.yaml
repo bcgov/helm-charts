@@ -34,7 +34,7 @@ spec:
         [[ "$(workspaces.cleanup.bound)" == "true" ]] && \
         cd $(workspaces.cleanup.path)
 
-        oc get pipelineruns -o go-template --template {{`'{{range .items}}{{.metadata.name}} {{.metadata.creationTimestamp}}{{"\n"}}{{end}}'`}} | awk '$2 <= "'$(date -d "now-${RETAIN_DAYS} days" -Ins --utc | sed 's/+0000/Z/')'" { print $1 }' | xargs --no-run-if-empty oc delete pipelineruns
+        oc get pipelineruns -l "tekton.dev/pipeline={{ include "ocp-tkn-terraform-pipeline.fullname" . }}" -o go-template --template {{`'{{range .items}}{{.metadata.name}} {{.metadata.creationTimestamp}}{{"\n"}}{{end}}'`}} | awk '$2 <= "'$(date -d "now-${RETAIN_DAYS} days" -Ins --utc | sed 's/+0000/Z/')'" { print $1 }' | xargs --no-run-if-empty oc delete pipelineruns
 
   workspaces:
     - name: cleanup
