@@ -1,5 +1,6 @@
 {{- range .Values.pipelines -}}
 ---
+{{ if .pipeline_params }}
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: TriggerBinding
 metadata:
@@ -10,7 +11,7 @@ metadata:
     release: {{ $.Release.Name }}
     heritage: {{ $.Release.Service }}
 
-{{ if .pipeline_params }}
+
 {{ if gt  (len .pipeline_params) 0}}
 spec:
   params:

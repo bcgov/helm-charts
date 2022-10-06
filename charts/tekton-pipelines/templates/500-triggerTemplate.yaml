@@ -10,7 +10,7 @@ metadata:
     release: {{ $.Release.Name }}
     heritage: {{ $.Release.Service }}
 spec:
-  {{- if .pipeline_params -}}
+  {{ if .pipeline_params -}}
   {{- if gt (len .pipeline_params) 0 }}
   params:
     {{- range .pipeline_params }}

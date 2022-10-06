@@ -43,3 +43,7 @@ events:
             service: el-name-el
             port: 8080
         tls: []
+
+secrets:
+  - name: test
+    value: '2'
