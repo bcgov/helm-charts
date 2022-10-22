@@ -406,6 +406,16 @@ entries:
   generic-api:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2022-10-22T00:54:39.826928612Z"
+    description: A Helm chart for Kubernetes
+    digest: e2f06326880feb8a767e0157a14106e087046c0e6779547096f169056cdb077c
+    name: generic-api
+    type: application
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/generic-api-0.2.0/generic-api-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2022-06-29T20:00:45.944754013Z"
     description: A Helm chart for Kubernetes
     digest: b417de3a71a187a49fab89f57bc03ac612c7aa83b3574295db712467bc929395
