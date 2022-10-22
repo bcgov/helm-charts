@@ -1,5 +1,5 @@
 {{- range $name, $val := .Values.persistence }}
-{{- if (and (not .claimName) (.persistentVolumeClaim)) }}
+{{- if (and (not .claimName) (.size)) }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

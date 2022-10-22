@@ -43,7 +43,7 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       volumes:
       {{- range $name, $val := .Values.persistence }}
-        {{- if .persistentVolumeClaim }}
+        {{- if or .claimName .size }}
         {{- if .claimName }}
         - name: {{ $name }}-vol
           persistentVolumeClaim:
