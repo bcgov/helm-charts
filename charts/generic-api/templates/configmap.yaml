@@ -10,5 +10,10 @@ metadata:
 data:
 {{- range .Values.config }}
   {{ .filename }}: |-
-{{ .contents | indent 4 }}
+{{- with .contents }}
+{{ . | indent 4 }}
+{{- end }}
+{{- with .yaml }}
+{{ toYaml . | indent 4 }}
+{{- end }}
 {{- end }}
