@@ -94,8 +94,8 @@ config:
 networkPolicy:
   create: true
   #ports: [ 80, 8080 ]
-  matchLabels:
-    name: my-upstream-api
+  matchLabels: {}
+    # name: my-upstream-api
 
 podAnnotations: {}
 
