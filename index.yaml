@@ -38,6 +38,17 @@ entries:
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/api-serv-ui-0.1.5/api-serv-ui-0.1.5.tgz
     version: 0.1.5
+  aps-gateway-ns:
+  - apiVersion: v2
+    appVersion: 1.3.1
+    created: "2022-11-09T09:35:04.563256245Z"
+    description: A Helm chart for configuring Gateway and Directory information at https://api.gov.bc.ca
+    digest: a709f112258f22679c37d848633411df845edc731fd4f49f7d8d1f4748c41778
+    name: aps-gateway-ns
+    type: application
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/aps-gateway-ns-0.1.0/aps-gateway-ns-0.1.0.tgz
+    version: 0.1.0
   backup-storage:
   - apiVersion: v2
     appVersion: 1.16.0
