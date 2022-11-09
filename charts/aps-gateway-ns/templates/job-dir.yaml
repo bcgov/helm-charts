@@ -1,0 +1,125 @@
+{{- $fullName := include "aps-gateway-ns.fullname" . -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "aps-gateway-ns.fullname" . }}-dir
+  annotations:
+    "helm.sh/hook": post-install, post-upgrade
+    "helm.sh/hook-weight": "10"
+  {{- with .Values.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  ttlSecondsAfterFinished: {{ .Values.ttlSecondsAfterFinished }}
+  backoffLimit: {{ .Values.backoffLimit }}
+  manualSelector: true
+  selector:
+    matchLabels:
+      {{- include "aps-gateway-ns.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        vault.hashicorp.com/auth-path: '{{ .Values.vault.authPath }}'
+        vault.hashicorp.com/namespace: '{{ .Values.vault.namespace }}'
+        vault.hashicorp.com/role: '{{ .Values.vault.role }}'
+        vault.hashicorp.com/agent-inject-secret-creds: '{{ .Values.vault.secret }}'
+        vault.hashicorp.com/agent-inject-template-creds: |
+          {{`
+          {{- with secret "`}}{{ .Values.vault.secret }}{{`" }}
+          {{- range $key, $val := .Data.data }}
+          export {{ $key }}="{{ $val }}"
+          {{- end }}
+          {{ end }}
+          `}}
+        vault.hashicorp.com/agent-inject: 'true'
+        vault.hashicorp.com/agent-inject-token: 'false'
+        vault.hashicorp.com/agent-pre-populate-only: 'true'
+        vault.hashicorp.com/agent-requests-cpu: '100m'
+        vault.hashicorp.com/agent-limits-cpu: '100m'
+        vault.hashicorp.com/agent-requests-mem: '256Mi'
+        vault.hashicorp.com/agent-limits-mem: '256Mi'
+        checksum/config: {{ toString .Values.config | sha256sum }}
+    {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        {{- include "aps-gateway-ns.selectorLabels" . | nindent 8 }}
+        {{- range $index, $val := .Values.extraLabels }}
+        {{ $index }}: {{ $val }}
+        {{- end }}
+    spec:
+      {{- with .Values.serviceAccount.name }}
+      serviceAccountName: {{ . }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 8 }}
+{{- end }}
+        - name: config-vol
+          secret:
+            secretName: {{ include "aps-gateway-ns.fullname" . }}-secrets            
+        - name: scripts-vol
+          configMap:
+            name: {{ template "aps-gateway-ns.fullname" . }}-scripts
+            defaultMode: 0755
+        - name: cache-volume
+          emptyDir: {}
+        - name: local-volume
+          emptyDir: {}
+      containers:
+      - name: job
+        image: "{{ .Values.dirImage.repository }}:{{ .Values.dirImage.tag }}"
+        imagePullPolicy: {{ .Values.dirImage.pullPolicy }}
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        command:
+        - {{ .Values.shell }}
+        - -c
+        - |
+          set -e
+          . /vault/secrets/creds
+          cd /config
+          export PATH=/.local/bin:/scripts:$PATH
+          /usr/local/bin/python -m pip install -q --upgrade pip
+          pip3 install -q pyyaml requests
+
+          y2j-dir-put /ds/api/v2/namespaces/${NAMESPACE}/issuers issuers.yaml
+          y2j-dir-put /ds/api/v2/namespaces/${NAMESPACE}/datasets datasets.yaml
+          y2j-dir-put /ds/api/v2/namespaces/${NAMESPACE}/products products.yaml
+
+        env:
+        {{- range $index, $val := .Values.env }}
+          {{- if .secure }}
+          - name: {{ $index }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $fullName }}-secrets
+                key: {{ $index | kebabcase }}
+          {{- else }}
+          - name: {{ $index }}
+            value: {{ .value | quote }}
+          {{- end }}
+        {{- end }}
+        volumeMounts:
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | nindent 8 }}
+{{- end }}
+        - name: config-vol
+          mountPath: /config
+          readOnly: true
+        - name: scripts-vol
+          mountPath: /scripts
+          readOnly: true
+        - name: cache-volume
+          mountPath: /.cache
+        - name: local-volume
+          mountPath: /.local
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+      restartPolicy: {{ .Values.restartPolicy }}
