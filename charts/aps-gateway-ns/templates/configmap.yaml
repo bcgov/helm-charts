@@ -8,10 +8,9 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-{{- with .Values.gatewayConfig }}
   gateway.yaml: |-
-{{ toYaml . | indent 4 }}
-{{- end }}
+    services:
+{{ toYaml .Values.services | indent 4 }}
 
 {{- range .Values.config }}
   {{ .filename }}: |-
