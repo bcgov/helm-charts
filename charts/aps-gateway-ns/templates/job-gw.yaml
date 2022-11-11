@@ -81,7 +81,7 @@ spec:
           curl -L -O https://github.com/bcgov/gwa-cli/releases/download/v1.3.1/gwa_v1.3.1_linux_x64.zip
           unzip gwa_v1.3.1_linux_x64.zip
           export PATH=`pwd`:$PATH
-          gwa init -D \
+          gwa init ${GWA_INIT_FLAG} \
             --namespace=$NAMESPACE \
             --client-id=${GWA_ACCT_ID} \
             --client-secret=${GWA_ACCT_SECRET}
