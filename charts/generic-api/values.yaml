@@ -49,8 +49,15 @@ extraEnvs: []
 secretVolumes: []
 
 persistence: {}
-#  temp:
-#    mountPath: /tmp
+  # backup:
+  #   persistentVolumeClaim: true
+  #   claimName: externally-created-pvc-claim
+  #   size: 100Mi
+  #   mountPath: /backups/
+  #   storageClassName: netapp-block-standard
+  #   storageAccessMode: ReadWriteOnce
+  # tempspace:
+  #   mountPath: /tempspace
 
 config:
   []

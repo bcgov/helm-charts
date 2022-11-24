@@ -1,0 +1,145 @@
+# Default values for generic-api.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: ""
+fullnameOverride: ""
+
+image:
+  repository: docker.io/kubeless/unzip
+  tag: latest
+  pullPolicy: IfNotPresent
+
+dirImage:
+  repository: docker.io/python
+  tag: 3.9.15-buster
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+shell: sh
+
+vault:
+  authPath: auth/k8s-silver
+  namespace: platform-services
+  role: xxxxxx-nonprod
+  secret: xxxxxx-nonprod/gateway-dev
+  # The secret should have the following JSON:
+  # {
+  #   "NAMESPACE": "",
+  #   "GWA_ACCT_ID": "",
+  #   "GWA_ACCT_SECRET": "",
+  #   "TOKEN_URL": ""
+  # }
+
+serviceAccount:
+  create: false
+  annotations: {}
+  # The name of the service account to use.
+  name: "xxxxxx-vault"
+
+podSecurityContext: {}
+
+securityContext: {}
+
+extraLabels: []
+
+env:
+  {}
+  # SOME_ENV_VAR:
+  #   value: "var2"
+  #   secure: false
+  # SOME_SEC_ENV_VAR:
+  #   value: "var"
+  #   secure: true
+
+extraEnvs: []
+# - name: A_TOKEN
+#   valueFrom:
+#     secretKeyRef:
+#       name: my-secret
+#       key: a-token
+
+# API Gateway Kong setup
+services: []
+# - name: a-service-for-api-x
+#   host: httpbin.org
+#   tags: [ ns.apigroupns ]
+#   port: 443
+#   protocol: https
+#   retries: 0
+#   routes: []
+
+# API Services Portal Directory setup
+directoryConfig:
+  products: []
+  issuers: []
+  datasets: []
+
+
+config:
+  []
+  # - filename: index.html
+  #   mountPath: /usr/share/nginx/html/index.html
+  #   contents: |
+  #     <html><body>My web service</body></html>
+  # - filename: nginx.conf
+  #   mountPath: /etc/nginx/nginx.conf
+  #   contents: |
+  #     worker_processes  1;
+  #     error_log  /tmp/error.log;
+  #     pid        /tmp/nginx.pid;
+  #     worker_rlimit_nofile 8192;
+
+  #     events {
+  #       worker_connections  1024;
+  #     }
+
+  #     http {
+  #         client_body_temp_path /tmp/client_temp;
+  #         proxy_temp_path       /tmp/proxy_temp_path;
+  #         fastcgi_temp_path     /tmp/fastcgi_temp;
+  #         uwsgi_temp_path       /tmp/uwsgi_temp;
+  #         scgi_temp_path        /tmp/scgi_temp;
+
+  #         server {
+  #           listen       8000;
+  #           root         /usr/share/nginx/html;
+  #         }
+  #     }
+
+networkPolicy:
+  create: true
+  #ports: [ 80, 8080 ]
+  matchLabels: {}
+    # name: my-upstream-api
+
+podAnnotations: {}
+
+rbac:
+  create: false
+  rules: []
+  # RBAC rules for KUBE_PING
+  #  - apiGroups:
+  #      - ""
+  #    resources:
+  #      - pods
+  #    verbs:
+  #      - get
+  #      - list
+
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 256Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+
+backoffLimit: 1
+
+restartPolicy: Never
+
+# 1 year
+ttlSecondsAfterFinished: 31536000

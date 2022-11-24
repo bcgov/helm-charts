@@ -1,0 +1,59 @@
+{{- if and .Values.networkPolicy.create }}
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: {{ template "aps-gateway-ns.fullname" . }}-allow-traffic
+spec:
+  podSelector:
+    matchLabels:
+{{ toYaml .Values.networkPolicy.matchLabels | indent 6 }}
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              environment: test
+              name: 264e6f
+  {{- with .Values.networkPolicy.ports }}
+      ports:
+  {{- range . }}
+        - protocol: TCP
+          port: {{ . }}
+  {{- end }}     
+  {{- end }}     
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              environment: prod
+              name: 264e6f
+  {{- with .Values.networkPolicy.ports }}
+      ports:
+  {{- range . }}
+        - protocol: TCP
+          port: {{ . }}
+  {{- end }}     
+  {{- end }}     
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              environment: test
+              name: b8840c
+  {{- with .Values.networkPolicy.ports }}
+      ports:
+  {{- range . }}
+        - protocol: TCP
+          port: {{ . }}
+  {{- end }}     
+  {{- end }}     
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              environment: prod
+              name: b8840c
+  {{- with .Values.networkPolicy.ports }}
+      ports:
+  {{- range . }}
+        - protocol: TCP
+          port: {{ . }}
+  {{- end }}     
+  {{- end }}     
+{{- end }}

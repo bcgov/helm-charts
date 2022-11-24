@@ -1,0 +1,51 @@
+#!/usr/bin/env python3
+
+import requests,os,sys,yaml,json
+
+# Use a Client ID and Secret to get a JWT Token
+# Environment Variables: CID, CSC, TOKEN_URL
+def get_token():
+  headers = {
+    "Content-Type": "application/x-www-form-urlencoded"
+  }
+  data = {
+    "client_id": os.environ.get("GWA_ACCT_ID"),
+    "client_secret": os.environ.get("GWA_ACCT_SECRET"),
+    "grant_type": "client_credentials",
+    "scopes": "openid"
+  }
+  r = requests.post(os.environ.get("TOKEN_URL"), data=data, headers=headers)
+  r.raise_for_status()
+  return r.json()["access_token"]
+
+# PUT request to a Portal Directory API
+def put(path, data):
+  headers = {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer %s" % get_token()
+  }
+  print(": %s" % path)
+  r = requests.put(path, 
+                  data=data, 
+                  headers=headers)
+  r.raise_for_status()
+  print("   OK %s %s" % (r.status_code, data))
+  if r.status_code == 200 or r.status_code == 201:
+    print("      %s" % r.text)
+
+## Logic
+##
+if len(sys.argv) >= 3:
+  json_list = yaml.safe_load(open(sys.argv[2]).read())
+  
+  ## For yamls that just have one record, detect it and inject content if provided
+  if not isinstance(json_list, list):
+    if len(sys.argv) == 4:
+      json_list["content"] = open(sys.argv[3]).read()
+    json_list = [ json_list ]
+
+  for data in json_list:
+    print(data)
+    put("%s%s" % (os.environ.get("PORTAL_URL"), sys.argv[1]), json.dumps(data))
+else:
+    put("%s%s" % (os.environ.get("PORTAL_URL"), sys.argv[1]), None)

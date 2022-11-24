@@ -19,8 +19,9 @@ spec:
       {{- include "generic-api.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-    {{- with .Values.podAnnotations }}
       annotations:
+        checksum/config: {{ toString .Values.config | sha256sum }}
+    {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
       labels:
@@ -42,6 +43,22 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       volumes:
+      {{- range $name, $val := .Values.persistence }}
+        {{- if or .claimName .size }}
+        {{- if .claimName }}
+        - name: {{ $name }}-vol
+          persistentVolumeClaim:
+            claimName: {{ .claimName }}
+        {{- else }}
+        - name: {{ $name }}-vol
+          persistentVolumeClaim:
+            claimName: {{ template "generic-api.fullname" $ }}-{{ $name }}-pvc
+        {{- end }}
+        {{- else }}
+        - name: {{ $name }}-vol
+          emptyDir: {}
+        {{- end }}
+      {{- end }}
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 8 }}
 {{- end }}
@@ -49,10 +66,6 @@ spec:
         - name: {{ . }}
           secret:
             secretName: {{ . }}
-        {{- end }}
-        {{- range $name, $val := .Values.persistence }}
-        - name: {{ $name }}-vol
-          emptyDir: {}
         {{- end }}
         {{- if .Values.tls.enabled }}
         - name: tls-vol
