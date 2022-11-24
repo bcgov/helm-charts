@@ -8,7 +8,7 @@ image:
   repository: nginx
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "1.18.0"
+  tag: "1.23.2"
 
 imagePullSecrets: []
 
@@ -194,7 +194,7 @@ oauthProxy:
     repository: quay.io/oauth2-proxy/oauth2-proxy
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: v7.1.3
+    tag: v7.4.0
 
   resources:
     requests:
