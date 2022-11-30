@@ -17,6 +17,8 @@ hostAliases: []
 #   hostnames:
 #   - "override.com"
 
+command: {}
+
 args: {}
 
 nameOverride: ""
