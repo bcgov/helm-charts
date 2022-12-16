@@ -116,7 +116,7 @@ spec:
         {{- end }}
 
         {{ if .Values.oauthProxy.localUpstream }}
-        - name: {{ .Chart.Name }}
+        - name: {{ default .Chart.Name .Values.nameOverride }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -169,6 +169,7 @@ spec:
               mountPath: {{ .Values.tls.mountPath }}
               readOnly: true
           {{- end }}
+
           ports:
             - name: http
               containerPort: {{ .Values.containerPort }}
@@ -189,6 +190,16 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
         {{- end }}
+
+      {{- if .Values.extraContainers }}
+      {{- .Values.extraContainers | toYaml | nindent 8 }}
+      {{- end }}
+
+      {{- if .Values.initContainers }}
+      initContainers:
+      {{- .Values.initContainers | toYaml | nindent 8 }}
+      {{- end }}
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

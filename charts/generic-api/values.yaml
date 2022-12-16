@@ -196,6 +196,9 @@ tolerations: []
 
 affinity: {}
 
+initContainers: []
+extraContainers: []
+
 oauthProxy:
   enabled: false
   localUpstream: true
