@@ -110,6 +110,7 @@ config:
 
 networkPolicy:
   create: true
+  namespaces: []
   #ports: [ 80, 8080 ]
   matchLabels: {}
     # name: my-upstream-api
