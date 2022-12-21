@@ -24,11 +24,11 @@ args: {}
 nameOverride: ""
 fullnameOverride: ""
 
-podSecurityContext:
-  fsGroup: 1010820000
+podSecurityContext: {}
+  # fsGroup: 1010820000
 
-securityContext:
-  runAsUser: 1010820000
+securityContext: {}
+  # runAsUser: 1010820000
   # capabilities:
   #   drop:
   #   - ALL
@@ -196,8 +196,12 @@ tolerations: []
 
 affinity: {}
 
-initContainers: []
-extraContainers: []
+# initContainers and extraContainers will inherit the following,
+# unless overridden:
+# - securityContext
+# - env
+initContainers: {}
+extraContainers: {}
 
 oauthProxy:
   enabled: false

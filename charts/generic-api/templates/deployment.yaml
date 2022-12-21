@@ -146,9 +146,9 @@ spec:
             {{- end }}
           {{- end }}
           volumeMounts:
-{{- if .Values.extraVolumeMounts }}
-{{ toYaml .Values.extraVolumeMounts | nindent 12 }}
-{{- end }}
+          {{- if .Values.extraVolumeMounts }}
+          {{ toYaml .Values.extraVolumeMounts | nindent 12 }}
+          {{- end }}
           {{- range .Values.secretVolumes }}
             - name:  {{ . }}
               mountPath: /etc/secrets/{{ . }}
@@ -192,12 +192,64 @@ spec:
         {{- end }}
 
       {{- if .Values.extraContainers }}
-      {{- .Values.extraContainers | toYaml | nindent 8 }}
+      {{- range $name, $details := .Values.extraContainers }}
+        - name: {{ $name }}
+          securityContext:
+            {{- toYaml (default $.Values.securityContext $details.securityContext) | nindent 12 }}
+          image: "{{ $details.image.repository }}:{{ $details.image.tag | default $.Chart.AppVersion }}"
+          imagePullPolicy: {{ $details.image.pullPolicy }}
+          env:
+          {{- if hasKey $details "extraEnvs" }}
+          {{ with $details.extraEnvs }}
+            {{- toYaml . | nindent 12 }}
+          {{ end }}
+          {{- end }}
+          {{- range $index, $val := default $.Values.env $details.env }}
+            {{- if .secure }}
+            - name: {{ $index }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $fullName }}-secrets
+                  key: {{ $index | kebabcase }}
+            {{- else }}
+            - name: {{ $index }}
+              value: {{ .value | quote }}
+            {{- end }}
+          {{- end }}
+          {{-  (unset (unset (unset (unset $details "securityContext") "image") "extraEnvs") "env") | toYaml | nindent 10 }}
+
+      {{- end }}
       {{- end }}
 
       {{- if .Values.initContainers }}
       initContainers:
-      {{- .Values.initContainers | toYaml | nindent 8 }}
+      {{- range $name, $details := .Values.initContainers }}
+        - name: {{ $name }}
+          securityContext:
+            {{- toYaml (default $.Values.securityContext $details.securityContext) | nindent 12 }}
+          image: "{{ $details.image.repository }}:{{ $details.image.tag | default $.Chart.AppVersion }}"
+          imagePullPolicy: {{ $details.image.pullPolicy }}
+          env:
+          {{- if hasKey $details "extraEnvs" }}
+          {{ with $details.extraEnvs }}
+            {{- toYaml . | nindent 12 }}
+          {{ end }}
+          {{- end }}
+          {{- range $index, $val := default $.Values.env $details.env }}
+            {{- if .secure }}
+            - name: {{ $index }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $fullName }}-secrets
+                  key: {{ $index | kebabcase }}
+            {{- else }}
+            - name: {{ $index }}
+              value: {{ .value | quote }}
+            {{- end }}
+          {{- end }}
+          {{-  (unset (unset (unset (unset $details "securityContext") "image") "extraEnvs") "env") | toYaml | nindent 10 }}
+
+      {{- end }}
       {{- end }}
 
       {{- with .Values.nodeSelector }}
