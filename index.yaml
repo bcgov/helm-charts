@@ -760,6 +760,27 @@ entries:
   metadata-curator:
   - apiVersion: v2
     appVersion: 0.9.0
+    created: "2023-01-25T23:56:23.682304451Z"
+    dependencies:
+    - name: forum-api
+      repository: https://bcgov.github.io/helm-charts/
+      version: 0.1.0
+    - name: storage-api
+      repository: https://bcgov.github.io/helm-charts/
+      version: 0.1.7
+    - alias: storage-api-supplemental
+      name: storage-api
+      repository: https://bcgov.github.io/helm-charts/
+      version: 0.1.7
+    description: A Helm chart for Metadata Curator
+    digest: 60e6316ed2346651f9f19687bbbf7498478a3ca60c03e2f2e2c0159e0b329993
+    name: metadata-curator
+    type: application
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/metadata-curator-0.1.29/metadata-curator-0.1.29.tgz
+    version: 0.1.29
+  - apiVersion: v2
+    appVersion: 0.9.0
     created: "2022-05-09T17:28:14.414430926Z"
     dependencies:
     - name: forum-api
@@ -1557,6 +1578,15 @@ entries:
     - https://github.com/bcgov/helm-charts/releases/download/patroni-spilo-0.21.3/patroni-spilo-0.21.3.tgz
     version: 0.21.3
   storage-api:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: "2023-01-25T23:56:23.885174377Z"
+    description: A Helm chart for Minio & tusd
+    digest: e179f2d2056df041436b49711b83286bdd63f40ed77ccd5826f68b9a5b090cdd
+    name: storage-api
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/storage-api-0.1.9/storage-api-0.1.9.tgz
+    version: 0.1.9
   - apiVersion: v1
     appVersion: "1.0"
     created: "2022-03-01T15:00:31.745888701Z"
