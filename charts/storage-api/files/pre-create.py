@@ -11,18 +11,20 @@ for line in fileinput.input():
 
 js = json.loads(jsonStr)
 
-if 'MetaData' in js:
-    meta = js['MetaData']
-    if 'jwt' in meta:
-        tok = meta['jwt']
-        jwtSecret = os.environ['JWT_SECRET']
-        aud = os.environ['JWT_AUD']
-        try:
-            jwt.decode(tok, jwtSecret, audience=aud)
-            #Valid JWT
-            exit(0)
-        except Exception as e:
-            print(e)
+if 'Upload' in js:
+    upload = js['Upload']
+    if 'MetaData' in upload:
+        meta = upload['MetaData']
+        if 'jwt' in meta:
+            tok = meta['jwt']
+            jwtSecret = os.environ['JWT_SECRET']
+            aud = os.environ['JWT_AUD']
+            try:
+                jwt.decode(tok, jwtSecret, algorithms=['HS256'], audience=aud)
+                #Valid JWT
+                exit(0)
+            except Exception as e:
+                print(e)
 
 
 print ('Either no JWT Or invalid JWT given')
