@@ -61,7 +61,8 @@ extraEnvs: []
 #       key: a-token
 
 # API Gateway Kong setup
-services: []
+services: {}
+# suffix:
 # - name: a-service-for-api-x
 #   host: httpbin.org
 #   tags: [ ns.apigroupns ]

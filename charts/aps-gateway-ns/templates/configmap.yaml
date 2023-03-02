@@ -10,7 +10,9 @@ metadata:
 data:
   gateway.yaml: |-
     services:
-{{ toYaml .Values.services | indent 4 }}
+{{- range $suffix, $config := .Values.services }}
+{{ toYaml $config | indent 4 }}
+{{- end }}
 
 {{- range .Values.config }}
   {{ .filename }}: |-
