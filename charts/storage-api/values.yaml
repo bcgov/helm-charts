@@ -11,8 +11,8 @@ image:
   pullPolicy: Always
 
 tus:
-  image: tosse/tusd_py3
-  tag: latest
+  image: h3brandon/tusd_py3
+  tag: v1.10.1
   bucket: bucket
   region: us-east-1 #likely irrelevant
   jwtHook: true
