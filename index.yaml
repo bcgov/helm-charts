@@ -112,6 +112,16 @@ entries:
   backup-storage:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2023-04-11T15:17:18.432860952Z"
+    description: A Helm chart for Kubernetes
+    digest: 986e36622d17d28879157ffec150a472435456d6c864558b553cc9c06ee80ea9
+    name: backup-storage
+    type: application
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/backup-storage-0.1.13/backup-storage-0.1.13.tgz
+    version: 0.1.13
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2020-11-17T14:25:08.500112-08:00"
     description: A Helm chart for Kubernetes
     digest: b82e5f8c8af2e88d46ac11baeac2d2feaf15f3e37dae5162369d56845c9c93a1
