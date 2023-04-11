@@ -10,3 +10,12 @@ metadata:
 data:
   backup-file: |-
 {{ .Values.backupConfig | indent 4 }}
+{{- range .Values.config }}
+  {{ .filename }}: |-
+{{- with .contents }}
+{{ . | indent 4 }}
+{{- end }}
+{{- with .yaml }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+{{- end }}

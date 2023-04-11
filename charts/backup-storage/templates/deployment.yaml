@@ -84,6 +84,13 @@ spec:
               mountPath: {{ .Values.env.BACKUP_CONF.value }}
               subPath: backup-file
               readOnly: true
+          {{- range .Values.config }}
+            - name: config-vol
+              mountPath: {{ .mountPath }}
+              subPath: {{ .filename }}
+              readOnly: true
+          {{- end }}
+
           ports:
             - name: http
               containerPort: 80
