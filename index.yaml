@@ -390,6 +390,41 @@ entries:
         url: https://keybase.io/hashicorp/pgp_keys.asc
     apiVersion: v2
     appVersion: 1.10.0
+    created: "2023-05-11T20:38:27.846659214Z"
+    description: Official HashiCorp Consul Chart
+    digest: 3c642f874860dbc2b8afc8464c2f8ba31ec3c40699a2c7fc023cfc17b4427636
+    home: https://www.consul.io
+    icon: https://raw.githubusercontent.com/hashicorp/consul-k8s/master/assets/icon.png
+    kubeVersion: '>=1.17.0-0'
+    name: consul
+    sources:
+    - https://github.com/hashicorp/consul
+    - https://github.com/hashicorp/consul-k8s
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/consul-0.33.1/consul-0.33.1.tgz
+    version: 0.33.1
+  - annotations:
+      artifacthub.io/images: |
+        - name: consul
+          image: hashicorp/consul:1.10.0
+        - name: consul-k8s-control-plane
+          image: hashicorp/consul-k8s-control-plane:0.33.0
+        - name: envoy
+          image: envoyproxy/envoy-alpine:v1.18.3
+      artifacthub.io/license: MPL-2.0
+      artifacthub.io/links: |
+        - name: Documentation
+          url: https://www.consul.io/docs/k8s
+        - name: hashicorp/consul
+          url: https://github.com/hashicorp/consul
+        - name: hashicorp/consul-k8s
+          url: https://github.com/hashicorp/consul-k8s
+      artifacthub.io/prerelease: "false"
+      artifacthub.io/signKey: |
+        fingerprint: C874011F0AB405110D02105534365D9472D7468F
+        url: https://keybase.io/hashicorp/pgp_keys.asc
+    apiVersion: v2
+    appVersion: 1.10.0
     created: "2021-09-08T23:28:15.301358001Z"
     description: Official HashiCorp Consul Chart
     digest: 96fd0a18d6cfbd9599fca8e3ac7841777d59d4707a07a409a821d0e223f02742
@@ -404,6 +439,16 @@ entries:
     - https://github.com/bcgov/helm-charts/releases/download/consul-0.33.0/consul-0.33.0.tgz
     version: 0.33.0
   consul-envoy-api:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2023-05-11T20:38:27.96680657Z"
+    description: A Helm chart for deploying Consul Connect sidecars to a Microservice API
+    digest: 506667db40d6858acffee65fcc04831d25b2079e6607520e872a8c8a886fa417
+    name: consul-envoy-api
+    type: application
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/consul-envoy-api-0.1.6/consul-envoy-api-0.1.6.tgz
+    version: 0.1.6
   - apiVersion: v2
     appVersion: 1.16.0
     created: "2021-09-09T05:53:18.803643765Z"
@@ -485,6 +530,16 @@ entries:
     - https://github.com/bcgov/helm-charts/releases/download/forum-api-0.1.0/forum-api-0.1.0.tgz
     version: 0.1.0
   generic-api:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2023-05-11T20:38:28.127722876Z"
+    description: A Helm chart for Kubernetes
+    digest: 59dca20ccad7276ce9920ef74d309989abb9cc1abe56698efa149b084b2cb6b3
+    name: generic-api
+    type: application
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/generic-api-0.2.7/generic-api-0.2.7.tgz
+    version: 0.2.7
   - apiVersion: v2
     appVersion: 1.16.0
     created: "2022-12-21T06:32:51.171671116Z"
@@ -1494,6 +1549,22 @@ entries:
   patroni:
   - apiVersion: v1
     appVersion: 1.6-p3
+    created: "2023-05-11T20:38:28.265813709Z"
+    description: 'Highly available elephant herd: HA PostgreSQL cluster.'
+    digest: 0698f7b922ea212b3c8f441b95045421a15490d21746ebd1b3ddcc0dc322251d
+    home: https://github.com/ll911/patroni
+    maintainers:
+    - email: leo.lou@gov.bc.ca
+      name: ll911
+    name: patroni
+    sources:
+    - https://github.com/helm/charts/tree/master/incubator/patroni
+    - https://github.com/BCDevOps/platform-services/blob/master/apps/pgsql/patroni
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/patroni-1.0.2/patroni-1.0.2.tgz
+    version: 1.0.2
+  - apiVersion: v1
+    appVersion: 1.6-p3
     created: "2020-12-01T07:35:40.858056939Z"
     description: 'Highly available elephant herd: HA PostgreSQL cluster.'
     digest: 1553a38b34742fa74d4a4a50276406572663b947cfe06f5df84ba4b7eec0b64e
@@ -1554,6 +1625,22 @@ entries:
     - https://github.com/bcgov/helm-charts/releases/download/patroni-0.21.2/patroni-0.21.2.tgz
     version: 0.21.2
   patroni-spilo:
+  - apiVersion: v1
+    appVersion: 1.6-p3
+    created: "2023-05-11T20:38:28.39842995Z"
+    description: 'Highly available elephant herd: HA PostgreSQL cluster.'
+    digest: 49129c0b5bc4153140122f67d86dce581a8dbc076930fd10e0dbf36ed5571132
+    home: https://github.com/zalando/patroni
+    maintainers:
+    - email: matthieu@button.is
+      name: Matthieu Foucault
+    name: patroni-spilo
+    sources:
+    - https://github.com/zalando/patroni
+    - https://github.com/zalando/spilo
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/patroni-spilo-0.21.7/patroni-spilo-0.21.7.tgz
+    version: 0.21.7
   - apiVersion: v1
     appVersion: 1.6-p3
     created: "2022-06-09T22:48:27.373989892Z"
@@ -1704,6 +1791,16 @@ entries:
   vdi-project-api:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2023-05-11T20:38:28.51414841Z"
+    description: A Helm chart for Kubernetes
+    digest: 4baf169bff38aadb714d98f2e3c54ca985043e37ade73962e4d0fd34f7a112ed
+    name: vdi-project-api
+    type: application
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/vdi-project-api-0.1.2/vdi-project-api-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2020-09-21T23:37:37.219783-07:00"
     description: A Helm chart for Kubernetes
     digest: 3324510e461756873f57b24b6855b95ce6456cee92b13f5364eef9ee397aa50b
@@ -1712,6 +1809,20 @@ entries:
     - https://github.com/bcgov/helm-charts/releases/download/vdi-project-api-0.1.0/vdi-project-api-0.1.0.tgz
     version: 0.1.0
   vdi-virtual-display:
+  - apiVersion: v1
+    appVersion: 1.0.1dev
+    created: "2023-05-11T20:38:28.662599632Z"
+    description: Multi-user Jupyter installation
+    digest: d808ea590a8e9266b7619cdfb889c044b71591d8fb9e150da95937cb5b2de01f
+    home: https://z2jh.jupyter.org
+    icon: https://jupyter.org/assets/hublogo.svg
+    kubeVersion: '>=1.11.0-0'
+    name: vdi-virtual-display
+    sources:
+    - https://github.com/jupyterhub/zero-to-jupyterhub-k8s
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/vdi-virtual-display-0.0.3/vdi-virtual-display-0.0.3.tgz
+    version: 0.0.3
   - apiVersion: v1
     appVersion: 1.0.1dev
     created: "2020-09-21T23:37:37.376875-07:00"
