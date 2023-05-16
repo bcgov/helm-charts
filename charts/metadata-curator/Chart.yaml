@@ -5,7 +5,7 @@ author: Brandon Sharratt
 
 type: application
 
-version: 0.1.32
+version: 0.1.33
 
 appVersion: 0.9.0
 
@@ -19,6 +19,6 @@ dependencies:
     repository: https://bcgov.github.io/helm-charts/
 
   - name: storage-api
-    version: 0.1.9
+    version: 0.1.10
     repository: https://bcgov.github.io/helm-charts/
     alias: storage-api-supplemental
