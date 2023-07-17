@@ -1,0 +1,26 @@
+{{- range .Values.pipelines -}}
+---
+{{ if .pipeline_params }}
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: {{ .bindingName }}
+  labels:
+    app: {{ template "pipelines.name" $ }}
+    chart: {{ template "pipelines.chart" $ }}
+    release: {{ $.Release.Name }}
+    heritage: {{ $.Release.Service }}
+
+
+{{ if gt  (len .pipeline_params) 0}}
+spec:
+  params:
+  {{ range .pipeline_params}}
+    - name: {{ .name}}
+      value: {{ .incomingValue}}
+
+  {{end}}
+{{end}}
+{{end}}
+
+{{- end -}}

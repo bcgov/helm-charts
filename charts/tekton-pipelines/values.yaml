@@ -1,0 +1,49 @@
+serviceAccountName: build-bot
+
+nameOverride: ""
+fullnameOverride: ""
+
+tasks:
+  - name: helm3-spark
+    steps:
+      - name: install-spark
+        image: alpine/helm:3.0.2
+        command:
+          - /bin/ash
+          - "-c"
+          - "helm repo add stable https://kubernetes-charts.storage.googleapis.com/ && helm upgrade --install -n spark spark stable/spark"
+
+pipelines:
+  - name: spark-pipeline
+    triggerName: spark-trigger-template
+    bindingName: spark-binding
+    tasks:
+      - name: create-namespace-spark
+        ref: 
+          name: create-namespace-spark
+
+
+events:
+  install: true
+  defaultRB: false
+  token: "token"
+  listeners:
+    - name: ds-infra-listener
+      triggers:
+        - trigger: spark-trigger-template
+          binding: spark-binding
+      ingress:
+        enabled: true
+        name: spark-pipeline-ingress
+        annotations:
+          kubernetes.io/ingress.class: nginx
+        path: /
+        hosts:
+          - name: chart-example.local
+            service: el-name-el
+            port: 8080
+        tls: []
+
+secrets:
+  - name: test
+    value: '2'

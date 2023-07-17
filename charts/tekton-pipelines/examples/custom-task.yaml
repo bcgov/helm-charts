@@ -1,0 +1,86 @@
+serviceAccountName: pipeline
+
+nameOverride: ""
+fullnameOverride: ""
+
+tasks:
+  - name: helm-deploy
+    params:
+      - name: release
+        type: string
+        description: "Helm Release name"
+        default: ""
+      - name: repo
+        type: string
+        description: "Helm Repo url"
+        default: ""
+      - name: chart
+        type: string
+        description: "Helm Chart name"
+        default: ""
+      - name: namespace
+        type: string
+        description: "Release Namespace"
+        default: ""
+    steps:
+      - name: install-or-upgrade
+        image: dtzar/helm-kubectl
+        command:
+          - /bin/bash
+          - "-c"
+          - "apk add --update npm && curl -L -O https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux32 && chmod ugo+x ./jq-linux32 && npm install -g json2yaml && export CONF1=`kubectl get secret mc-dev-pipe-config -o json | ./jq-linux32 .data.config` && export CONF2=`sed -e 's/^\"//' -e 's/\"$//' <<<\"$CONF1\"` && export CONF3=`echo $CONF2 | base64 -d -` && export CONF=`echo $CONF3 | json2yaml` && echo \"$CONF\" > ./config.yaml && cat ./config.yaml && helm repo add stable $(params.repo) && helm template -n $(params.namespace) $(params.release) stable/$(params.chart) -f ./config.yaml --set storage-api.storageSize=1Gi"
+
+
+pipelines:
+  - name: mc-pipeline-tmp
+    triggerName: mc-pipe-trigger
+    bindingName: mc-pipe-binding
+    workspaces:
+      - name: output
+        workspace: shared-workspace
+    tasks:
+      - name: clone-repo
+        workspaces:
+          - name: output
+            workspace: shared-workspace
+        ref: 
+          kind: ClusterTask
+          name: git-clone
+        params:
+          - name: url
+            value: 'https://github.com/bcgov/metadata-curator.git'
+      - name: helm-deploy
+        runAfter: 
+          - clone-repo
+        ref: 
+          name: helm-deploy
+        params:
+          - name: release
+            value: 'tek-mc-dev'
+          - name: repo
+            value: 'https://bcgov.github.io/helm-charts/'
+          - name: chart
+            value: 'metadata-curator'
+          - name: namespace
+            value: '17db4f-dev'
+
+events:
+  install: true
+  defaultRB: true
+  token: token
+  listeners:
+    - name: mc-tek-test-el
+      triggers:
+        - trigger: mc-pipe-trigger
+          binding: mc-pipe-binding
+      ingress:
+        enabled: true
+        name: mc-tek-test-ingress
+        annotations:
+          kubernetes.io/ingress.class: nginx
+        path: /
+        hosts:
+          - name: mc-tek-test-17db4f-tools.apps.silver.devops.gov.bc.ca
+            service: el-mc-tek-test-el
+            port: 8080
+        tls: []
