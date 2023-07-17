@@ -1,0 +1,41 @@
+{{- if .Values.events.install -}}
+{{range .Values.events.listeners}}
+{{- if .ingress.enabled -}}
+{{ $ingressPath := .ingress.path }}
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: {{ .ingress.name }}
+  labels:
+    app.kubernetes.io/managed-by: EventListener
+    app.kubernetes.io/part-of: Triggers
+    eventlistener: {{ .ingress.name }}
+    app: {{ template "pipelines.name" $ }}
+    chart: {{ template "pipelines.chart" $ }}
+    release: {{ $.Release.Name }}
+    heritage: {{ $.Release.Service }}
+{{- with .ingress.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+  managedFields:
+    - manager: kubectl-expose
+      apiVersion: route.openshift.io/v1
+    - manager: openshift-router
+      apiVersion: route.openshift.io/v1
+spec:
+  host: {{ .ingress.host }}
+  to:
+    kind: Service
+    name: {{ .ingress.service }}
+  port:
+    targetPort: http-listener
+status:
+  ingress:
+    - host: {{ .ingress.host }}
+      routerName: default
+      wildcardPolicy: None
+{{ end }}
+{{- end -}}
+{{- end -}}

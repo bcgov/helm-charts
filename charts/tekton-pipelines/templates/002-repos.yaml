@@ -1,0 +1,23 @@
+# {{- range $i, $repo := .Values.repos }}
+# ---
+# apiVersion: tekton.dev/v1alpha1
+# kind: PipelineResource
+# metadata:
+#   name: {{ $repo.name }}
+#   labels:
+#     app: {{ template "pipelines.name" $ }}
+#     chart: {{ template "pipelines.chart" $ }}
+#     release: {{ $.Release.Name }}
+#     heritage: {{ $.Release.Service }}
+# spec:
+#   type: git
+#   params:
+#     - name: revision
+#       value: {{ $repo.branch }}
+#     - name: url
+#       value: {{ $repo.url }}
+#     {{- if $repo.all_commits }}
+#     - name: depth
+#       value: "0"
+#     {{- end }}
+# {{- end }}

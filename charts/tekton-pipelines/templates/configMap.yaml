@@ -1,0 +1,16 @@
+{{ range .Values.configMaps -}}
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: maven-settings
+  labels:
+    app: {{ template "pipelines.name" $ }}
+    chart: {{ template "pipelines.chart" $ }}
+    release: {{ $.Release.Name }}
+    heritage: {{ $.Release.Service }}
+data:
+{{- if .artifactorySettingsXml }}
+   settings.xml:
+{{ .artifactorySettingsXml | toYaml | indent 4}}
+{{ end }}
+{{ end -}}

@@ -1,0 +1,14 @@
+{{ range .Values.PVCs -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .name }}
+spec:
+  accessModes:
+    - {{ .accessModes }}
+  resources:
+    requests:
+      storage: {{ .storage }}
+  storageClassName: netapp-file-standard
+  volumeMode: {{ .volumeMode }}
+{{ end -}}

@@ -1,0 +1,132 @@
+{{ range .Values.pipelines -}}
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: {{ .name }}
+  labels:
+    app: {{ template "pipelines.name" $ }}
+    chart: {{ template "pipelines.chart" $ }}
+    release: {{ $.Release.Name }}
+    heritage: {{ $.Release.Service }}
+spec:
+
+  {{- if .workspaces -}}
+  {{ if gt (len .workspaces) 0 }}
+  workspaces:
+    {{ range .workspaces }}
+    - name: {{ .name }}
+    {{ end }}
+  {{ end }}
+  {{- end -}}
+
+  {{- if .resources -}}
+  {{- if gt (len .resources) 0 }}
+  resources:
+    {{- range .resources }}
+    - name: {{ .name }}
+      type: {{ .type }}
+    {{- end -}}
+  {{- end -}}
+  {{- end }}
+
+  {{- if .pipeline_params -}}
+  {{- if gt (len .pipeline_params) 0 }}
+  params:
+    {{- range .pipeline_params }}
+    - name: {{ .name }}
+      type: {{ .type }}
+      description: {{ .description }}
+      default: {{ .default }}
+    {{- end -}}
+  {{- end -}}
+  {{- end }}
+  {{- if .finally -}}
+  {{- if gt (len .finally) 0 }}
+  finally:
+    {{- range .finally }}
+    - name: {{ .name }}
+      taskRef:
+{{ .ref | toYaml | indent 8 }}
+      {{- if .workspaces }}
+      workspaces:
+{{ .workspaces | toYaml | indent 8 }}
+      {{ end }}
+      {{- if .params -}}
+      {{- if gt (len .params) 0 }}
+      params:
+      {{- range .params }}
+      - name: {{ .name }}
+        value: "{{ .value }}"
+      {{ end }}
+      {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+  {{ end }}
+  {{- if .tasks -}}
+  {{- if gt (len .tasks) 0 }}
+  tasks:
+    {{- range .tasks }}
+    - name: {{ .name }}
+    {{- if .workspaces }}
+      workspaces:
+{{ .workspaces | toYaml | indent 8 }}
+    {{ end }}
+
+    {{- if .params }}
+      params:
+{{ .params | toYaml | indent 8 }}
+    {{ end}}
+      taskRef:
+{{ .ref | toYaml | indent 8 }}
+      {{- if .runAfter -}}
+      {{- if gt (len .runAfter) 0 }}
+      runAfter:
+        {{- range .runAfter }}
+        - {{ . }}
+        {{ end }}
+      {{- end }}
+      {{- end }}
+      {{- if .conditions -}}
+      {{- if gt (len .conditions) 0 }}
+      conditions:
+        {{- range .conditions }}
+        - conditionRef: {{ .ref }}
+          {{- if .params -}}
+          {{- if gt (len .params) 0 }}
+          params:
+          {{- range .params }}
+          - name: {{ .name }}
+            value: "{{ .value }}"
+          {{ end }}
+          {{ end }}
+          {{ end }}
+        {{ end }}
+      {{- end }}
+      {{- end }}
+
+      {{- if .params -}}
+      {{- if gt (len .params) 0 }}
+      params:
+        {{- range .params }}
+        - name: {{ .name }}
+          value: "{{ .value }}"
+        {{ end }}
+      {{ end }}
+      {{ end }}
+
+      {{- if .resources -}}
+      {{- if gt (len .resources) 0 }}
+      resources:
+        inputs:
+          {{- range .resources }}
+          - name: {{ .taskResourceName }}
+            resource: {{ .resourceName }}
+          {{ end }}
+      {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+  {{ end }}
+{{ end }}
