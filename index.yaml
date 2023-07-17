@@ -1839,6 +1839,17 @@ entries:
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/storage-api-0.1.0/storage-api-0.1.0.tgz
     version: 0.1.0
+  tekton-pipelines:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2023-07-17T20:01:14.539264223Z"
+    description: Deploy tekton pipelines of all sorts, see the values for more info
+    digest: c5a049ac34bfbc8089586200af5995ed4c0f8b8256c230a90406ec8271351b34
+    name: tekton-pipelines
+    type: application
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/tekton-pipelines-0.1.0/tekton-pipelines-0.1.0.tgz
+    version: 0.1.0
   userguide-bridge-api:
   - apiVersion: v2
     appVersion: v1.3.5
