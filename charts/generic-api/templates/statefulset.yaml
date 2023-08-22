@@ -1,7 +1,7 @@
-{{- if not .Values.useStatefulSet }}
+{{- if .Values.useStatefulSet }}
 {{- $fullName := include "generic-api.fullname" . -}}
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "generic-api.fullname" . }}
   labels:
@@ -10,11 +10,12 @@ spec:
 {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
 {{- end }}
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: {{ .Values.rollingUpdate.maxUnavailable }}
-      maxSurge: {{ .Values.rollingUpdate.maxSurge }}
+  # strategy:
+  #   type: RollingUpdate
+  #   rollingUpdate:
+  #     maxUnavailable: {{ .Values.rollingUpdate.maxUnavailable }}
+  #     maxSurge: {{ .Values.rollingUpdate.maxSurge }}
+  serviceName: {{ default .Values.serviceName $fullName }}
   selector:
     matchLabels:
       {{- include "generic-api.selectorLabels" . | nindent 6 }}
