@@ -522,6 +522,15 @@ entries:
   forum-api:
   - apiVersion: v1
     appVersion: "1.0"
+    created: "2023-08-31T20:51:00.414961767Z"
+    description: A Helm chart for OCWA Forum Api
+    digest: 1d6f274485e0e93c6d0dd5eee5d397e86dbdda760de4a75a70dd70d3b6bedd50
+    name: forum-api
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/forum-api-0.1.2/forum-api-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v1
+    appVersion: "1.0"
     created: "2020-09-21T23:37:35.319874-07:00"
     description: A Helm chart for OCWA Forum Api
     digest: c7226111df001690d4ccedb62d06a2fe58fe1ede9b6cb8ce2de813b966e591ea
@@ -1768,6 +1777,15 @@ entries:
     - https://github.com/bcgov/helm-charts/releases/download/patroni-spilo-0.21.3/patroni-spilo-0.21.3.tgz
     version: 0.21.3
   storage-api:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: "2023-08-31T20:51:00.549466265Z"
+    description: A Helm chart for Minio & tusd
+    digest: 91d843138ff9f0e9e81bc56194b56370b7c070f2d2ac328c605cfad7c1cdbd33
+    name: storage-api
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/storage-api-0.1.11/storage-api-0.1.11.tgz
+    version: 0.1.11
   - apiVersion: v1
     appVersion: "1.0"
     created: "2023-05-16T20:21:57.541029282Z"
