@@ -5,7 +5,7 @@ config: |-
   # url: https://httpbin.org
   # retries: 0
   # routes:
-  #   - name: my-service-for-69cfb
+  #   - name: <MYSERVICE>
   #     tags: [ __NS__ ]
   #     hosts: [<MYSERVICE>.api.gov.bc.ca]
   #     methods: [GET]
@@ -36,18 +36,17 @@ vault:
 
 # If you are not using Vault, you can set the following variables
 env:
-  # {}
   NAMESPACE:
-    value: "gw-69cfb"
+    value: ""
     secure: true
   CLIENT_ID:
-    value: "sa-gw-69cfb-ca853245-4605619ec2a2"
+    value: ""
     secure: true
   CLIENT_SECRET:
-    value: "55c8369b-6443-4bf8-b1ea-dd1d0f1dbd41"
+    value: ""
     secure: true
   GWA_HOST:
-    value: "api-gov-bc-ca.dev.api.gov.bc.ca"
+    value: "api.gov.bc.ca" # test/training: api-gov-bc-ca.test.api.gov.bc.ca
     secure: true
 
 nameOverride: ""
@@ -87,4 +86,4 @@ resources:
 job:
   backoffLimit: 0 # specify the number of retries before considering a Job as failed
   restartPolicy: Never # Never: a Job will run uninterrupted unless a Pod fails
-  ttlSecondsAfterFinished: 86400 # Deletes the job after n seconds : 86400 = 24 hours, 31536000 = 1 year
+  ttlSecondsAfterFinished: 31536000 #31536000 # Deletes the job after n seconds : 86400 = 24 hours, 31536000 = 1 year

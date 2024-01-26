@@ -57,7 +57,7 @@ spec:
         command:
         - {{ .Values.shell }}
         - -c
-        - |
+        - |-
           set -e
           {{ if .Values.vault.use }}. /vault/secrets/creds{{ end }}
           cd /work
