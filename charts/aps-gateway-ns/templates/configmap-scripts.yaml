@@ -1,15 +1,11 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "aps-gateway-ns.fullname" . }}-config
+  name: {{ include "aps-gateway-ns.fullname" . }}-scripts
   labels:
     app: {{ include "aps-gateway-ns.name" . }}
     chart: {{ include "aps-gateway-ns.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-  gwconfig.yaml: |-
-{{- with .Values.config }}
-{{ . | indent 4 }}
----
-{{- end }}
+{{ (.Files.Glob "scripts/*").AsConfig | indent 2 }}

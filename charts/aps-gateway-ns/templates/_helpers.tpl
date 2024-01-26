@@ -77,3 +77,28 @@ Return secure environment variables
 {{- end -}}
 {{- toJson $newList -}}
 {{- end -}}
+
+{{/*
+Adds Vault Annotations
+*/}}
+{{- define "aps-gateway-ns.vaultAnnotations" -}}
+vault.hashicorp.com/auth-path: '{{ .Values.vault.authPath }}'
+vault.hashicorp.com/namespace: '{{ .Values.vault.namespace }}'
+vault.hashicorp.com/role: '{{ .Values.vault.role }}'
+vault.hashicorp.com/agent-inject-secret-creds: '{{ .Values.vault.secret }}'
+vault.hashicorp.com/agent-inject-template-creds: |
+  {{`
+  {{- with secret "`}}{{ .Values.vault.secret }}{{`" }}
+  {{- range $key, $val := .Data.data }}
+  export {{ $key }}="{{ $val }}"
+  {{- end }}
+  {{ end }}
+  `}}
+vault.hashicorp.com/agent-inject: 'true'
+vault.hashicorp.com/agent-inject-token: 'false'
+vault.hashicorp.com/agent-pre-populate-only: 'true'
+vault.hashicorp.com/agent-requests-cpu: '100m'
+vault.hashicorp.com/agent-limits-cpu: '100m'
+vault.hashicorp.com/agent-requests-mem: '256Mi'
+vault.hashicorp.com/agent-limits-mem: '256Mi'
+{{- end -}}
