@@ -172,5 +172,9 @@ storage-api-supplemental:
     tag: RELEASE.2022-04-16T04-26-02Z
 
 storage-api:
+  tus:
+    # New image location???
+    image: h3brandon/tusd_py3
+    tag: latest
   minio:
     tag: RELEASE.2022-04-16T04-26-02Z
