@@ -1,9 +1,9 @@
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: TriggerBinding
 metadata:
-  name: {{ include "ocp-tkn-terraform-pipeline.fullname" . }}-binding
+  name: {{ include "ocp-tkn-terraform.fullname" . }}-binding
   labels:
-    {{- include "ocp-tkn-terraform-pipeline.labels" . | nindent 4 }}
+    {{- include "ocp-tkn-terraform.labels" . | nindent 4 }}
 spec:
   params:
     - name: git-revision

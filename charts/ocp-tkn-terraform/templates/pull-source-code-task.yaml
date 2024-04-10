@@ -1,9 +1,9 @@
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: {{ include "ocp-tkn-terraform-pipeline.fullname" . }}-pull-source-code
+  name: {{ include "ocp-tkn-terraform.fullname" . }}-pull-source-code
   labels:
-    {{- include "ocp-tkn-terraform-pipeline.labels" . | nindent 4 }}
+    {{- include "ocp-tkn-terraform.labels" . | nindent 4 }}
 spec:
   description: This Task downloads npm package and extract source files 
   params:
@@ -27,7 +27,7 @@ spec:
         - name: WORKSPACE_SOURCE_PATH
           value: $(workspaces.source.path)
         - name: GITHUB_AUTH_SECRET
-          value: {{ include "ocp-tkn-terraform-pipeline.fullname" . }}-git-auth
+          value: {{ include "ocp-tkn-terraform.fullname" . }}-git-auth
       image: 'docker.io/node:16'
       name: init-source
       resources: {}

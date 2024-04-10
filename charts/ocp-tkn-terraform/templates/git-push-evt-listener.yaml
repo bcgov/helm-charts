@@ -1,10 +1,10 @@
-{{- $fullName := include "ocp-tkn-terraform-pipeline.fullname" . -}}
+{{- $fullName := include "ocp-tkn-terraform.fullname" . -}}
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: EventListener
 metadata:
   name: {{ $fullName }}-git-trigger
   labels:
-    {{- include "ocp-tkn-terraform-pipeline.labels" . | nindent 4 }}
+    {{- include "ocp-tkn-terraform.labels" . | nindent 4 }}
 spec:
   namespaceSelector: {}
   resources: {}

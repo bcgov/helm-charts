@@ -1,9 +1,9 @@
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: {{ include "ocp-tkn-terraform-pipeline.fullname" . }}-cleanup
+  name: {{ include "ocp-tkn-terraform.fullname" . }}-cleanup
   labels:
-    {{- include "ocp-tkn-terraform-pipeline.labels" . | nindent 4 }}
+    {{- include "ocp-tkn-terraform.labels" . | nindent 4 }}
 spec:
   description: >-
     This task runs commands against the cluster provided by user
@@ -34,7 +34,7 @@ spec:
         [[ "$(workspaces.cleanup.bound)" == "true" ]] && \
         cd $(workspaces.cleanup.path)
 
-        oc get pipelineruns -l "tekton.dev/pipeline={{ include "ocp-tkn-terraform-pipeline.fullname" . }}" -o go-template --template {{`'{{range .items}}{{.metadata.name}} {{.metadata.creationTimestamp}}{{"\n"}}{{end}}'`}} | awk '$2 <= "'$(date -d "now-${RETAIN_DAYS} days" -Ins --utc | sed 's/+0000/Z/')'" { print $1 }' | xargs --no-run-if-empty oc delete pipelineruns
+        oc get pipelineruns -l "tekton.dev/pipeline={{ include "ocp-tkn-terraform.fullname" . }}" -o go-template --template {{`'{{range .items}}{{.metadata.name}} {{.metadata.creationTimestamp}}{{"\n"}}{{end}}'`}} | awk '$2 <= "'$(date -d "now-${RETAIN_DAYS} days" -Ins --utc | sed 's/+0000/Z/')'" { print $1 }' | xargs --no-run-if-empty oc delete pipelineruns
 
   workspaces:
     - name: cleanup

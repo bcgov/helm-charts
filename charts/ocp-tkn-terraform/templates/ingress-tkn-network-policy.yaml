@@ -3,11 +3,11 @@ apiVersion: networking.k8s.io/v1
 metadata:
   name: allow-from-ingress-to-tkn-event-listener
   labels:
-    {{- include "ocp-tkn-terraform-pipeline.labels" . | nindent 4 }}
+    {{- include "ocp-tkn-terraform.labels" . | nindent 4 }}
 spec:
   podSelector:
     matchLabels:
-      eventlistener: {{ include "ocp-tkn-terraform-pipeline.fullname" . }}-git-trigger
+      eventlistener: {{ include "ocp-tkn-terraform.fullname" . }}-git-trigger
   ingress:
     - from:
         - namespaceSelector:

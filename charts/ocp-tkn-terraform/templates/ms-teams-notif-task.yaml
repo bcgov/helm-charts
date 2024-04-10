@@ -2,9 +2,9 @@
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: {{ include "ocp-tkn-terraform-pipeline.fullname" . }}-teams-notif
+  name: {{ include "ocp-tkn-terraform.fullname" . }}-teams-notif
   labels:
-    {{- include "ocp-tkn-terraform-pipeline.labels" . | nindent 4 }}
+    {{- include "ocp-tkn-terraform.labels" . | nindent 4 }}
   annotations:
     tekton.dev/pipelines.minVersion: "0.12.1"
     tekton.dev/categories: Messaging
@@ -19,7 +19,7 @@ spec:
     - name: webhookUrlSecret
       type: string
       description: Name of the secret with incoming webhook URL
-      default: {{ include "ocp-tkn-terraform-pipeline.fullname" . }}-teams-whk
+      default: {{ include "ocp-tkn-terraform.fullname" . }}-teams-whk
     - name: webhookUrlSecretKey
       type: string
       description: Key in the secret

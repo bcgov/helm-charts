@@ -1,10 +1,10 @@
-{{- $fullName := include "ocp-tkn-terraform-pipeline.fullname" . -}}
+{{- $fullName := include "ocp-tkn-terraform.fullname" . -}}
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
   name: el-{{ $fullName }}-listener-route
   labels:
-    {{- include "ocp-tkn-terraform-pipeline.labels" . | nindent 4 }}
+    {{- include "ocp-tkn-terraform.labels" . | nindent 4 }}
     eventlistener: {{ $fullName }}-git-trigger
 spec:
   host: >-

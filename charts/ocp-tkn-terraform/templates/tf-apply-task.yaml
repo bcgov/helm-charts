@@ -1,9 +1,9 @@
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: {{ include "ocp-tkn-terraform-pipeline.fullname" . }}-terraform-apply
+  name: {{ include "ocp-tkn-terraform.fullname" . }}-terraform-apply
   labels:
-    {{- include "ocp-tkn-terraform-pipeline.labels" . | nindent 4 }}
+    {{- include "ocp-tkn-terraform.labels" . | nindent 4 }}
 spec:
   description: This Task can be used to download terraform cli
   params:

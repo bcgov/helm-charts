@@ -1,9 +1,9 @@
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: {{ include "ocp-tkn-terraform-pipeline.fullname" . }}-init
+  name: {{ include "ocp-tkn-terraform.fullname" . }}-init
   labels:
-    {{- include "ocp-tkn-terraform-pipeline.labels" . | nindent 4 }}
+    {{- include "ocp-tkn-terraform.labels" . | nindent 4 }}
 spec:
   params:
     - default: "4.7"
