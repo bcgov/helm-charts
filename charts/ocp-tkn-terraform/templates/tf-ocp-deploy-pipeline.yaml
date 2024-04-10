@@ -110,16 +110,16 @@ spec:
         - name: output
           workspace: shared-data
   finally:
-    # - name: cleanup
-    #   params:
-    #     - name: retainDays
-    #       value: $(params.retain-days)
-    #   taskRef:
-    #     kind: Task
-    #     name: {{ $fullName }}-cleanup
-    #   workspaces:
-    #     - name: cleanup
-    #       workspace: shared-data
+    - name: cleanup
+      params:
+        - name: retainDays
+          value: $(params.retain-days)
+      taskRef:
+        kind: Task
+        name: {{ $fullName }}-cleanup
+      workspaces:
+        - name: cleanup
+          workspace: shared-data
     - name: notifications
       params:
         - name: pipelineRunName
