@@ -29,6 +29,16 @@ npmPackageRef: "bcgov-dss/api-serv-infra"
 
 pipelineRunsRetentionDays: ""
 
+tasks:
+  tf-apply:
+    resources:
+      limits:
+        cpu: 250m
+        memory: 1000Mi
+      requests:
+        cpu: 50m
+        memory: 256Mi
+
 # gitBranch contains the source code
 # gitTriggerBranch is responsible for activating webhook upon push events. Ignore if same as gitBranch.
 terraformConfig:

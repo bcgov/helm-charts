@@ -39,12 +39,7 @@ spec:
       image: 'docker.io/node:16'
       name: download-terraform
       resources:
-        limits:
-          cpu: 250m
-          memory: 1400Mi
-        requests:
-          cpu: 50m
-          memory: 256Mi    
+        {{- toYaml .Values.tasks.tf-apply.resources | nindent 8 }}
       script: >
         #!/usr/bin/env sh
 
