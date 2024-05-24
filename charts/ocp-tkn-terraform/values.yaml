@@ -30,7 +30,7 @@ npmPackageRef: "bcgov-dss/api-serv-infra"
 pipelineRunsRetentionDays: ""
 
 tasks:
-  tf-apply:
+  tfApply:
     resources:
       limits:
         cpu: 250m

@@ -39,7 +39,7 @@ spec:
       image: 'docker.io/node:16'
       name: download-terraform
       resources:
-        {{- toYaml .Values.tasks.tf-apply.resources | nindent 8 }}
+        {{- toYaml .Values.tasks.tfApply.resources | nindent 8 }}
       script: >
         #!/usr/bin/env sh
 
