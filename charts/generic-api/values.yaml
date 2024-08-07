@@ -209,6 +209,10 @@ extraContainers: {}
 
 useStatefulSet: false
 
+pdb:
+  enabled: false
+  minAvailable: 1
+
 serviceName: ""
 
 oauthProxy:
