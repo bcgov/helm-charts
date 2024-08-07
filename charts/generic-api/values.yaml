@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 3
+replicaCount: 20
 
 image:
   repository: nginx
@@ -198,7 +198,13 @@ nodeSelector: {}
 
 tolerations: []
 
-affinity: {}
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchLabels:
+          app.kubernetes.io/instance: xxx-nginx
+      topologyKey: "kubernetes.io/hostname"
 
 # initContainers and extraContainers will inherit the following,
 # unless overridden:
@@ -208,6 +214,10 @@ initContainers: {}
 extraContainers: {}
 
 useStatefulSet: false
+
+pdb:
+  enabled: true
+  minAvailable: 1
 
 serviceName: ""
 
