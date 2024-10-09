@@ -73,10 +73,12 @@ spec:
           secret:
             secretName: {{ template "generic-api.fullname" . }}-tls
         {{- end }}
+        {{- if .Values.config }}
         - name: config-vol
           configMap:
             name: {{ template "generic-api.fullname" . }}-config
             defaultMode: 0644
+        {{- end }}
       containers:
         {{ if .Values.oauthProxy.enabled }}
         - name: oauth-proxy
