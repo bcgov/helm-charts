@@ -1,3 +1,4 @@
+{{- if .Values.config }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -17,3 +18,4 @@ data:
 {{ toYaml . | indent 4 }}
 {{- end }}
 {{- end }}
+{{- end }}  # End of conditional for config
