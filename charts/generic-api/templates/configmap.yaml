@@ -18,4 +18,4 @@ data:
 {{ toYaml . | indent 4 }}
 {{- end }}
 {{- end }}
-{{- end }}  # End of conditional for config
+{{- end }}
