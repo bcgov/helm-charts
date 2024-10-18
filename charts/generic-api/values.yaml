@@ -153,6 +153,15 @@ readinessProbe:
   #   path: /
   #   port: http
 
+lifecycle:
+  {}
+  # preStop:
+  #   exec:
+  #     command:
+  #       - sh
+  #       - '-c'
+  #       - rm /tmp/ready; sleep 15
+
 ingress:
   enabled: false
   annotations:
