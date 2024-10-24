@@ -152,6 +152,11 @@ readinessProbe:
   # httpGet:
   #   path: /
   #   port: http
+startupProbe:
+  {}
+  # httpGet:
+  #   path: /
+  #   port: http
 
 lifecycle:
   {}
