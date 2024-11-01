@@ -241,6 +241,16 @@ oauthProxy:
       cpu: 100m
       memory: 128Mi
 
+  livenessProbe:
+    httpGet:
+      path: /ping
+      port: http
+
+  readinessProbe:
+    httpGet:
+      path: /ping
+      port: http
+
   config:
     http-address: "0.0.0.0:7999"
     email-domain: "*"

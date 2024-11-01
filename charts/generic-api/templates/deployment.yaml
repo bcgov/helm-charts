@@ -112,6 +112,13 @@ spec:
           readinessProbe:
             {{- toYaml .Values.readinessProbe | nindent 12 }}
           {{- end }}
+          {{- else }}
+          livenessProbe:
+            {{- toYaml .Values.oauthProxy.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.oauthProxy.readinessProbe }}
+          readinessProbe:
+            {{- toYaml .Values.oauthProxy.readinessProbe | nindent 12 }}
           {{- end }}
           resources:
             {{- toYaml .Values.oauthProxy.resources | nindent 12 }}
