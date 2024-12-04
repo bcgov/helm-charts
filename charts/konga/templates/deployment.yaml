@@ -86,10 +86,20 @@ spec:
             httpGet:
               path: /
               port: http
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3              
           readinessProbe:
             httpGet:
               path: /
               port: http
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3              
           envFrom:
             - configMapRef:
                 name: {{ include "konga.fullname" . }}-config
