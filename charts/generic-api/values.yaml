@@ -256,6 +256,12 @@ oauthProxy:
       path: /ping
       port: proxy
 
+  startupProbe:
+    {}
+    # httpGet:
+    #   path: /ping
+    #   port: proxy
+
   config:
     http-address: "0.0.0.0:7999"
     email-domain: "*"
