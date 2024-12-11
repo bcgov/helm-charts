@@ -83,6 +83,19 @@ env:
     value: ""
   ENVIRONMENT_FRIENDLY_NAME:
     value: "Yeah backups"
+  EXISTING_DEPLOYMENT_PASSWORD:
+    existingSecret:
+      name: "existing-secret-name"
+      key: "existing-secret-key"
+
+networkPolicy:
+  # If true, a default network policy is created allowing access to matching database services
+  enabled: false
+  # Specifies which port the backup container will send requests from
+  backupServicePort: 5432
+  # Labels that must be set on the target databases for the backup service to be able to access them
+  selectorLabels:
+    backup: "true"
 
 serviceAccount:
   # Specifies whether a service account should be created

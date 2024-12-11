@@ -70,6 +70,12 @@ spec:
                 secretKeyRef:
                   name: {{ $fullName }}-secrets
                   key: {{ $index | kebabcase }}
+            {{- else if .existingSecret }}
+            - name: {{ $index }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .existingSecret.name }}
+                  key: {{ .existingSecret.key }}
             {{- else }}
             - name: {{ $index }}
               value: {{ .value | quote }}
