@@ -83,10 +83,11 @@ env:
     value: ""
   ENVIRONMENT_FRIENDLY_NAME:
     value: "Yeah backups"
-  EXISTING_DEPLOYMENT_PASSWORD:
-    existingSecret:
-      name: "existing-secret-name"
-      key: "existing-secret-key"
+  # use the following syntax to wire-up an existing secret
+  # EXISTING_DEPLOYMENT_PASSWORD:
+  #   existingSecret:
+  #     name: "existing-secret-name"
+  #     key: "existing-secret-key"
 
 networkPolicy:
   # If true, a default network policy is created allowing access to matching database services
