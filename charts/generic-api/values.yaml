@@ -152,6 +152,11 @@ readinessProbe:
   # httpGet:
   #   path: /
   #   port: http
+startupProbe:
+  {}
+  # httpGet:
+  #   path: /
+  #   port: http
 
 lifecycle:
   {}
@@ -250,6 +255,12 @@ oauthProxy:
     httpGet:
       path: /ping
       port: proxy
+
+  startupProbe:
+    {}
+    # httpGet:
+    #   path: /ping
+    #   port: proxy
 
   config:
     http-address: "0.0.0.0:7999"
