@@ -22,6 +22,9 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ toString .Values.config | sha256sum }}
+        {{- if .Values.oauthProxy.enabled }}
+        checksum/proxy-config: {{ toString .Values.oauthProxy.config | sha256sum }}
+        {{- end }}
     {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
@@ -79,6 +82,12 @@ spec:
             name: {{ template "generic-api.fullname" . }}-config
             defaultMode: 0644
         {{- end }}
+        {{- if .Values.oauthProxy.config }}
+        - name: proxy-config-vol
+          configMap:
+            name: {{ template "generic-api.fullname" . }}-proxy-config
+            defaultMode: 0644
+        {{- end }}
       containers:
         {{ if .Values.oauthProxy.enabled }}
         - name: oauth-proxy
@@ -87,13 +96,17 @@ spec:
           image: "{{ .Values.oauthProxy.image.repository }}:{{ .Values.oauthProxy.image.tag }}"
           imagePullPolicy: {{ .Values.oauthProxy.image.pullPolicy }}
           args:
-          - --login-url={{ index .Values.oauthProxy.config "oidc-issuer-url" }}/protocol/openid-connect/auth
-          - --redeem-url={{ index .Values.oauthProxy.config "oidc-issuer-url" }}/protocol/openid-connect/token
-          - --validate-url={{ index .Values.oauthProxy.config "oidc-issuer-url" }}/protocol/openid-connect/userinfo
-          {{- range $index, $val := .Values.oauthProxy.config }}
-          - --{{ $index }}={{ $val }}
-          {{- end }}
+          {{- range .Values.oauthProxy.args }}
+            - {{ . }}
+          {{- end}}
           volumeMounts:
+          {{- range .Values.oauthProxy.config }}
+            - name: proxy-config-vol
+              mountPath: {{ .mountPath }}
+              subPath: {{ .filename }}
+              readOnly: true
+          {{- end }}
+
           {{- if .Values.tls.enabled }}
             - name: tls-vol
               mountPath: {{ .Values.tls.mountPath }}
