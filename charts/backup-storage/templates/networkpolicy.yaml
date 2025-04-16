@@ -16,9 +16,6 @@ spec:
     - from:
         - podSelector:
             matchLabels: {{ include "backup-storage.selectorLabels" . | nindent 14 }}
-          namespaceSelector:
-            matchLabels:
-              name: {{ .Release.Namespace }}
       ports:
         - protocol: TCP
           port: {{  .Values.networkPolicy.backupServicePort }}
