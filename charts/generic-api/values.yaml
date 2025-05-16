@@ -109,8 +109,8 @@ tls:
   mountPath: "/etc/tls"
   secretName: ""
   secret:
-    server.crt: ""
-    server.key: ""
+    tls.crt: ""
+    tls.key: ""
     ca.crt: ""
 
 containerPort: 8000
