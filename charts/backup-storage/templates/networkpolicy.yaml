@@ -10,8 +10,6 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  description: |
-    Default network policy for {{ include "backup-storage.name" . }}
   ingress:
     - from:
         - podSelector:
