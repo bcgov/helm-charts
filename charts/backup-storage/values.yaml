@@ -107,6 +107,14 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
+command:
+# override the default command executed by the container (appended to the entrypoint [/tini --]) eg:
+# - . /vault/secrets/my-vault-secret && bash /backup.sh
+
+args:
+# additional arguments for the command, eg:
+# - -1
+
 podAnnotations: {}
 
 podSecurityContext:
