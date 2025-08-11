@@ -41,6 +41,8 @@ db:
   secretName: "patroni"
   usernameKey: "username-superuser"
   passwordKey: "password-superuser"
+  # allow kube secret auth to be disabled - in case of vault or other secret injection
+  enabled: true
 
 env:
   BACKUP_STRATEGY:
