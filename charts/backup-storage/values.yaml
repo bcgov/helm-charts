@@ -119,6 +119,9 @@ args:
 
 podAnnotations: {}
 
+# Labels to be added to deployment pods. (ie. "DataClass: Medium" for emerald)
+podLabels:
+
 podSecurityContext:
   {}
   # fsGroup: 2000
