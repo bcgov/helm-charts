@@ -20,6 +20,9 @@ spec:
     {{- end }}
       labels:
         {{- include "backup-storage.selectorLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -61,6 +64,7 @@ spec:
           {{- end }}
           env:
           {{- with .Values.db }}
+          {{- if .enabled }}
             - name: DATABASE_USER
               valueFrom:
                 secretKeyRef:
@@ -71,6 +75,7 @@ spec:
                 secretKeyRef:
                   name: {{ .secretName }}
                   key: {{ .passwordKey }}
+          {{- end }}
           {{- end }}
           {{- range $index, $val := .Values.env }}
             {{- if .secure }}
