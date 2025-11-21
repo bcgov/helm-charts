@@ -4,8 +4,11 @@
 
 replicaCount: 1
 
+nsp:
+  enabled: false
+
 image:
-  repository: h3brandon/formio
+  repository: formio/formio
   tag: latest
   pullPolicy: Always
 
@@ -48,7 +51,7 @@ dbPod:
 
 mongoImage:
   repository: mongo
-  tag: 4.1
+  tag: 8.0-noble
 
 resources: {}
   # If you want to specify resources, uncomment the following
