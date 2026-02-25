@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ include "soba.fullname" . }}-be"
+  labels:
+    {{- include "soba.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "soba.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "soba.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "soba.serviceAccountName" . }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          image: "{{ .Values.be_image.repository }}:{{ .Values.be_image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.be_image.pullPolicy }}
+          env:
+            - name: "JWT_SECRET"
+              value: "{{ .Values.jwtSecret }}"
+            - name: "FORMIO_BASE_URL"
+              value: "{{ .Values.formioBaseUrl }}"
+            - name: "FORMIO_ADMIN_USERNAME"
+              value: "{{ .Values.formio.username }}"
+            - name: "FORMIO_ADMIN_PASSWORD"
+              value: "{{ .Values.formio.password }}"
+            - name: "FORMIO_MANAGER_USERNAME"
+              value: "{{ .Values.formioManagerUsername }}"
+            - name: "FORMIO_MANAGER_PASSWORD"
+              value: "{{ .Values.formioManagerPassword }}"
+            - name: "JWT_ISSUER"
+              value: "{{ .Values.jwtIssuer }}"
+            - name: "JWT_AUDIENCE"
+              value: "{{ .Values.jwtAudience }}"
+            - name: "SESSION_SECRET"
+              value: "{{ .Values.sessionSecret }}"
+            - name: "ROLE_FIELD"
+              value: "{{ .Values.roleField }}"
+            - name: "NODE_ENV"
+              value: "{{ .Values.nodeEnv }}"
+            - name: "JWKS_URI"
+              value: "{{ .Values.jwksUri }}"
+            - name: "ADMIN_ROLE_NAME"
+              value: "{{ .Values.adminRoleName }}"
+            - name: "MANAGER_ROLE_NAME"
+              value: "{{ .Values.managerRoleName }}"
+          ports:
+            - name: http
+              containerPort: {{ .Values.be_service.port }}
+              protocol: TCP
+          {{- with .Values.be_livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.be_readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
