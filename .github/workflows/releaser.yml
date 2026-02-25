@@ -34,7 +34,7 @@ jobs:
 
       - name: Add Helm dependency repos
         run: |
-          helm repo add bcgov https://bcgov.github.io/helm-charts.
+          helm repo add bcgov https://bcgov.github.io/helm-charts/
           helm repo add bcgov-crunchy https://bcgov.github.io/crunchy-postgres/
           helm repo update # Update the local Helm repository cache
 
