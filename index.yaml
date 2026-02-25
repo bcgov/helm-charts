@@ -42,7 +42,8 @@ entries:
   - apiVersion: v2
     appVersion: 1.3.1
     created: "2024-01-26T05:28:04.482451664Z"
-    description: A Helm chart for configuring Gateway and Directory information at https://api.gov.bc.ca
+    description: A Helm chart for configuring Gateway and Directory information at
+      https://api.gov.bc.ca
     digest: c408d69974650472657bf8cc655f778211c67c0cddf254589191415eec5cdde9
     name: aps-gateway-ns
     type: application
@@ -52,7 +53,8 @@ entries:
   - apiVersion: v2
     appVersion: 1.3.1
     created: "2024-01-26T04:34:52.38874113Z"
-    description: A Helm chart for configuring Gateway and Directory information at https://api.gov.bc.ca
+    description: A Helm chart for configuring Gateway and Directory information at
+      https://api.gov.bc.ca
     digest: f67369f5366d83f28bc3b678a15b02416ce5405187259da554e050e2450a3cf4
     name: aps-gateway-ns
     type: application
@@ -62,7 +64,8 @@ entries:
   - apiVersion: v2
     appVersion: 1.3.1
     created: "2023-03-02T06:48:36.778931646Z"
-    description: A Helm chart for configuring Gateway and Directory information at https://api.gov.bc.ca
+    description: A Helm chart for configuring Gateway and Directory information at
+      https://api.gov.bc.ca
     digest: 774d0ba1232f0f94bdeaf449e1a5dcc33769b75eba80bdabf6f6022b7a74bece
     name: aps-gateway-ns
     type: application
@@ -72,7 +75,8 @@ entries:
   - apiVersion: v2
     appVersion: 1.3.1
     created: "2022-12-21T09:55:39.984047183Z"
-    description: A Helm chart for configuring Gateway and Directory information at https://api.gov.bc.ca
+    description: A Helm chart for configuring Gateway and Directory information at
+      https://api.gov.bc.ca
     digest: a8195f258f779e5b29b528162a672dc50f8af9a964ff4cb8b39b638607674504
     name: aps-gateway-ns
     type: application
@@ -82,7 +86,8 @@ entries:
   - apiVersion: v2
     appVersion: 1.3.1
     created: "2022-11-11T20:16:21.964295014Z"
-    description: A Helm chart for configuring Gateway and Directory information at https://api.gov.bc.ca
+    description: A Helm chart for configuring Gateway and Directory information at
+      https://api.gov.bc.ca
     digest: 5dba48b5ab853d69667bd6b7a7d07d308ad561c9d60a70a1a1686b36bf49944f
     name: aps-gateway-ns
     type: application
@@ -92,7 +97,8 @@ entries:
   - apiVersion: v2
     appVersion: 1.3.1
     created: "2022-11-11T20:06:56.556920779Z"
-    description: A Helm chart for configuring Gateway and Directory information at https://api.gov.bc.ca
+    description: A Helm chart for configuring Gateway and Directory information at
+      https://api.gov.bc.ca
     digest: faa57c8d03f8d9850ebb1e420e6d9e93986f07477afbcaca3d9f15e8813ecdce
     name: aps-gateway-ns
     type: application
@@ -102,7 +108,8 @@ entries:
   - apiVersion: v2
     appVersion: 1.3.1
     created: "2022-11-09T10:14:51.627929226Z"
-    description: A Helm chart for configuring Gateway and Directory information at https://api.gov.bc.ca
+    description: A Helm chart for configuring Gateway and Directory information at
+      https://api.gov.bc.ca
     digest: b3ce82994c90e34218ab5436b499876ee0bdf86d560ad5e59e7d7bb23c8e94dc
     name: aps-gateway-ns
     type: application
@@ -112,7 +119,8 @@ entries:
   - apiVersion: v2
     appVersion: 1.3.1
     created: "2022-11-09T09:49:20.38808709Z"
-    description: A Helm chart for configuring Gateway and Directory information at https://api.gov.bc.ca
+    description: A Helm chart for configuring Gateway and Directory information at
+      https://api.gov.bc.ca
     digest: 857bb1a4cd9590b821a8554f06a0d27e692cdf7d9e2662335664d5cc1ccc1a1d
     name: aps-gateway-ns
     type: application
@@ -122,7 +130,8 @@ entries:
   - apiVersion: v2
     appVersion: 1.3.1
     created: "2022-11-09T09:35:04.563256245Z"
-    description: A Helm chart for configuring Gateway and Directory information at https://api.gov.bc.ca
+    description: A Helm chart for configuring Gateway and Directory information at
+      https://api.gov.bc.ca
     digest: a709f112258f22679c37d848633411df845edc731fd4f49f7d8d1f4748c41778
     name: aps-gateway-ns
     type: application
@@ -521,7 +530,8 @@ entries:
   - apiVersion: v2
     appVersion: 1.16.0
     created: "2023-05-11T20:38:27.96680657Z"
-    description: A Helm chart for deploying Consul Connect sidecars to a Microservice API
+    description: A Helm chart for deploying Consul Connect sidecars to a Microservice
+      API
     digest: 506667db40d6858acffee65fcc04831d25b2079e6607520e872a8c8a886fa417
     name: consul-envoy-api
     type: application
@@ -531,7 +541,8 @@ entries:
   - apiVersion: v2
     appVersion: 1.16.0
     created: "2021-09-09T05:53:18.803643765Z"
-    description: A Helm chart for deploying Consul Connect sidecars to a Microservice API
+    description: A Helm chart for deploying Consul Connect sidecars to a Microservice
+      API
     digest: ede497eb0d3dda66626583d9539913a13723f1ebdf56b5be9d5ab07843899ed5
     name: consul-envoy-api
     type: application
@@ -541,7 +552,8 @@ entries:
   - apiVersion: v2
     appVersion: 1.16.0
     created: "2021-09-09T05:50:36.544568867Z"
-    description: A Helm chart for deploying Consul Connect sidecars to a Microservice API
+    description: A Helm chart for deploying Consul Connect sidecars to a Microservice
+      API
     digest: ae9d16570533081e83d0b549e6e77a930c34d718ba881c07a702a58367814f76
     name: consul-envoy-api
     type: application
@@ -551,7 +563,8 @@ entries:
   - apiVersion: v2
     appVersion: 1.16.0
     created: "2021-09-09T05:33:14.553713054Z"
-    description: A Helm chart for deploying Consul Connect sidecars to a Microservice API
+    description: A Helm chart for deploying Consul Connect sidecars to a Microservice
+      API
     digest: 61be7992be5e2b376ff524570a0b6b5d3d9805825b34ed108e046bdb69d79369
     name: consul-envoy-api
     type: application
@@ -561,7 +574,8 @@ entries:
   - apiVersion: v2
     appVersion: 1.16.0
     created: "2021-09-09T05:25:39.298861858Z"
-    description: A Helm chart for deploying Consul Connect sidecars to a Microservice API
+    description: A Helm chart for deploying Consul Connect sidecars to a Microservice
+      API
     digest: e6f4adfdef54de3711c8d8f9e215b3bb35ec805c8b3b7fddfee5786ca304d9c2
     name: consul-envoy-api
     type: application
@@ -571,7 +585,8 @@ entries:
   - apiVersion: v2
     appVersion: 1.16.0
     created: "2021-09-09T05:21:04.612527897Z"
-    description: A Helm chart for deploying Consul Connect sidecars to a Microservice API
+    description: A Helm chart for deploying Consul Connect sidecars to a Microservice
+      API
     digest: d4d22379fefce44f01434d286fd3e3fcd50d1d08250ac894cddf085b29436821
     name: consul-envoy-api
     type: application
@@ -581,7 +596,8 @@ entries:
   - apiVersion: v2
     appVersion: 1.16.0
     created: "2021-09-08T23:28:15.41843277Z"
-    description: A Helm chart for deploying Consul Connect sidecars to a Microservice API
+    description: A Helm chart for deploying Consul Connect sidecars to a Microservice
+      API
     digest: b91546339a838bc6f3c9c8a301fbe37f56dd3b4fa5a7fe1c2cf8ab7b9537144a
     name: consul-envoy-api
     type: application
@@ -995,7 +1011,8 @@ entries:
   - apiVersion: v1
     appVersion: 11.0.0
     created: "2020-09-21T23:37:35.653592-07:00"
-    description: Open Source Identity and Access Management For Modern Applications and Services
+    description: Open Source Identity and Access Management For Modern Applications
+      and Services
     digest: 70e0f2cf80a88ed90102ab0f60cdd3cf233dd62809cc048647f0cbbbc52e55d3
     home: https://www.keycloak.org/
     icon: https://www.keycloak.org/resources/images/keycloak_logo_480x108.png
@@ -1547,7 +1564,8 @@ entries:
   - apiVersion: v1
     appVersion: 1.11.2
     created: "2020-09-21T23:37:36.155779-07:00"
-    description: Apache NiFi is a software project from the Apache Software Foundation designed to automate the flow of data between software systems.
+    description: Apache NiFi is a software project from the Apache Software Foundation
+      designed to automate the flow of data between software systems.
     digest: 849cfcded24af9b0c4d9054fcebfb3a4dbe883b0f3e24571ad0bb6b87309d035
     home: https://nifi.apache.org/
     icon: https://svn.apache.org/repos/asf/nifi/site/trunk/images/niFi-logo-horizontal-scaled.png
@@ -1656,7 +1674,8 @@ entries:
   - apiVersion: v1
     appVersion: "1.0"
     created: "2020-09-21T23:37:36.454197-07:00"
-    description: A Helm chart for Openshift Routes for cases where the standard Ingress is not sufficient
+    description: A Helm chart for Openshift Routes for cases where the standard Ingress
+      is not sufficient
     digest: 5564a6289c5107d0b30f2b103048cb8ac8680a4b072f9bf41043c41af709ed75
     name: ocp-route
     urls:
@@ -1840,7 +1859,8 @@ entries:
   - apiVersion: v2
     appVersion: 1.0.0
     created: "2021-11-09T22:20:26.33946071Z"
-    description: A Helm chart for creating custom Transport Service Claims for Cluster-Cluster communication
+    description: A Helm chart for creating custom Transport Service Claims for Cluster-Cluster
+      communication
     digest: 6cdab169275290b76d1c19699f0991a7644533f0b81c412ae5257386508be9bc
     name: ocp-transport-claim
     type: application
@@ -1850,7 +1870,8 @@ entries:
   - apiVersion: v2
     appVersion: 1.0.0
     created: "2021-11-09T21:13:21.780561985Z"
-    description: A Helm chart for creating custom Transport Service Claims for Cluster-Cluster communication
+    description: A Helm chart for creating custom Transport Service Claims for Cluster-Cluster
+      communication
     digest: 0de58f52fe7a6ab4291400a036c09520e3c0d83f2df7414ce5a7cbac75bb376e
     name: ocp-transport-claim
     type: application
@@ -1860,7 +1881,8 @@ entries:
   - apiVersion: v2
     appVersion: 1.16.0
     created: "2021-11-09T19:44:32.801320919Z"
-    description: A Helm chart for creating custom Transport Service Claims for Cluster-Cluster communication
+    description: A Helm chart for creating custom Transport Service Claims for Cluster-Cluster
+      communication
     digest: 5676f2729a845380b37d736c0cdd3d396b64a7b4b5bc0594b6a227b764431da8
     name: ocp-transport-claim
     type: application
@@ -2026,6 +2048,27 @@ entries:
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/patroni-spilo-0.21.3/patroni-spilo-0.21.3.tgz
     version: 0.21.3
+  soba:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2026-02-25T20:20:44.366460212Z"
+    dependencies:
+    - alias: crunchy
+      condition: crunchy.enabled
+      name: crunchy-postgres
+      repository: https://bcgov.github.io/crunchy-postgres/
+      version: 0.5.0
+    - condition: formio.enabled
+      name: formio
+      repository: https://bcgov.github.io/helm-charts/
+      version: 0.1.2
+    description: A Helm chart for Deploying SOBA on K8s/OCP
+    digest: f399d3eee66b70a0122eca67e05eba4ffca2938709c85b078546b5d1f6687f7c
+    name: soba
+    type: application
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/soba-0.1.0/soba-0.1.0.tgz
+    version: 0.1.0
   storage-api:
   - apiVersion: v1
     appVersion: "1.0"
@@ -2196,4 +2239,4 @@ entries:
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/vdi-virtual-display-0.0.1/vdi-virtual-display-0.0.1.tgz
     version: 0.0.1
-generated: "2020-09-21T23:37:33.834269-07:00"
+generated: "2026-02-25T20:20:44.366763483Z"
