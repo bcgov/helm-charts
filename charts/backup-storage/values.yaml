@@ -41,6 +41,8 @@ db:
   secretName: "patroni"
   usernameKey: "username-superuser"
   passwordKey: "password-superuser"
+  # allow kube secret auth to be disabled - in case of vault or other secret injection
+  enabled: true
 
 env:
   BACKUP_STRATEGY:
@@ -83,6 +85,20 @@ env:
     value: ""
   ENVIRONMENT_FRIENDLY_NAME:
     value: "Yeah backups"
+  # use the following syntax to wire-up an existing secret
+  # EXISTING_DEPLOYMENT_PASSWORD:
+  #   existingSecret:
+  #     name: "existing-secret-name"
+  #     key: "existing-secret-key"
+
+networkPolicy:
+  # If true, a default network policy is created allowing access to matching database services
+  enabled: false
+  # Specifies which port the backup container will send requests from
+  backupServicePort: 5432
+  # Labels that must be set on the target databases for the backup service to be able to access them
+  selectorLabels:
+    backup: "true"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -93,7 +109,18 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
+command:
+# override the default command executed by the container (appended to the entrypoint [/tini --]) eg:
+# - . /vault/secrets/my-vault-secret && bash /backup.sh
+
+args:
+# additional arguments for the command, eg:
+# - -1
+
 podAnnotations: {}
+
+# Labels to be added to deployment pods. (ie. "DataClass: Medium" for emerald)
+podLabels:
 
 podSecurityContext:
   {}

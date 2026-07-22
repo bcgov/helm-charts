@@ -1,0 +1,61 @@
+{{- if .Values.fe_routes_enabled -}}
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ template "soba.fullname" . }}-fe
+  labels:
+    app: {{ template "soba.fullname" . }}
+    chart: {{ template "soba.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  {{- with .Values.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+{{- range .Values.fe_routes }}
+  host: {{ .host }}
+  port:
+    targetPort: {{ .targetPort }}
+{{- with .tls }}
+  tls:
+  {{- toYaml . | nindent 4 }}
+{{- end }}
+  to:
+    kind: Service
+    name: {{ .service }}
+    weight: 100
+  wildcardPolicy: {{ .wildcardPolicy }}
+{{ end }}
+{{- end }}
+---
+{{- if .Values.be_routes_enabled -}}
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ template "soba.fullname" . }}-be
+  labels:
+    app: {{ template "soba.fullname" . }}
+    chart: {{ template "soba.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  {{- with .Values.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+{{- range .Values.be_routes }}
+  host: {{ .host }}
+  port:
+    targetPort: {{ .targetPort }}
+{{- with .tls }}
+  tls:
+  {{- toYaml . | nindent 4 }}
+{{- end }}
+  to:
+    kind: Service
+    name: {{ .service }}
+    weight: 100
+  wildcardPolicy: {{ .wildcardPolicy }}
+{{ end }}
+{{- end }}

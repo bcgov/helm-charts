@@ -10,7 +10,7 @@ metadata:
   # annotations:
   #   service.beta.openshift.io/serving-cert-secret-name: {{ $release.Name }}-{{ .name }}
 spec:
-  type: ClusterIP
+  type: {{ .serviceType | default "ClusterIP" }}
   ports:
     - port: {{ .servicePort }}
       targetPort: {{ .targetPort }}

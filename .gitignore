@@ -6,3 +6,4 @@ packages/*.tgz
 *.tmp.yaml
 LOCAL.md
 _tmp
+**config**

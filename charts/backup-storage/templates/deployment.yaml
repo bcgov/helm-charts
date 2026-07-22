@@ -20,6 +20,9 @@ spec:
     {{- end }}
       labels:
         {{- include "backup-storage.selectorLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -50,8 +53,18 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.command }}
+          command:
+            {{- toYaml .Values.command | nindent 12 }}
+          {{- end }}
+
+          {{- if .Values.args }}
+          args:
+            {{- toYaml .Values.args | nindent 12 }}
+          {{- end }}
           env:
           {{- with .Values.db }}
+          {{- if .enabled }}
             - name: DATABASE_USER
               valueFrom:
                 secretKeyRef:
@@ -63,6 +76,7 @@ spec:
                   name: {{ .secretName }}
                   key: {{ .passwordKey }}
           {{- end }}
+          {{- end }}
           {{- range $index, $val := .Values.env }}
             {{- if .secure }}
             - name: {{ $index }}
@@ -70,6 +84,12 @@ spec:
                 secretKeyRef:
                   name: {{ $fullName }}-secrets
                   key: {{ $index | kebabcase }}
+            {{- else if .existingSecret }}
+            - name: {{ $index }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .existingSecret.name }}
+                  key: {{ .existingSecret.key }}
             {{- else }}
             - name: {{ $index }}
               value: {{ .value | quote }}

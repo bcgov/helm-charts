@@ -1,0 +1,9 @@
+dependencies:
+- name: crunchy-postgres
+  repository: https://bcgov.github.io/crunchy-postgres/
+  version: 0.5.0
+- name: formio
+  repository: https://bcgov.github.io/helm-charts/
+  version: 0.1.2
+digest: sha256:77f32850c4c30cd10e555258020fcc003c6a37a90222108435721fa03e8b3361
+generated: "2026-02-23T13:45:07.766977-08:00"
