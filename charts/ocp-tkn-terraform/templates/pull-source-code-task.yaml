@@ -26,6 +26,8 @@ spec:
           value: $(params.deploymentEnv)
         - name: WORKSPACE_SOURCE_PATH
           value: $(workspaces.source.path)
+        - name: VAULT_INPUT_PATH
+          value: {{ .Values.tasks.installSourceCode.vaultInputPath | quote }}
         - name: GITHUB_AUTH_SECRET
           value: {{ include "ocp-tkn-terraform.fullname" . }}-git-auth
       image: 'docker.io/node:16'
@@ -36,7 +38,7 @@ spec:
 
         set -eu
 
-        set -x
+        # Do not trace commands that read credentials.
 
         SOURCE_CODE_DIR="${WORKSPACE_SOURCE_PATH}/${PACKAGE_REF}"
 
@@ -101,6 +103,13 @@ spec:
 
         node ../../scripts/split-tfvars.js secrets.json
         terraform.secret.auto.tfvars
+
+        if [ -n "${VAULT_INPUT_PATH}" ]; then
+          test -r "${VAULT_INPUT_PATH}"
+          umask 077
+          cp "${VAULT_INPUT_PATH}" .vault-inputs.json
+          chmod 600 .vault-inputs.json
+        fi
   workspaces:
     - name: source
     - name: output

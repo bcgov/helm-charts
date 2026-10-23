@@ -25,6 +25,12 @@ spec:
         taskRunSpecs:
           - pipelineTaskName: clone-repository
             taskServiceAccountName: {{ .Values.serviceAccount.name }}-git-clone
+          {{- with .Values.tasks.installSourceCode.annotations }}
+          - pipelineTaskName: install-source-code
+            metadata:
+              annotations:
+                {{- toYaml . | nindent 16 }}
+          {{- end }}
         params:
           - name: git-repo-url
             value: $(tt.params.git-repo-url)

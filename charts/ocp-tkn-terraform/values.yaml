@@ -30,6 +30,12 @@ npmPackageRef: "bcgov-dss/api-serv-infra"
 pipelineRunsRetentionDays: ""
 
 tasks:
+  installSourceCode:
+    # Applied only to the install-source-code TaskRun/Pod, not the whole pipeline.
+    annotations: {}
+    # Optional absolute path to a Vault-rendered JSON object of Terraform variables.
+    # tfvars files and existing TF_VAR_* environment values take precedence.
+    vaultInputPath: ""
   tfApply:
     resources:
       limits:

@@ -45,7 +45,7 @@ spec:
 
         set -eu
 
-        set -x
+        # Do not trace backend credentials or supplemental inputs.
 
         cd "${WORKSPACE_TERRAFORM_PATH}"
 
@@ -72,7 +72,34 @@ spec:
 
         oc project "${OCP_RELEASE_NAMESPACE}"
 
+        {{- if .Values.tasks.installSourceCode.vaultInputPath }}
+        # TF_VAR values are defaults: normal tfvars loading still takes precedence.
+        # JSON parsing and process spawning avoid shell evaluation of secret values.
+        trap 'rm -f .vault-inputs.json' 0
+
+        node -e '
+          const fs = require("fs");
+          const { spawnSync } = require("child_process");
+          let inputs;
+          try {
+            inputs = JSON.parse(fs.readFileSync(".vault-inputs.json", "utf8"));
+            if (!inputs || typeof inputs !== "object" || Array.isArray(inputs)) throw Error();
+            if (Object.keys(inputs).some(k => !/^[A-Za-z_][A-Za-z0-9_]*$/.test(k))) throw Error();
+          } catch {
+            console.error("Invalid or missing Vault Terraform input JSON object");
+            process.exit(1);
+          }
+          const defaults = Object.fromEntries(Object.entries(inputs).map(([key, value]) =>
+            ["TF_VAR_" + key, typeof value === "string" ? value : JSON.stringify(value)]));
+          const result = spawnSync("terraform", ["apply", "-no-color", "--auto-approve"], {
+            env: { ...defaults, ...process.env }, stdio: "inherit"
+          });
+          if (result.error) console.error("Could not start Terraform");
+          process.exit(typeof result.status === "number" ? result.status : 1);
+        '
+        {{- else }}
         terraform apply -no-color --auto-approve
+        {{- end }}
   workspaces:
     - name: terraform
     - name: source
