@@ -90,27 +90,30 @@ this field. Manually created PipelineRuns need equivalent task metadata.
 Annotations are rendered literally with `toYaml`, not Helm `tpl`.
 
 `tasks.installSourceCode.vaultInputPath` (default `""`) is an optional readable
-path to JSON compatible with the existing `../../scripts/split-tfvars.js` in the
-installed source package. Use the same shape as a Kubernetes Secret: a `data`
-object with base64-encoded string values. Dotted keys represent map entries:
+path to JSON consumed by the chart-bundled `files/split-tfvars.js`, derived
+from infra's `terraform/scripts/split-tfvars.js`. The chart mounts it read-only
+from a ConfigMap at `/opt/terraform-scripts/split-tfvars.js`. Vault uses a `data`
+object containing plain UTF-8 string values; Kubernetes Secrets retain their
+base64-encoded `data` values. Dotted keys represent map entries:
 
 ```json
 {
   "data": {
-    "example": "dmF1bHQ=",
-    "vault_only": "c3VwcGxlbWVudA=="
+    "example": "vault",
+    "ssl_certs.sdx-crt": "PEM certificate",
+    "ssl_certs.sdx-key": "PEM private key"
   }
 }
 ```
 
-The chart invokes the existing splitter directly against this input, generating
-`000-vault.auto.tfvars` in the Terraform source folder. It continues generating
-`terraform.secret.auto.tfvars` from the existing Kubernetes Secret. The apply
+The chart invokes its bundled splitter against this input with `utf-8`, generating
+`001-vault.auto.tfvars` in the Terraform source folder. It continues generating
+`000-terraform.auto.tfvars` from the existing Kubernetes Secret using `base64`. The apply
 task is unchanged; Terraform loads both files automatically.
 
 Terraform loads `terraform.tfvars` and `terraform.tfvars.json` before auto-tfvars,
 then loads `*.auto.tfvars` / `*.auto.tfvars.json` in lexical order. Consequently,
-`terraform.secret.auto.tfvars` overrides `000-vault.auto.tfvars` for duplicate
+`001-vault.auto.tfvars` overrides `000-terraform.auto.tfvars` for duplicate
 variables. Other auto-tfvars follow their filenames' lexical order. Plain
 `terraform.tfvars` and `TF_VAR_*` environment values do not override the Vault
 auto-tfvars file. Explicit CLI `-var-file` / `-var` arguments take precedence.
@@ -143,21 +146,21 @@ A configured missing/unreadable input or splitter failure stops the source task.
 The supplemental output is mode 0600 and remains on the shared PVC like existing
 secret tfvars; restrict workspace access and retain normal cleanup. The next
 source install clears its package directory. No supplemental output is generated
-when the input path is empty. Compatibility and supported value types are those
-of the existing source package's splitter; this chart does not add a second parser.
+when the input path is empty. The input supports string values, with one level of dotted map keys.
 
-Run `helm lint charts/ocp-tkn-terraform --set serviceAccount.name=terraform` and
-`python3 charts/ocp-tkn-terraform/tests/test_vault_inputs.py` (Helm, Node.js,
-Terraform and Python PyYAML required). Tests take the existing splitter path via
-`SPLIT_TFVARS_SCRIPT`. Verify Pod annotations, Vault init completion, generated
-files, precedence and pipeline completion in a test cluster before production.
+Run `helm lint charts/ocp-tkn-terraform --set serviceAccount.name=terraform`.
+Verify Pod annotations, Vault init completion, generated files, precedence and
+pipeline completion in a test cluster before production.
 
-### Source-package splitter compatibility
+### Bundled splitter
 
-The currently inspected api-serv-infra `terraform/scripts/split-tfvars.js`
-helper omits a closing brace when its final sorted key is a dotted map entry.
-A certificate-only payload containing `ssl_certs.sdx-crt` / `ssl_certs.sdx-key`
-therefore produces invalid HCL. Correct that helper in the source package before
-using such inputs; chart 2.0.7 deliberately reuses it without a second parser or
-an implicit repair. The helper also owns base64 decoding, trimming and string
-escaping behavior. Validate its generated tfvars with your actual input shape.
+```sh
+node /opt/terraform-scripts/split-tfvars.js input.json output.tfvars base64
+node /opt/terraform-scripts/split-tfvars.js input.json output.tfvars utf-8
+```
+
+The fourth argument selects value decoding (default `base64` for compatibility).
+Both inputs keep the `{ "data": { ... } }` envelope. Values are trimmed as in the
+original helper. The bundled version closes the final map, escapes scalar and
+map strings including Terraform template markers, and creates output files with
+mode 0600. Certificate-only map payloads no longer require a source-package fix.

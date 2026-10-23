@@ -33,6 +33,10 @@ spec:
       image: 'docker.io/node:16'
       name: init-source
       resources: {}
+      volumeMounts:
+        - name: terraform-scripts
+          mountPath: /opt/terraform-scripts
+          readOnly: true
       script: >
         #!/usr/bin/env sh
 
@@ -101,15 +105,19 @@ spec:
         oc get secret terraform-pipeline-"${DEPLOYMENT_ENV}"-tfvars -o json >
         secrets.json
 
-        node ../../scripts/split-tfvars.js secrets.json
-        terraform.secret.auto.tfvars
+        node /opt/terraform-scripts/split-tfvars.js secrets.json
+        000-terraform.auto.tfvars base64
 
         if [ -n "${VAULT_INPUT_PATH}" ]; then
           test -r "${VAULT_INPUT_PATH}"
           umask 077
-          node ../../scripts/split-tfvars.js "${VAULT_INPUT_PATH}" 000-vault.auto.tfvars
-          chmod 600 000-vault.auto.tfvars
+          node /opt/terraform-scripts/split-tfvars.js "${VAULT_INPUT_PATH}" 001-vault.auto.tfvars utf-8
+          chmod 600 001-vault.auto.tfvars
         fi
+  volumes:
+    - name: terraform-scripts
+      configMap:
+        name: {{ include "ocp-tkn-terraform.fullname" . }}-scripts
   workspaces:
     - name: source
     - name: output
