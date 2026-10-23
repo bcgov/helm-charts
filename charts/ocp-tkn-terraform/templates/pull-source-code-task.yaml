@@ -107,8 +107,8 @@ spec:
         if [ -n "${VAULT_INPUT_PATH}" ]; then
           test -r "${VAULT_INPUT_PATH}"
           umask 077
-          cp "${VAULT_INPUT_PATH}" .vault-inputs.json
-          chmod 600 .vault-inputs.json
+          node ../../scripts/split-tfvars.js "${VAULT_INPUT_PATH}" 000-vault.auto.tfvars
+          chmod 600 000-vault.auto.tfvars
         fi
   workspaces:
     - name: source

@@ -33,8 +33,8 @@ tasks:
   installSourceCode:
     # Applied only to the install-source-code TaskRun/Pod, not the whole pipeline.
     annotations: {}
-    # Optional absolute path to a Vault-rendered JSON object of Terraform variables.
-    # tfvars files and existing TF_VAR_* environment values take precedence.
+    # Optional absolute path to a Vault-rendered Secret-shaped JSON (data contains base64 values).
+    # Later auto-tfvars files, including terraform.secret.auto.tfvars, take precedence.
     vaultInputPath: ""
   tfApply:
     resources:

@@ -85,24 +85,41 @@ oc -n $project policy add-role-to-user admin system:serviceaccount:$tools:pipeli
 
 `tasks.installSourceCode.annotations` (default `{}`) adds annotations only to
 `install-source-code` through the generated PipelineRun's
-`taskRunSpecs[].metadata.annotations`. The installed Tekton CRD must support
-that field. Manually created PipelineRuns must supply equivalent task metadata.
-Annotation values are rendered literally with `toYaml`, not evaluated with
-Helm `tpl`, so Vault templates remain intact.
+`taskRunSpecs[].metadata.annotations`. Confirm the installed Tekton CRD supports
+this field. Manually created PipelineRuns need equivalent task metadata.
+Annotations are rendered literally with `toYaml`, not Helm `tpl`.
 
-`tasks.installSourceCode.vaultInputPath` (default `""`) optionally names a readable
-absolute path in the source task containing a **JSON object** of Terraform
-variable names and values. The existing Kubernetes Secret-to-tfvars processing
-continues unchanged. With a path configured, a missing/unreadable file fails the
-source task; invalid JSON/object keys fail before Terraform apply. There is no
-silent fallback to stale data.
+`tasks.installSourceCode.vaultInputPath` (default `""`) is an optional readable
+path to JSON compatible with the existing `../../scripts/split-tfvars.js` in the
+installed source package. Use the same shape as a Kubernetes Secret: a `data`
+object with base64-encoded string values. Dotted keys represent map entries:
 
-Example values (use your existing Vault auth role and secret path):
+```json
+{
+  "data": {
+    "example": "dmF1bHQ=",
+    "vault_only": "c3VwcGxlbWVudA=="
+  }
+}
+```
+
+The chart invokes the existing splitter directly against this input, generating
+`000-vault.auto.tfvars` in the Terraform source folder. It continues generating
+`terraform.secret.auto.tfvars` from the existing Kubernetes Secret. The apply
+task is unchanged; Terraform loads both files automatically.
+
+Terraform loads `terraform.tfvars` and `terraform.tfvars.json` before auto-tfvars,
+then loads `*.auto.tfvars` / `*.auto.tfvars.json` in lexical order. Consequently,
+`terraform.secret.auto.tfvars` overrides `000-vault.auto.tfvars` for duplicate
+variables. Other auto-tfvars follow their filenames' lexical order. Plain
+`terraform.tfvars` and `TF_VAR_*` environment values do not override the Vault
+auto-tfvars file. Explicit CLI `-var-file` / `-var` arguments take precedence.
+Maps/objects are replaced as whole variables, not merged by nested key.
+
+Example configuration stores the full Secret-shaped JSON document in Vault's
+`tfvars_json` field; substitute your existing role and secret path:
 
 ```yaml
-serviceAccount:
-  name: terraform
-
 tasks:
   installSourceCode:
     vaultInputPath: /vault/secrets/terraform-inputs.json
@@ -113,43 +130,34 @@ tasks:
       vault.hashicorp.com/agent-inject-secret-terraform-inputs.json: secret/data/terraform
       vault.hashicorp.com/agent-inject-template-terraform-inputs.json: |
         {{- with secret "secret/data/terraform" -}}
-        {{ .Data.data | toJSON }}
+        {{ .Data.data.tfvars_json }}
         {{- end }}
 ```
 
-The Vault role must authorize the task's service account (`pipeline` in the
-current generated PipelineRun) and namespace. `serviceAccount.name` above
-configures the clone service account; it does not change the install task's
-identity. Confirm injector networking and OpenShift security-context compatibility.
-Use init-only injection so a long-running Vault sidecar does not hold the task
-open after its step exits.
+The Vault role must authorize the install task's service account (`pipeline` in
+this chart) and namespace. `serviceAccount.name` controls the clone service
+account only. Use init-only injection for this finite task and confirm injector
+networking and OpenShift security-context compatibility.
 
-The source task copies the JSON to a mode-0600 `.vault-inputs.json` file in the
-Terraform source directory on the shared PVC. The apply task reads it and runs
-Terraform with its values as `TF_VAR_*` environment defaults, without shell
-evaluation or logging secret contents. Existing `TF_VAR_*` values override these
-defaults. Terraform's standard tfvars files (including the generated
-`terraform.secret.auto.tfvars`) override both. This preserves the normal order
-among `terraform.tfvars`, JSON tfvars and lexically ordered auto-tfvars files.
-Values are passed to the variable-consuming `terraform apply` command; init,
-version and workspace commands do not need variable inputs.
+A configured missing/unreadable input or splitter failure stops the source task.
+The supplemental output is mode 0600 and remains on the shared PVC like existing
+secret tfvars; restrict workspace access and retain normal cleanup. The next
+source install clears its package directory. No supplemental output is generated
+when the input path is empty. Compatibility and supported value types are those
+of the existing source package's splitter; this chart does not add a second parser.
 
-Precedence is **per Terraform variable**, not per nested map key. For example,
-if both Vault and the existing tfvars define `ssl_certs`, the tfvars map replaces
-the entire Vault map. If individual certificate entries must be combined, use
-separate Terraform inputs and an explicit `merge` in the consuming module.
-Strings remain strings; numbers, booleans, lists and objects are JSON-encoded
-for Terraform environment parsing.
+Run `helm lint charts/ocp-tkn-terraform --set serviceAccount.name=terraform` and
+`python3 charts/ocp-tkn-terraform/tests/test_vault_inputs.py` (Helm, Node.js,
+Terraform and Python PyYAML required). Tests take the existing splitter path via
+`SPLIT_TFVARS_SCRIPT`. Verify Pod annotations, Vault init completion, generated
+files, precedence and pipeline completion in a test cluster before production.
 
-The supplemental copy is removed when the apply script exits normally or with
-an error. A killed pod or PVC failure may leave it behind; shared workspace access
-must remain restricted and normal workspace cleanup must still run. This is
-supplemental secret material on the same PVC already used for generated tfvars.
-With the input path empty, the chart uses the original apply command.
+### Source-package splitter compatibility
 
-Validate with `helm lint` and
-`python3 charts/ocp-tkn-terraform/tests/test_vault_inputs.py` (requires Helm,
-Node.js, Terraform and Python PyYAML). On a test cluster, verify generated
-TaskRun/Pod annotations, Vault init completion, precedence and task completion
-before upgrading the production chart. No Vault policy or live secret changes
-are performed by installing the chart itself.
+The currently inspected api-serv-infra `terraform/scripts/split-tfvars.js`
+helper omits a closing brace when its final sorted key is a dotted map entry.
+A certificate-only payload containing `ssl_certs.sdx-crt` / `ssl_certs.sdx-key`
+therefore produces invalid HCL. Correct that helper in the source package before
+using such inputs; chart 2.0.7 deliberately reuses it without a second parser or
+an implicit repair. The helper also owns base64 decoding, trimming and string
+escaping behavior. Validate its generated tfvars with your actual input shape.
