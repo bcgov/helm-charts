@@ -119,11 +119,7 @@ variables. Other auto-tfvars follow their filenames' lexical order. Plain
 auto-tfvars file. Explicit CLI `-var-file` / `-var` arguments take precedence.
 Maps/objects are replaced as whole variables, not merged by nested key.
 
-### Vault Agent injector example (Gold non-production)
-
-The isolated `tkn-temp` run succeeded with the following service account, Vault
-namespace, role and auth mount. Use the appropriate path/role for each deployment;
-this example reads a certificate secret and certificate.
+### Vault Agent injector example
 
 ```yaml
 tasks:
@@ -143,7 +139,7 @@ tasks:
         {{- with secret "xxx-nonprod/dev/ssl" -}}
         {"data": {
           "ssl_certs.crt": {{ .Data.data.crt | toJSON }},
-          "ssl_certs.key": {{ .Data.data.key | toJSON }},
+          "ssl_certs.key": {{ .Data.data.key | toJSON }}
         }}
         {{- end }}
 ```
@@ -156,29 +152,12 @@ not create it or grant permissions. `serviceAccount.name` still controls the clo
 service account only. Standalone TaskRuns must set their service account and
 annotations themselves.
 
-The Vault role must allow the selected service account and namespace. Its policy
-must permit the secret path. On Gold, `auth/k8s-gold` is required: omitting the auth
-path caused a 403 at `auth/kubernetes/login` in the isolated test. Kubernetes role
-bindings alone do not grant Vault login or secret access. The install account also
-needs its existing Kubernetes read access to the GitHub auth and environment
-terraform-pipeline tfvars Secrets; confirm that access before the full task run.
-
 This uses the Vault sidecar injector in **init-only** mode. A persistent sidecar
 is unnecessary for the finite task and can interfere with completion. The injected
 JSON is converted during installation and its tfvars output is shared with the
 apply task. Confirm injector networking, OpenShift security-context compatibility
 and access to the generated files. No Vault token injection or running-Pod status
 annotations are needed. Do not print the private-key values in pipeline logs.
-
-A configured missing/unreadable input or splitter failure stops the source task.
-The supplemental output is mode 0600 and remains on the shared PVC like existing
-secret tfvars; restrict workspace access and retain normal cleanup. The next
-source install clears its package directory. No supplemental output is generated
-when the input path is empty. The input supports string values, with one level of dotted map keys.
-
-Run `helm lint charts/ocp-tkn-terraform --set serviceAccount.name=terraform`.
-Verify Pod annotations, Vault init completion, generated files, precedence and
-pipeline completion in a test cluster before production.
 
 ### Bundled splitter
 
