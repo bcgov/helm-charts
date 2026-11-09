@@ -1683,6 +1683,16 @@ entries:
   ocp-route:
   - apiVersion: v1
     appVersion: "1.0"
+    created: "2026-11-09T21:40:11.004178429Z"
+    description: A Helm chart for Openshift Routes for cases where the standard Ingress
+      is not sufficient
+    digest: 9c3d4895924f171b5a0071eb251f1d0c0ab740d43d07199036ba5b94d4062ee6
+    name: ocp-route
+    urls:
+    - https://github.com/bcgov/helm-charts/releases/download/ocp-route-0.1.4/ocp-route-0.1.4.tgz
+    version: 0.1.4
+  - apiVersion: v1
+    appVersion: "1.0"
     created: "2020-09-21T23:37:36.454197-07:00"
     description: A Helm chart for Openshift Routes for cases where the standard Ingress
       is not sufficient
@@ -2260,4 +2270,4 @@ entries:
     urls:
     - https://github.com/bcgov/helm-charts/releases/download/vdi-virtual-display-0.0.1/vdi-virtual-display-0.0.1.tgz
     version: 0.0.1
-generated: "2026-07-22T22:56:16.557356405Z"
+generated: "2026-11-09T21:40:11.004604585Z"
