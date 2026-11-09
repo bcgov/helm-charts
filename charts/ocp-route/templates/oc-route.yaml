@@ -26,9 +26,4 @@ spec:
     name: {{ .service }}
     weight: 100
   wildcardPolicy: {{ .wildcardPolicy }}
-status:
-  ingress:
-  - host: {{ .host }}
-    routerName: router
-    wildcardPolicy: {{ .wildcardPolicy }}
 {{ end }}
