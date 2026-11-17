@@ -17,6 +17,9 @@ on:
     types:
       - completed
   status: {}
+permissions:
+  contents: write # merge PRs and update their branches
+  pull-requests: write
 jobs:
   automerge:
     runs-on: ubuntu-latest
